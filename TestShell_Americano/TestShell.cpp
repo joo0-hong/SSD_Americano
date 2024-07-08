@@ -1,5 +1,6 @@
-#include <string>
 #include <iostream>
+#include <fstream>
+#include <string>
 
 using namespace std;
 
@@ -15,6 +16,9 @@ public:
 	}
 
 	void read(std::string lba) {
+		invokeSSDRead(lba);
+
+		std::cout << getSSDReadData() << std::endl;
 	}
 	void exit() {
 	}
@@ -26,6 +30,23 @@ public:
 	}
 
 private:
-	string SSD_PATH;
-	string RESULT_PATH;
+	const std::string SSD_PATH;
+	const std::string RESULT_PATH;
+
+	void invokeSSDRead(std::string& lba)
+	{
+		string cmd("R");
+		std::string ret = SSD_PATH + " " + cmd + " " + lba;
+		system(ret.c_str());
+	}
+	std::string getSSDReadData() {
+		std::string result;
+
+		std::ifstream ifs;
+		ifs.open(RESULT_PATH);
+		ifs >> result;
+		ifs.close();
+
+		return result;
+	}
 };

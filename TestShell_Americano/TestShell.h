@@ -9,4 +9,7 @@ public:
 	void help();
 	void fullwrite();
 	void fullread();
+private:
+	void invokeSSDRead(std::string& lba);
+	std::string getSSDReadData();
 };
