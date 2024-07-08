@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 #include "../SSD_Americano/NandInterface.h"
+#include "../SSD_Americano/FileManager.cpp"
 
 using namespace testing;
 
@@ -18,4 +19,10 @@ TEST(SSDTest, NANDInterface) {
 
     nand.read(0);
     nand.write(0, 0);
+}
+
+TEST(FileManagerTest, FileManager) {
+    FileManager* fileManager = new FileManager();
+
+    EXPECT_THAT(fileManager, NotNull());
 }
