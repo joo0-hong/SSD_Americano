@@ -1,14 +1,19 @@
 #include <string>
+#include <iostream>
 
 using namespace std;
 
 class TestShell {
 public:
+	TestShell(const std::string& ssd_path)
+		: SSD_PATH(ssd_path){}
+
 	void write(std::string lba, std::string data) {
-		int lba_val = std::stoi(lba);
-		if (lba_val < 0 || lba_val >= 100)
-			throw;
+		string cmd("W");
+		string ret = SSD_PATH + cmd + " " + lba + " " + data;
+		system(ret.c_str());
 	}
+
 	void read(std::string lba) {
 	}
 	void exit() {
@@ -19,4 +24,7 @@ public:
 	}
 	void fullread() {
 	}
+
+private:
+	string SSD_PATH;
 };
