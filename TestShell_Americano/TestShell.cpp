@@ -2,9 +2,9 @@
 
 class TestShell {
 public:
-	void write(std::string cmd, std::string lba, std::string data) {
+	void write(std::string lba, std::string data) {
 	}
-	void read(std::string cmd, std::string lba) {
+	void read(std::string lba) {
 	}
 	void exit() {
 	}
