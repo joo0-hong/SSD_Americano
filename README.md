@@ -15,8 +15,8 @@
 
 ## Branch Naming
 - main: 최종 배포 branch
-- ssd: SSD 개발용 branch
-- test_shell: Test Shell 개발용 branch
+- feature/ssd: SSD 개발용 branch
+- feature/test_shell: Test Shell 개발용 branch
 
 기능 개발 Branch Naming
 - feature/ssd/xxxx
