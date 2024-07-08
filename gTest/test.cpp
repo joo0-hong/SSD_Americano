@@ -26,3 +26,30 @@ TEST(FileManagerTest, FileManager) {
 
     EXPECT_THAT(fileManager, NotNull());
 }
+
+TEST(FileManagerTest, FileManagerRead) {
+    FileManager* fileManager = new FileManager();
+    int offset = 0;
+    string data = "0x12341234";
+
+    try {
+        fileManager->read(offset);
+    }
+    catch (...) {
+        FAIL();
+    }
+}
+
+TEST(FileManagerTest, FileManagerWrite) {
+    FileManager* fileManager = new FileManager();
+    int offset = 0;
+    string data = "0x12341234";
+
+    try {
+        fileManager->write(offset, data);
+    }
+    catch (...) {
+        FAIL();
+    }
+
+}
