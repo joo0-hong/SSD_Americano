@@ -7,7 +7,7 @@ using namespace std;
 
 TEST(TestShell, TestShellWriteFail_LBA_GreaterThanMax) {
 	string ssd_path = "..\\x64\\Debug\\SSDMock";
-	string result_path = ""
+	string result_path = "..\\x64\\Debug\\resources\\result.txt";
 
 	TestShell ts(ssd_path, result_path);
 	string LBA("1");
