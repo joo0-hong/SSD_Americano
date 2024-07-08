@@ -38,10 +38,9 @@ private:
 
 	void invokeSSDRead(std::string& lba)
 	{
-		std::string cmd = SSD_PATH;
-		cmd += " ";
-		cmd += lba;
-		system(cmd.c_str());
+		string cmd("R");
+		std::string ret = SSD_PATH + " " + cmd + " " + lba;
+		system(ret.c_str());
 	}
 	std::string getSSDReadData() {
 		std::string result;
