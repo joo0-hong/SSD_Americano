@@ -7,23 +7,23 @@
 
 using namespace std;
 
-TEST(TestShell, Read_InvalidCommand) {
+class TestShellFixture : public testing::Test {
+public:
 	const std::string SSD_PATH = "..\\x64\\Debug\\SSDMock";
 	const std::string RESULT_PATH = "..\\resources\\result.txt";
+	
+	TestShell app{ SSD_PATH, RESULT_PATH };
+};
 
-	TestShell app(SSD_PATH, RESULT_PATH);
 
+TEST_F(TestShellFixture, Read_InvalidCommand) {
 	app.read("-1");
 	app.read("dsaf");
 }
 
-TEST(TestShell, TestShellWriteFail_LBA_GreaterThanMax) {
-	string ssd_path = "..\\x64\\Debug\\SSDMock";
-	string result_path = "..\\x64\\Debug\\resources\\result.txt";
-
-	TestShell ts(ssd_path, result_path);
+TEST_F(TestShellFixture, Write_Pass) {
 	string LBA("1");
 	string data("0x1298CDEF");
 
-	ts.write(LBA, data);
+	app.write(LBA, data);
 }
