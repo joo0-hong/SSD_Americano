@@ -12,3 +12,12 @@
 - 유정균: 가상 SSD 제작
 - 박준영: 가상 SSD 제작
 - 홍주영: 가상 SSD 제작
+
+## Branch Naming
+- main: 최종 배포 branch
+- ssd: SSD 개발용 branch
+- test_shell: Test Shell 개발용 branch
+
+기능 개발 Branch Naming
+- feature/ssd/xxxx
+- feature/shell/xxx
