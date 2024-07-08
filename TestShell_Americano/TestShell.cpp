@@ -18,9 +18,7 @@ public:
 	void read(std::string lba) {
 		invokeSSDRead(lba);
 
-		std::string data = getSSDReadData();
-
-		std::cout << data << std::endl;
+		std::cout << getSSDReadData() << std::endl;
 	}
 	void exit() {
 	}
