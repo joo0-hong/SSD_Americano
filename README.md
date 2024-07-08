@@ -19,5 +19,5 @@
 - test_shell: Test Shell 개발용 branch
 
 기능 개발 Branch Naming
-- feature/ssd/xxxx
-- feature/shell/xxx
+- feature/ssd_xxxx
+- feature/shell_xxx
