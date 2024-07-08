@@ -21,13 +21,13 @@
     <ClCompile Include="hostInterface.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-<<<<<<< HEAD
+    <ClCompile Include="FileManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NandInterface.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-=======
->>>>>>> 503577d44a7fdd7288c68c2a90df9a49ab5ead26
   </ItemGroup>
 </Project>
