@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "솔루션 항목", "솔루�
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gTest", "gTest\gTest.vcxproj", "{E7E61AC1-BFFB-40BA-982D-5D93BDB405A4}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestShell_Americano", "TestShell_Americano\TestShell_Americano.vcxproj", "{97FCE958-0E40-462D-B8B1-D3F560DBED96}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -37,6 +39,14 @@ Global
 		{E7E61AC1-BFFB-40BA-982D-5D93BDB405A4}.Release|x64.Build.0 = Release|x64
 		{E7E61AC1-BFFB-40BA-982D-5D93BDB405A4}.Release|x86.ActiveCfg = Release|Win32
 		{E7E61AC1-BFFB-40BA-982D-5D93BDB405A4}.Release|x86.Build.0 = Release|Win32
+		{97FCE958-0E40-462D-B8B1-D3F560DBED96}.Debug|x64.ActiveCfg = Debug|x64
+		{97FCE958-0E40-462D-B8B1-D3F560DBED96}.Debug|x64.Build.0 = Debug|x64
+		{97FCE958-0E40-462D-B8B1-D3F560DBED96}.Debug|x86.ActiveCfg = Debug|Win32
+		{97FCE958-0E40-462D-B8B1-D3F560DBED96}.Debug|x86.Build.0 = Debug|Win32
+		{97FCE958-0E40-462D-B8B1-D3F560DBED96}.Release|x64.ActiveCfg = Release|x64
+		{97FCE958-0E40-462D-B8B1-D3F560DBED96}.Release|x64.Build.0 = Release|x64
+		{97FCE958-0E40-462D-B8B1-D3F560DBED96}.Release|x86.ActiveCfg = Release|Win32
+		{97FCE958-0E40-462D-B8B1-D3F560DBED96}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
