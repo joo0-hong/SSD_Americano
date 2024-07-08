@@ -5,8 +5,8 @@ using namespace std;
 
 class TestShell {
 public:
-	TestShell(const std::string& ssd_path)
-		: SSD_PATH(ssd_path){}
+	TestShell(const std::string& ssd_path, const std::string& result_path)
+		: SSD_PATH(ssd_path), RESULT_PATH(result_path) {}
 
 	void write(std::string lba, std::string data) {
 		string cmd("W");
@@ -27,4 +27,5 @@ public:
 
 private:
 	string SSD_PATH;
+	string RESULT_PATH;
 };

@@ -6,9 +6,12 @@
 using namespace std;
 
 TEST(TestShell, TestShellWriteFail_LBA_GreaterThanMax) {
-	TestShell ts("..\\x64\\Debug\\SSDMock");
-	string data("1");
-	string LBA("0x1298CDEF");
+	string ssd_path = "..\\x64\\Debug\\SSDMock";
+	string result_path = ""
+
+	TestShell ts(ssd_path, result_path);
+	string LBA("1");
+	string data("0x1298CDEF");
 
 	ts.write(LBA, data);
 }
