@@ -10,7 +10,7 @@ public:
 
 	void write(std::string lba, std::string data) {
 		string cmd("W");
-		string ret = SSD_PATH + cmd + " " + lba + " " + data;
+		string ret = SSD_PATH + " " + cmd + " " + lba + " " + data;
 		system(ret.c_str());
 	}
 

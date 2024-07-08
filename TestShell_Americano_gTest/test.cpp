@@ -6,7 +6,7 @@
 using namespace std;
 
 TEST(TestShell, TestShellWriteFail_LBA_GreaterThanMax) {
-	TestShell ts("..\\x64\\Debug\\SSDMock ");
+	TestShell ts("..\\x64\\Debug\\SSDMock");
 	string data("1");
 	string LBA("0x1298CDEF");
 
