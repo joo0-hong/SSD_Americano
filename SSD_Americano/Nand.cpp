@@ -9,7 +9,6 @@ using namespace std;
 
 class NAND : public NANDInterface {
 public:
-	//void Init();
 	void read(int lba) override
 	{
 		string result = nandFileManager.read(lba);
