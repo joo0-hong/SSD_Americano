@@ -13,7 +13,7 @@ public:
 };
 
 TEST(SSDTest, NANDInterface) {
-    MockedNand nand;
+	NiceMock<MockedNand> nand;
 
     EXPECT_CALL(nand, read(_)).Times(1);
     EXPECT_CALL(nand, write(_, _)).Times(1);
@@ -99,4 +99,31 @@ TEST(HostInterfaceTest, CheckingInvalidData) {
 	bool result = hostIntf.checkInvalidCommand(4, argv);
 
 	EXPECT_EQ(true, result);
+}
+
+TEST(HostInterfaceTest, StartWriteCmd) {
+	char exe[] = "TESTFILE.exe";
+	char a = 'W';
+	int adddr = 3;
+	int data = 0x1298cdef;
+	char* argv[] = { exe, &a, (char*)&adddr, (char*)&data };
+
+	NiceMock<MockedNand> nand;
+	HostInterface hostIntf;
+	hostIntf.ParseCommand(4, argv);
+
+	EXPECT_CALL(nand, write(_, _)).Times(1);
+}
+
+TEST(HostInterfaceTest, StartReadCmd) {
+	char exe[] = "TESTFILE.exe";
+	char a = 'R';
+	int adddr = 3;
+	char* argv[] = { exe, &a, (char*)&adddr};
+
+	NiceMock<MockedNand> nand;
+	HostInterface hostIntf;
+	hostIntf.ParseCommand(3, argv);
+
+	EXPECT_CALL(nand, read(_)).Times(1);
 }
