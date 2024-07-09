@@ -6,48 +6,50 @@ using namespace std;
 static const int READ = 1;
 static const int WRITE = 2;
 
-interface CommandProcessor {
+interface Command {
 	virtual void run() = 0;
 };
 
-class ReadProcessor : public CommandProcessor {
+class ReadCmd : public Command {
 public:
-	ReadProcessor(int addr) : address(addr) {
+	ReadCmd(int addr, NANDInterface* nand) : address(addr), nandIntf(nand){
 	}
 	void run() override {
-		Nand& nand = Nand::getInstance();
-		nand.read(address);
+		nandIntf->read(address);
 	}
 private:
 	int address;
+	NANDInterface* nandIntf;
 };
 
-class WriteProcessor : public CommandProcessor {
+class WriteCmd : public Command {
 public:
-	WriteProcessor(int addr, string data) : address(addr), data(data) {
+	WriteCmd(int addr, string data, NANDInterface* nand) : address(addr), data(data), nandIntf(nand) {
 	}
 	void run() override {
-		Nand& nand = Nand::getInstance();
-		nand.write(address, data);
+		nandIntf->write(address,data);
 	}
 private:
 	int address;
 	string data;
+	NANDInterface* nandIntf;
 };
 
-class ErrorProcessor : public CommandProcessor {
+class ErrorCmd : public Command {
 public:
-	ErrorProcessor() {
+	ErrorCmd(NANDInterface* nand) : nandIntf(nand){
 	}
 	void run() override {
 		// Ask File Mgr to write "NULL"
 	}
 private:
 	int address;
+	NANDInterface* nandIntf;
 };
 
 class HostInterface {
 public:
+	HostInterface(NANDInterface* nand) : nandIntf(nand) {}
 	void ParseCommand(int argc, char* argv[]) {
 		if (*(argv[1]) == 'W') {
 			command = WRITE;
@@ -131,16 +133,16 @@ public:
 
 	void ProcessCommand()
 	{
-		CommandProcessor* cmd;
+		Command* cmd;
 		if (command == READ)
 		{
-			cmd = new ReadProcessor(addr);
+			cmd = new ReadCmd(addr, nandIntf);
 		}
 		else if (command == WRITE) {
-			cmd = new WriteProcessor(addr, data);
+			cmd = new WriteCmd(addr, data, nandIntf);
 		}
 		else {
-			cmd = new ErrorProcessor();
+			cmd = new ErrorCmd(nandIntf);
 		}
 		cmd->run();
 	}
@@ -156,6 +158,7 @@ public:
 	}
 
 private:
+	NANDInterface* nandIntf;
 	int command = 0;
 	int addr = 0;
 	string data;
