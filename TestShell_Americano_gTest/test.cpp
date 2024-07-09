@@ -52,7 +52,9 @@ TEST_F(TestShellFixture, Read_InvalidLBA) {
 
 	//assert
 	EXPECT_EQ(expect, actual);
+
 }
+
 TEST_F(TestShellFixture, Read_ValidLBA) {
 	//arrange
 	EXPECT_CALL(mk, readFile)
@@ -74,7 +76,7 @@ TEST_F(TestShellFixture, Read_ValidLBA) {
 	//assert
 	EXPECT_EQ(expect, actual);
 }
-TEST_F(TestShellFixture, TestShellWriteFail_LBA_GreaterThanMax) {
+TEST_F(TestShellFixture, Write_Pass) {
 	string LBA("1");
 	string data("0x1298CDEF");
 

@@ -136,9 +136,6 @@
     <ClInclude Include="FileManagerImpl.h" />
     <ClInclude Include="TestShell.h" />
   </ItemGroup>
-  <ItemGroup>
-    <Text Include="result.txt" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
