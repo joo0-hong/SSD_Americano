@@ -61,6 +61,12 @@ public:
 
 		if (string(argv[1]) == "W") {
 			string data = string(argv[3]);
+
+			if (data.length() != DATA_LENGTH) {
+				cout << "Invalid data length !!!" << endl;
+				return true;
+			}
+
 			string dataPreFix = data.substr(0, 2);
 			if (dataPreFix != string("0x")) {
 				cout << "Invalid Data: Data should start with 0x !!! " << dataPreFix<< endl;
@@ -90,4 +96,5 @@ private:
 	const int VALID_WRITE_ARGUMENT_NUM = 4;
 	const int MIN_LBA = 0;
 	const int MAX_LBA = 99;
+	const int DATA_LENGTH = 10;
 };
