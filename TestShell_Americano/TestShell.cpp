@@ -107,3 +107,47 @@ void TestShell::displayHelp(const std::string& name, const std::string& synopsis
 	std::cout << "- " << description << std::endl;
 	std::cout << "======================================================" << std::endl << std::endl;
 }
+
+bool TestShell::testApp2() {
+	for (int i = 0; i < 30; i++) {
+		write("0", "0xAAAABBBB");
+		write("1", "0xAAAABBBB");
+		write("2", "0xAAAABBBB");
+		write("3", "0xAAAABBBB");
+		write("4", "0xAAAABBBB");
+		write("5", "0xAAAABBBB");
+	}
+	
+	write("0", "0x12345678");
+	write("1", "0x12345678");
+	write("2", "0x12345678");
+	write("3", "0x12345678");
+	write("4", "0x12345678");
+	write("5", "0x12345678");
+
+	read("0");
+	if ("0x12345678" != getSSDReadData())
+		return false;
+
+	read("1");
+	if ("0x12345678" != getSSDReadData())
+		return false;
+
+	read("2");
+	if ("0x12345678" != getSSDReadData())
+		return false;
+
+	read("3");
+	if ("0x12345678" != getSSDReadData())
+		return false;
+
+	read("4");
+	if ("0x12345678" != getSSDReadData())
+		return false;
+
+	read("5");
+	if ("0x12345678" != getSSDReadData())
+		return false;
+
+	return true;
+}

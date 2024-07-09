@@ -137,3 +137,18 @@ TEST_F(TestShellFixture, FullWrite) {
 
 	app.fullwrite("0xABCDFFF");
 }
+
+TEST_F(TestShellFixture, TestApp2) {
+	//arrange
+	EXPECT_CALL(ssdDriverMk, write)
+		.Times(186);
+
+	EXPECT_CALL(fileReaderMk, readFile)
+		.WillRepeatedly(Return("0x12345678"));
+
+	//action
+	bool actual = app.testApp2();
+
+	//assert
+	EXPECT_EQ(true, actual);
+}
