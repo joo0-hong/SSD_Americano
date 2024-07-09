@@ -8,4 +8,5 @@ interface NANDInterface {
 public:
 	virtual void read(int lba) = 0;
 	virtual void write(int lba, int data) = 0;
+	virtual void error(void) = 0;
 };
