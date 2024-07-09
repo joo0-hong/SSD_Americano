@@ -22,16 +22,80 @@ TEST(SSDTest, NANDInterface) {
 }
 
 TEST(HostInterfaceTest, ParsingInputArgs) {
-	char exe[] = "TESTFILE.exe";
-	char a = 'W';
-	int adddr = 3;
-	int data = 0x1298cdef;
-	char* argv[] = { exe, &a, (char*)&adddr, (char*)&data };
+	char* exe = "TESTFILE.exe";
+	char* a = "W";
+	char* adddr = "3";
+	char* data = "0x1298CDEF";
+	char* argv[] = { exe, a, adddr, data };
 
 	HostInterface hostIntf;
 	hostIntf.ParseCommand(4, argv);
 
 	EXPECT_EQ(WRITE, hostIntf.getCmd());
-	EXPECT_EQ(adddr, hostIntf.getAddr());
-	EXPECT_EQ(data, hostIntf.getData());
+	EXPECT_EQ(atoi(adddr), hostIntf.getAddr());
+	EXPECT_EQ(string(data), hostIntf.getData());
+}
+
+TEST(HostInterfaceTest, CheckingInvalidArgumentNum) {
+	char exe[] = "TESTFILE.exe";
+	char* a = "W";
+	char* adddr = "3";
+	char* data = "0x1298CDEF";
+	char* argv[] = { exe, a, adddr, data };
+
+	HostInterface hostIntf;
+	bool result = hostIntf.checkInvalidCommand(2, argv);
+
+	EXPECT_EQ(true, result);
+}
+
+TEST(HostInterfaceTest, CheckingValidWriteCommands) {
+	char exe[] = "TESTFILE.exe";
+	char* a = "W";
+	char* adddr = "3";
+	char* data = "0x1298CDEF";
+	char* argv[] = { exe, a, adddr, data };
+
+	HostInterface hostIntf;
+	bool result = hostIntf.checkInvalidCommand(4, argv);
+
+	EXPECT_EQ(false, result);
+}
+
+TEST(HostInterfaceTest, CheckingValidReadCommands) {
+	char exe[] = "TESTFILE.exe";
+	char* a = "R";
+	char* adddr = "3";
+	char* argv[] = { exe, a, adddr};
+
+	HostInterface hostIntf;
+	bool result = hostIntf.checkInvalidCommand(3, argv);
+
+	EXPECT_EQ(false, result);
+}
+
+TEST(HostInterfaceTest, CheckingInvalidLBA) {
+	char exe[] = "TESTFILE.exe";
+	char* a = "W";
+	char* adddr = "111";
+	char* data = "0x1298CDEF";
+	char* argv[] = { exe, a, adddr, data };
+
+	HostInterface hostIntf;
+	bool result = hostIntf.checkInvalidCommand(4, argv);
+
+	EXPECT_EQ(true, result);
+}
+
+TEST(HostInterfaceTest, CheckingInvalidData) {
+	char exe[] = "TESTFILE.exe";
+	char* a = "W";
+	char* adddr = "3";
+	char* data = "0x1298CDEW";
+	char* argv[] = { exe, a, adddr, data };
+
+	HostInterface hostIntf;
+	bool result = hostIntf.checkInvalidCommand(4, argv);
+
+	EXPECT_EQ(true, result);
 }
