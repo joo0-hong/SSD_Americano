@@ -10,3 +10,25 @@ public:
 	virtual void write(int lba, string data) = 0;
 	virtual void error(void) = 0;
 };
+
+class Nand : public NANDInterface {
+public:
+	static Nand& getInstance() {
+		static Nand nand;
+		return nand;
+	}
+	Nand() {
+
+	}
+	void read(int lba) {
+	
+	}
+	void write(int lba, string data) {
+	}
+	void error(void) {
+
+	}
+private:
+	Nand& operator=(const Nand& other) = delete;
+	Nand(const Nand& other) = delete;
+};
