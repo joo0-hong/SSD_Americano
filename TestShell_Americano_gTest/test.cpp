@@ -1,24 +1,83 @@
-#include <string>
+﻿#include <string>
 
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 
+#include "../TestShell_Americano/FileManager.h"
 #include "../TestShell_Americano/TestShell.cpp"
 
 using namespace std;
+using namespace testing;
+
+class MockFileManager : public FileManager {
+public:
+	MockFileManager(string filePath)
+		: filePath_{ filePath } {}
+
+	MOCK_METHOD(string, readFile, (), ());
+
+private:
+	string filePath_;
+};
 
 class TestShellFixture : public testing::Test {
 public:
-	const std::string SSD_PATH = "..\\x64\\Debug\\SSDMock";
-	const std::string RESULT_PATH = "..\\resources\\result.txt";
-
-	TestShell app{ SSD_PATH, RESULT_PATH };
+	const string SSD_PATH = "..\\x64\\Debug\\SSDMock";
+	const string RESULT_PATH = "..\\resources\\result.txt";
+	
+	MockFileManager mk{ RESULT_PATH };
+	TestShell app{ SSD_PATH, &mk };
 };
 
-TEST_F(TestShellFixture, Read_InvalidCommand) {
-	
-	app.read("-1");
-	app.read("dsaf");
+TEST_F(TestShellFixture, Read_InvalidLBA) {
+	//arrange
+	EXPECT_CALL(mk, readFile)
+		.WillRepeatedly(Return("NULL"));
+
+	std::ostringstream oss;
+	auto oldCoutStreamBuf = std::cout.rdbuf();
+	std::cout.rdbuf(oss.rdbuf());
+
+	//action
+	string LBA{ "-1" };
+	app.read(LBA);
+
+	LBA = "abcd";
+	app.read(LBA);
+
+	std::cout.rdbuf(oldCoutStreamBuf);	// 기존 buf 복원
+
+	string expect = "NULL\nNULL\n";
+	string actual = oss.str();
+
+	//assert
+	EXPECT_EQ(expect, actual);
+
+}
+TEST_F(TestShellFixture, Read_ValidLBA) {
+	//arrange
+	EXPECT_CALL(mk, readFile)
+		.WillRepeatedly(Return("0x12341234"));
+
+	std::ostringstream oss;
+	auto oldCoutStreamBuf = std::cout.rdbuf();
+	std::cout.rdbuf(oss.rdbuf());
+
+	//action
+	string LBA{ "0" };
+	app.read(LBA);
+
+	std::cout.rdbuf(oldCoutStreamBuf);	// 기존 buf 복원
+
+	string expect = "0x12341234\n";
+	string actual = oss.str();
+
+	//assert
+	EXPECT_EQ(expect, actual);
+}
+TEST_F(TestShellFixture, Write_Pass) {
+	string LBA("1");
+	string data("0x1298CDEF");
 }
 
 TEST_F(TestShellFixture, Write) {
