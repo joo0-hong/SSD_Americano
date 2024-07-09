@@ -5,103 +5,63 @@
 #include <vector>
 #include <sstream>
 
+#include "CheckCommand.cpp"
+#include "TestShell.h"
+#include "FileReader.h"
+#include "SSDDriver.h"
+
 using namespace std;
 
-int checkCmd(vector<string> input) { 
-
-	string cmd = input[0];
-
-	if (cmd == "read") {
-		if (input.size() < 2)	{
-			cout << "cmd = " << cmd << " size = " << input.size() << " return 0xff" << endl;
-			return 0xff;
- 		}
-		return 0;
-	}
-	else if (cmd == "write") {
-		if (input.size() < 3) {
-			cout << "cmd = " << cmd << " size = " << input.size() << " return 0xff" << endl;
-			return 0xff;
-		}
-		return 1;
-	}
-	else if (cmd == "exit") {
-		return 2;
-	}
-	if (cmd == "help") {
-		return 3;
-	}
-	if (cmd == "fullread") {
-		return 4;
-	}
-	if (cmd == "fullwrite") {
-		return 5;
-	}
-	return -1;
-}
-
-vector<string> split(string input, char delimiter) {
-	istringstream iss(input);
-	string buffer;
-	vector<string> result;
-	int num = 0;
-
-	while (getline(iss, buffer, delimiter) && num < 3) {
-		result.push_back(buffer);
-		num++;
-	}
-
-	return result;
-}
-
-
 int main() {
+	const std::string SSD_PATH = "..\\x64\\Debug\\SSDMock";
+	const std::string RESULT_PATH = "..\\resources\\result.txt";
+
+	SSDDriver ssdDriverMk{ SSD_PATH };
+	FileReader fileReaderMk{ RESULT_PATH };
+	TestShell app{ &ssdDriverMk, &fileReaderMk };
+
+	CheckCommand checker;
+
 	string input;
+	string arg1, arg2;
 	char delimeter = '\n';
 
-
 	while (true) {
-
 		getline(cin, input, delimeter);
-		vector<string> result = split(input, ' ');
-
-		int cmd = checkCmd(result);
-		string ret = "..\\x64\\Debug\\SSDMock ";
+		int cmd = checker.checkCmd(input, arg1, arg2);
 
 		switch (cmd) {
 		case 0:
-			cout << "read" << endl;
-			ret += result[0];
-			ret += result[1];
+			cout << "write" << endl;
+			app.write(arg1, arg2);
 			break;
 		case 1:
-			cout << "write" << endl;
-			ret += result[0];
-			ret += result[1];
-			ret += result[2];
+			cout << "read" << endl;
+			app.read(arg1);
 			break;
 		case 2:
 			cout << "exit" << endl;
-			exit(-1);
+			app.exit();
 			break;
 		case 3:
 			cout << "help" << endl;
+			app.help();
 			break;
 		case 4:
-			cout << "fullread" << endl;
+			cout << "fullwrite" << endl;
+			app.fullwrite(arg1);
 			break;
 		case 5:
-			cout << "fullwrite" << endl;
+			cout << "fullread" << endl;
+			app.fullread();
 			break;
 		case -1:
 			cout << "INVALID COMMAND" << endl;
 			break;
-		default: 
+		default:
 			cout << "INVALID ARGUMENT" << endl;
 			break;
 		}
-
-	//	system(ret.c_str());
 	}
 
 }

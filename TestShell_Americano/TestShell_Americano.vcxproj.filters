@@ -27,6 +27,9 @@
     <ClCompile Include="SSDDriver.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="CheckCommand.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TestShell.h">

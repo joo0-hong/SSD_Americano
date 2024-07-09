@@ -128,6 +128,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="FileReader.cpp" />
+    <ClCompile Include="CheckCommand.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SSDDriver.cpp" />
     <ClCompile Include="TestShell.cpp" />
