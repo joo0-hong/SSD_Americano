@@ -2,12 +2,16 @@
 #include <fstream>
 #include <string>
 
+#include "FileManagerImpl.h"
+
 using namespace std;
 
 class TestShell {
 public:
-	TestShell(const std::string& ssd_path, const std::string& result_path)
-		: SSD_PATH(ssd_path), RESULT_PATH(result_path) {}
+	TestShell(const std::string& ssd_path
+		, FileManager* fileManagerImpl)
+		: SSD_PATH{ ssd_path }
+		, fileManager{ fileManagerImpl } {}
 
 	void write(std::string lba, std::string data) {
 		string cmd("W");
@@ -33,6 +37,8 @@ private:
 	const std::string SSD_PATH;
 	const std::string RESULT_PATH;
 
+	FileManager* fileManager;
+
 	void invokeSSDRead(std::string& lba)
 	{
 		string cmd("R");
@@ -40,13 +46,6 @@ private:
 		system(ret.c_str());
 	}
 	std::string getSSDReadData() {
-		std::string result;
-
-		std::ifstream ifs;
-		ifs.open(RESULT_PATH);
-		ifs >> result;
-		ifs.close();
-
-		return result;
+		return fileManager->readFile();
 	}
 };
