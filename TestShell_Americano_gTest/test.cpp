@@ -3,21 +3,18 @@
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 
-#include "../TestShell_Americano/FileManager.h"
 #include "../TestShell_Americano/TestShell.cpp"
+#include "../TestShell_Americano/FileReader.cpp"
 
 using namespace std;
 using namespace testing;
 
-class MockFileManager : public FileManager {
+class MockFileManager : public FileReader {
 public:
 	MockFileManager(string filePath)
-		: filePath_{ filePath } {}
+		: FileReader{ filePath } {}
 
 	MOCK_METHOD(string, readFile, (), ());
-
-private:
-	string filePath_;
 };
 
 class TestShellFixture : public testing::Test {

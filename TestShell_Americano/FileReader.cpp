@@ -1,14 +1,14 @@
 #include <fstream>
 
-#include "FileManagerImpl.h"
+#include "FileReader.h"
 
 using std::ifstream;
 
-FileManagerImpl::FileManagerImpl(const string& filePath) {
+FileReader::FileReader(const string& filePath) {
 	filePath_ = filePath;
 }
 
-string FileManagerImpl::readFile()
+string FileReader::readFile()
 {
 	string result;
 
