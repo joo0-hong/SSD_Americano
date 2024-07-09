@@ -124,5 +124,32 @@ TEST_F(TestShellFixture, Help) {
 }
 
 TEST_F(TestShellFixture, TestApp1) {
+	//arrange
+	EXPECT_CALL(ssdDriverMk, write)
+		.Times(100);
 
+	EXPECT_CALL(ssdDriverMk, read)
+		.Times(100);
+
+	EXPECT_CALL(fileReaderMk, readFile)
+		.Times(100)
+		.WillRepeatedly(Return("0x11111111"));
+
+	std::ostringstream oss;
+	auto oldCoutStreamBuf = std::cout.rdbuf();
+	std::cout.rdbuf(oss.rdbuf());
+
+	//action
+	app.testapp1("0x11111111");
+
+	std::cout.rdbuf(oldCoutStreamBuf);	// 기존 buf 복원
+
+	//assert
+	string expect = "";
+	for (int i = 0; i < 100; ++i) {
+		expect += "0x11111111\n";
+	}
+	string actual = oss.str();
+
+	EXPECT_EQ(expect, actual);
 }

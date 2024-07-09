@@ -48,6 +48,10 @@ void TestShell::fullread() {
 		read(std::to_string(lba));
 	}
 }
+void TestShell::testapp1(const string& data) {
+	fullwrite(data);
+	fullread();
+}
 
 void TestShell::helpWrite() const {
 	string name{ "write" };
