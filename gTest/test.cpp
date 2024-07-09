@@ -133,7 +133,7 @@ TEST_F(HostIntfTestFixture, WrongCommandNameCheck) {
 	hostIntf.processCommand(4, argv);
 }
 
-TEST(NANDTest, NANDRead) {
+TEST(NANDTest, NANDWriteRead) {
 	NAND nand{ "TestNand.txt", "TestResult.txt" };
 
 	nand.write(3, "0x1298DEAD");
