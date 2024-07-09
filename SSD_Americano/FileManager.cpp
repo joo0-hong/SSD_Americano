@@ -7,31 +7,51 @@ using namespace std;
 
 class FileManager {
 public:
-    string read(int linenumber)
-    {
-        // TODO: Error handling of invalid linenumber
-        ifstream openFile(filename);
-        if (openFile.is_open()) {
-            string line;
-            int currentline = 0;
-
-            while (getline(openFile, line)) {
-                if (currentline == linenumber) {
-                    return line;
-                }
-                currentline++;
-            }
-            openFile.close();
-        }
-
-        return "";
+    FileManager(const string& filename) {
+        file.open(filename);
+        checkFileOpen();
+    }
+    ~FileManager() {
+        file.close();
     }
 
-    void write(int linenumber, string data)
-    {
+    string read(const int linenumber) {
+        // TODO: Error handling of invalid linenumber
+
+        checkFileOpen();
+
+        file.seekg(0);
+
+        string line = getLine(linenumber);
+
+        return line;
+    }
+
+    void write(int linenumber, string data) {
         return;
     }
 
 private:
-    const string filename = "nand.txt";
+    string filename;
+    fstream file;
+
+    string getLine(const int linenumber) {
+        string line = "";
+        int currentline = 0;
+
+        while (getline(file, line)) {
+            if (currentline == linenumber) {
+                return line;
+            }
+            currentline++;
+        }
+        return line;
+    }
+
+    void checkFileOpen() {
+        if (false == file.is_open()) {
+
+            throw runtime_error("File can not be open.");
+        }
+    }
 };
