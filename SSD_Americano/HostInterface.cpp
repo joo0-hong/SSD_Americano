@@ -72,7 +72,7 @@ public:
 				return true;
 			}
 
-			string dataNumber = data.substr(2, data.length()-1);
+			string dataNumber = data.substr(2, data.length());
 			for (const char ch : dataNumber) {
 				if ((ch >= '0') && (ch <= '9')) {
 					continue;
