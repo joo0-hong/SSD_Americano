@@ -71,6 +71,22 @@ public:
 				cout << "Invalid Data: Data should start with 0x !!! " << dataPreFix<< endl;
 				return true;
 			}
+
+			string dataNumber = data.substr(2, data.length()-1);
+			for (const char ch : dataNumber) {
+				if ((ch >= '0') && (ch <= '9')) {
+					continue;
+				}
+
+				if ((ch >= 'A') && (ch <= 'F'))
+				{
+					continue;
+				}
+
+				cout << "Invalid LBA !!!" << endl;
+				return true;
+			}
+
 		}
 
 		return false;

@@ -25,7 +25,7 @@ TEST(HostInterfaceTest, ParsingInputArgs) {
 	char* exe = "TESTFILE.exe";
 	char* a = "W";
 	char* adddr = "3";
-	char* data = "0x1298cdef";
+	char* data = "0x1298CDEF";
 	char* argv[] = { exe, a, adddr, data };
 
 	HostInterface hostIntf;
@@ -40,7 +40,7 @@ TEST(HostInterfaceTest, CheckingValidWriteCommands) {
 	char exe[] = "TESTFILE.exe";
 	char* a = "W";
 	char* adddr = "3";
-	char* data = "0x1298cdef";
+	char* data = "0x1298CDEF";
 	char* argv[] = { exe, a, adddr, data };
 
 	HostInterface hostIntf;
@@ -65,7 +65,7 @@ TEST(HostInterfaceTest, CheckingInvalidLBA) {
 	char exe[] = "TESTFILE.exe";
 	char* a = "W";
 	char* adddr = "111";
-	char* data = "0x1298cdef";
+	char* data = "0x1298CDEF";
 	char* argv[] = { exe, a, adddr, data };
 
 	HostInterface hostIntf;
