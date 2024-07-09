@@ -2,6 +2,7 @@
 #include "gmock/gmock.h"
 #include "../SSD_Americano/NandInterface.h"
 #include "../SSD_Americano/HostInterface.cpp"
+#include "../SSD_Americano/Nand.cpp"
 
 using namespace testing;
 
@@ -132,3 +133,15 @@ TEST_F(HostIntfTestFixture, WrongCommandNameCheck) {
 	hostIntf.processCommand(4, argv);
 }
 
+TEST(NANDTest, NANDWriteRead) {
+	NAND nand{ "TestNand.txt", "TestResult.txt" };
+
+	nand.write(3, "0x1298DEAD");
+	nand.read(3);
+}
+
+TEST(NANDTest, NANDError) {
+	NAND nand{ "TestNand.txt", "TestResult.txt" };
+
+	nand.error();
+}
