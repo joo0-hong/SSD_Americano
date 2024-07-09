@@ -12,6 +12,12 @@ public:
 	MOCK_METHOD(void, error, (), (override));
 };
 
+class HostIntfTestFixture : public testing::Test {
+public :
+	NiceMock<MockedNand> nand;
+	HostInterface hostIntf;
+};
+
 TEST(SSDTest, NANDInterface) {
 	NiceMock<MockedNand> nand;
 
@@ -22,14 +28,13 @@ TEST(SSDTest, NANDInterface) {
 	nand.write(0, " ");
 }
 
-TEST(HostInterfaceTest, ParsingInputArgs) {
-	char* exe = "TESTFILE.exe";
-	char* a = "W";
-	char* adddr = "3";
-	char* data = "0x1298CDEF";
-	char* argv[] = { exe, a, adddr, data };
+TEST_F(HostIntfTestFixture, ParsingInputArgs) {
+	char exe[] = "TESTFILE.exe";
+	char a = 'W';
+	int adddr = 3;
+	int data = 0x1298cdef;
+	char* argv[] = { exe, &a, (char*)&adddr, (char*)&data };
 
-	HostInterface hostIntf;
 	hostIntf.ParseCommand(4, argv);
 
 	EXPECT_EQ(WRITE, hostIntf.getCmd());
@@ -101,28 +106,24 @@ TEST(HostInterfaceTest, CheckingInvalidData) {
 	EXPECT_EQ(true, result);
 }
 
-TEST(HostInterfaceTest, StartWriteCmd) {
+TEST_F(HostIntfTestFixture, StartWriteCmd) {
 	char exe[] = "TESTFILE.exe";
 	char a = 'W';
 	int adddr = 3;
 	int data = 0x1298cdef;
 	char* argv[] = { exe, &a, (char*)&adddr, (char*)&data };
 
-	NiceMock<MockedNand> nand;
-	HostInterface hostIntf;
 	hostIntf.ParseCommand(4, argv);
 
 	EXPECT_CALL(nand, write(_, _)).Times(1);
 }
 
-TEST(HostInterfaceTest, StartReadCmd) {
+TEST_F(HostIntfTestFixture, StartReadCmd) {
 	char exe[] = "TESTFILE.exe";
 	char a = 'R';
 	int adddr = 3;
 	char* argv[] = { exe, &a, (char*)&adddr};
 
-	NiceMock<MockedNand> nand;
-	HostInterface hostIntf;
 	hostIntf.ParseCommand(3, argv);
 
 	EXPECT_CALL(nand, read(_)).Times(1);
