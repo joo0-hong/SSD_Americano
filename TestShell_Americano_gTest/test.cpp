@@ -5,16 +5,26 @@
 
 #include "../TestShell_Americano/TestShell.cpp"
 #include "../TestShell_Americano/FileReader.cpp"
+#include "../TestShell_Americano/SSDDriver.cpp"
 
 using namespace std;
 using namespace testing;
 
-class MockFileManager : public FileReader {
+class FileReaderMock : public FileReader {
 public:
-	MockFileManager(string filePath)
+	FileReaderMock(string filePath)
 		: FileReader{ filePath } {}
 
-	MOCK_METHOD(string, readFile, (), ());
+	MOCK_METHOD(string, readFile, (), (override));
+};
+
+class SSDDriverMock : public SSDDriver {
+public:
+	SSDDriverMock(const string& ssdPath)
+		: SSDDriver{ ssdPath } {}
+
+	MOCK_METHOD(void, write, (string lba, string data), (override));
+	MOCK_METHOD(void, read, (string lba), (override));
 };
 
 class TestShellFixture : public testing::Test {
@@ -22,7 +32,7 @@ public:
 	const string SSD_PATH = "..\\x64\\Debug\\SSDMock";
 	const string RESULT_PATH = "..\\resources\\result.txt";
 	
-	MockFileManager mk{ RESULT_PATH };
+	FileReaderMock mk{ RESULT_PATH };
 	TestShell app{ SSD_PATH, &mk };
 };
 
