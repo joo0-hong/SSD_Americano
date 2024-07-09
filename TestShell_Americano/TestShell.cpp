@@ -7,15 +7,13 @@
 
 using namespace std;
 
-TestShell::TestShell(const std::string& ssd_path
+TestShell::TestShell(SSDDriver* ssdDriver
 	, FileReader* fileReader)
-	: SSD_PATH{ ssd_path }
+	: ssdDriver_{ ssdDriver }
 	, fileReader_{ fileReader } {}
 
-void TestShell::write(std::string lba, std::string data) {
-	string cmd("W");
-	string ret = SSD_PATH + " " + cmd + " " + lba + " " + data;
-	system(ret.c_str());
+void TestShell::write(const std::string lba, const std::string data) {
+	ssdDriver_->write(lba, data);
 }
 
 void TestShell::read(std::string lba) {
@@ -23,11 +21,9 @@ void TestShell::read(std::string lba) {
 
 	std::cout << getSSDReadData() << std::endl;
 }
-void TestShell::invokeSSDRead(std::string& lba)
+void TestShell::invokeSSDRead(const std::string& lba)
 {
-	string cmd("R");
-	std::string ret = SSD_PATH + " " + cmd + " " + lba;
-	system(ret.c_str());
+	ssdDriver_->read(lba);
 }
 string TestShell::getSSDReadData() {
 	return fileReader_->readFile();

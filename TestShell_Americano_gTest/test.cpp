@@ -5,16 +5,26 @@
 
 #include "../TestShell_Americano/TestShell.cpp"
 #include "../TestShell_Americano/FileReader.cpp"
+#include "../TestShell_Americano/SSDDriver.cpp"
 
 using namespace std;
 using namespace testing;
 
-class MockFileManager : public FileReader {
+class FileReaderMock : public FileReader {
 public:
-	MockFileManager(string filePath)
+	FileReaderMock(string filePath)
 		: FileReader{ filePath } {}
 
-	MOCK_METHOD(string, readFile, (), ());
+	MOCK_METHOD(string, readFile, (), (override));
+};
+
+class SSDDriverMock : public SSDDriver {
+public:
+	SSDDriverMock(const string& ssdPath)
+		: SSDDriver{ ssdPath } {}
+
+	MOCK_METHOD(void, write, (const string& lba, const string& data), (const override));
+	MOCK_METHOD(void, read, (const string& lba), (const override));
 };
 
 class TestShellFixture : public testing::Test {
@@ -22,16 +32,18 @@ public:
 	const string SSD_PATH = "..\\x64\\Debug\\SSDMock";
 	const string RESULT_PATH = "..\\resources\\result.txt";
 	
-	MockFileManager mk{ RESULT_PATH };
-	TestShell app{ SSD_PATH, &mk };
+	SSDDriverMock ssdDriverMk{ SSD_PATH };
+	FileReaderMock fileReaderMk{ RESULT_PATH };
+	TestShell app{ &ssdDriverMk, &fileReaderMk };
 };
-
-// Parser 테스트수트~~~
 
 TEST_F(TestShellFixture, Read_InvalidLBA) {
 	//arrange
-	EXPECT_CALL(mk, readFile)
+	EXPECT_CALL(fileReaderMk, readFile)
 		.WillRepeatedly(Return("NULL"));
+
+	EXPECT_CALL(ssdDriverMk, read)
+		.Times(2);
 
 	std::ostringstream oss;
 	auto oldCoutStreamBuf = std::cout.rdbuf();
@@ -55,8 +67,11 @@ TEST_F(TestShellFixture, Read_InvalidLBA) {
 }
 TEST_F(TestShellFixture, Read_ValidLBA) {
 	//arrange
-	EXPECT_CALL(mk, readFile)
+	EXPECT_CALL(fileReaderMk, readFile)
 		.WillRepeatedly(Return("0x12341234"));
+
+	EXPECT_CALL(ssdDriverMk, read)
+		.Times(1);
 
 	std::ostringstream oss;
 	auto oldCoutStreamBuf = std::cout.rdbuf();
@@ -80,14 +95,27 @@ TEST_F(TestShellFixture, Write_Pass) {
 	string data("0x1298CDEF");
 }
 TEST_F(TestShellFixture, Write) {
+	EXPECT_CALL(ssdDriverMk, write)
+		.Times(1);
+
 	app.write("1", "0x1298CDEF");
 }
 
 TEST_F(TestShellFixture, FullRead) {
+	EXPECT_CALL(fileReaderMk, readFile)
+		.Times(100)
+		.WillRepeatedly(Return("0x00000000"));
+
+	EXPECT_CALL(ssdDriverMk, read)
+		.Times(100);
+
 	app.fullread();
 }
 
 TEST_F(TestShellFixture, FullWrite) {
+	EXPECT_CALL(ssdDriverMk, write)
+		.Times(100);
+
 	app.fullwrite("0xABCDFFF");
 }
 
