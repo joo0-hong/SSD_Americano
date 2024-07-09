@@ -28,20 +28,6 @@ TEST(SSDTest, NANDInterface) {
 	nand.write(0, " ");
 }
 
-TEST_F(HostIntfTestFixture, ParsingInputArgs) {
-	char* exe = "TESTFILE.exe";
-	char* a = "W";
-	char* adddr = "3";
-	char* data = "0x1298CDEF";
-	char* argv[] = { exe, a, adddr, data };
-
-	hostIntf.parseCommand(4, argv);
-
-	EXPECT_EQ(WRITE, hostIntf.getCmd());
-	EXPECT_EQ(atoi(adddr), hostIntf.getAddr());
-	EXPECT_EQ(string(data), hostIntf.getData());
-}
-
 TEST_F(HostIntfTestFixture, CheckingInvalidArgumentNum) {
 	char exe[] = "TESTFILE.exe";
 	char* a = "W";
@@ -110,9 +96,7 @@ TEST_F(HostIntfTestFixture, StartWriteCmd) {
 
 	EXPECT_CALL(nand, write(_, _)).Times(1);
 
-	hostIntf.parseCommand(4, argv);
-	hostIntf.checkInvalidCommand(4, argv);
-	hostIntf.processCommand();
+	hostIntf.processCommand(4, argv);
 }
 
 TEST_F(HostIntfTestFixture, StartReadCmd) {
@@ -123,9 +107,7 @@ TEST_F(HostIntfTestFixture, StartReadCmd) {
 
 	EXPECT_CALL(nand, read(_)).Times(1);
 
-	hostIntf.parseCommand(3, argv);
-	hostIntf.checkInvalidCommand(3, argv);
-	hostIntf.processCommand();
+	hostIntf.processCommand(3, argv);
 }
 
 TEST_F(HostIntfTestFixture, dataStringCheck) {

@@ -50,20 +50,6 @@ private:
 class HostInterface {
 public:
 	HostInterface(NANDInterface* nand) : nandIntf(nand) {}
-	void parseCommand(int argc, char* argv[]) {
-		if (string(argv[1]) == "W") {
-			command = WRITE;
-			data = string(argv[3]);
-		}
-		else if (string(argv[1]) == "R") {
-			command = READ;
-		}
-		else {
-			cout << "PARSING ERROR : " << command << endl;
-		}
-
-		addr = atoi(argv[2]);
-	}
 
 	bool checkInvalidCommand(int argc, char* argv[]) {
 		if (argc < MIN_VALID_ARGUMENT_NUM) {
@@ -124,19 +110,23 @@ public:
 		return false;
 	}
 
-	void processCommand()
+	void processCommand(int argc, char* argv[])
 	{
 		Command* cmd;
-		if (command == READ)
-		{
-			cmd = new ReadCmd(addr, nandIntf);
-		}
-		else if (command == WRITE) {
-			cmd = new WriteCmd(addr, data, nandIntf);
-		}
-		else {
+		if (checkInvalidCommand(argc, argv) == true){
 			cmd = new ErrorCmd(nandIntf);
 		}
+
+		addr = atoi(argv[2]);
+
+		if (string(argv[1]) == "W") {
+			data = string(argv[3]);
+			cmd = new WriteCmd(addr, data, nandIntf);
+		}
+		else if (string(argv[1]) == "R") {
+			cmd = new ReadCmd(addr, nandIntf);
+		}
+
 		cmd->run();
 		delete cmd;
 	}
