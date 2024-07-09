@@ -83,7 +83,7 @@ public:
 					continue;
 				}
 
-				cout << "Invalid LBA !!!" << endl;
+				cout << "Invalid Data !!!" << endl;
 				return true;
 			}
 

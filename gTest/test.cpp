@@ -36,6 +36,19 @@ TEST(HostInterfaceTest, ParsingInputArgs) {
 	EXPECT_EQ(string(data), hostIntf.getData());
 }
 
+TEST(HostInterfaceTest, CheckingInvalidArgumentNum) {
+	char exe[] = "TESTFILE.exe";
+	char* a = "W";
+	char* adddr = "3";
+	char* data = "0x1298CDEF";
+	char* argv[] = { exe, a, adddr, data };
+
+	HostInterface hostIntf;
+	bool result = hostIntf.checkInvalidCommand(2, argv);
+
+	EXPECT_EQ(true, result);
+}
+
 TEST(HostInterfaceTest, CheckingValidWriteCommands) {
 	char exe[] = "TESTFILE.exe";
 	char* a = "W";
@@ -66,6 +79,19 @@ TEST(HostInterfaceTest, CheckingInvalidLBA) {
 	char* a = "W";
 	char* adddr = "111";
 	char* data = "0x1298CDEF";
+	char* argv[] = { exe, a, adddr, data };
+
+	HostInterface hostIntf;
+	bool result = hostIntf.checkInvalidCommand(4, argv);
+
+	EXPECT_EQ(true, result);
+}
+
+TEST(HostInterfaceTest, CheckingInvalidData) {
+	char exe[] = "TESTFILE.exe";
+	char* a = "W";
+	char* adddr = "3";
+	char* data = "0x1298CDEW";
 	char* argv[] = { exe, a, adddr, data };
 
 	HostInterface hostIntf;
