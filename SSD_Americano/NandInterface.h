@@ -13,12 +13,7 @@ public:
 
 class Nand : public NANDInterface {
 public:
-	static Nand& getInstance() {
-		static Nand nand;
-		return nand;
-	}
 	Nand() {
-
 	}
 	void read(int lba) {
 	

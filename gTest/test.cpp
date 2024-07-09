@@ -15,7 +15,7 @@ public:
 class HostIntfTestFixture : public testing::Test {
 public :
 	NiceMock<MockedNand> nand;
-	HostInterface hostIntf;
+	HostInterface hostIntf{ &nand };
 };
 
 TEST(SSDTest, NANDInterface) {
@@ -121,8 +121,10 @@ TEST_F(HostIntfTestFixture, StartReadCmd) {
 	int adddr = 3;
 	char* argv[] = { exe, &a, (char*)&adddr};
 
+	EXPECT_CALL(nand, read(_)).Times(1);
+
 	hostIntf.ParseCommand(3, argv);
+	hostIntf.checkInvalidCommand(4, argv);
 	hostIntf.ProcessCommand();
 
-	EXPECT_CALL(nand, read(_)).Times(1);
 }
