@@ -22,4 +22,14 @@ private:
 
 	void invokeSSDRead(std::string& lba);
 	std::string getSSDReadData();
+
+	void helpExit() const;
+	void helpHelp() const;
+	void helpFullRead() const;
+	void helpFullWrite() const;
+	void helpRead() const;
+	void helpWrite() const;
+	void displayHelp(const std::string& name
+		, const std::string& synopsis
+		, const std::string& description) const;
 };

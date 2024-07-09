@@ -93,3 +93,7 @@ TEST_F(TestShellFixture, FullRead) {
 TEST_F(TestShellFixture, FullWrite) {
 	app.fullwrite("0xABCDFFF");
 }
+
+TEST_F(TestShellFixture, Help) {
+	app.help();
+}
