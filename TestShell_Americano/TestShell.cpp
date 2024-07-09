@@ -98,7 +98,7 @@ private:
 	}
 	void helpWrite() const {
 		string name{ "write" };
-		string synopsis{ "write[LBA][DATA]" };
+		string synopsis{ "write [LBA] [DATA]" };
 		string description{ "write data to LBA" };
 
 		displayHelp(name, synopsis, description);
