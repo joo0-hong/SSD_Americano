@@ -14,6 +14,13 @@ public:
 		nandFileManager = new FileManager{ nandFile };
 		resultFileManager = new FileManager{ resultFile };
 	}
+
+	~NAND()
+	{
+		delete nandFileManager;
+		delete resultFileManager;
+	}
+
 	void read(int lba) override
 	{
 		string result = nandFileManager->read(lba);
