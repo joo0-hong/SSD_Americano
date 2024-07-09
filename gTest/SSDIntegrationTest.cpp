@@ -117,9 +117,65 @@ TEST_F(SSDIntegrationTest, WriteReadTest) {
     mainRead(linenumber);
     verifyResultFile({ data });
 }
+
 TEST_F(SSDIntegrationTest, InvalidCommandTest) {
     // Arrange
     char* invalidArgument[] = { "ssd", "T", "7" };
+
+    // Act
+    main(sizeof(invalidArgument) / sizeof(char*), invalidArgument);
+
+    // Assert
+    verifyResultFile({ "NULL" });
+}
+
+TEST_F(SSDIntegrationTest, InvalidReadArguments) {
+    // Arrange
+    char* invalidArgument[] = { "ssd", "R", "7", "7" };
+
+    // Act
+    main(sizeof(invalidArgument) / sizeof(char*), invalidArgument);
+
+    // Assert
+    verifyResultFile({ "NULL" });
+}
+
+TEST_F(SSDIntegrationTest, InvalidWriteArguments) {
+    // Arrange
+    char* invalidArgument[] = { "ssd", "W", "7"};
+
+    // Act
+    main(sizeof(invalidArgument) / sizeof(char*), invalidArgument);
+
+    // Assert
+    verifyResultFile({ "NULL" });
+}
+
+TEST_F(SSDIntegrationTest, InvalidWriteLinenumber) {
+    // Arrange
+    char* invalidArgument[] = { "ssd", "W", "7B", "0xABCDABCD"};
+
+    // Act
+    main(sizeof(invalidArgument) / sizeof(char*), invalidArgument);
+
+    // Assert
+    verifyResultFile({ "NULL" });
+}
+
+TEST_F(SSDIntegrationTest, InvalidWriteDataLength) {
+    // Arrange
+    char* invalidArgument[] = { "ssd", "W", "7", "0xABCDABCDA" };
+
+    // Act
+    main(sizeof(invalidArgument) / sizeof(char*), invalidArgument);
+
+    // Assert
+    verifyResultFile({ "NULL" });
+}
+
+TEST_F(SSDIntegrationTest, InvalidWriteDataNoPrefix_0x) {
+    // Arrange
+    char* invalidArgument[] = { "ssd", "W", "7", "ABCDABCDAB" };
 
     // Act
     main(sizeof(invalidArgument) / sizeof(char*), invalidArgument);
