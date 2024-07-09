@@ -23,8 +23,8 @@ public:
 	SSDDriverMock(const string& ssdPath)
 		: SSDDriver{ ssdPath } {}
 
-	MOCK_METHOD(void, write, (string lba, string data), (override));
-	MOCK_METHOD(void, read, (string lba), (override));
+	MOCK_METHOD(void, write, (const string& lba, const string& data), (const override));
+	MOCK_METHOD(void, read, (const string& lba), (const override));
 };
 
 class TestShellFixture : public testing::Test {
@@ -32,13 +32,14 @@ public:
 	const string SSD_PATH = "..\\x64\\Debug\\SSDMock";
 	const string RESULT_PATH = "..\\resources\\result.txt";
 	
-	FileReaderMock mk{ RESULT_PATH };
-	TestShell app{ SSD_PATH, &mk };
+	SSDDriver ssdDriverMk{ SSD_PATH };
+	FileReaderMock fileReaderMk{ RESULT_PATH };
+	TestShell app{ &ssdDriverMk, &fileReaderMk };
 };
 
 TEST_F(TestShellFixture, Read_InvalidLBA) {
 	//arrange
-	EXPECT_CALL(mk, readFile)
+	EXPECT_CALL(fileReaderMk, readFile)
 		.WillRepeatedly(Return("NULL"));
 
 	std::ostringstream oss;
@@ -63,7 +64,7 @@ TEST_F(TestShellFixture, Read_InvalidLBA) {
 }
 TEST_F(TestShellFixture, Read_ValidLBA) {
 	//arrange
-	EXPECT_CALL(mk, readFile)
+	EXPECT_CALL(fileReaderMk, readFile)
 		.WillRepeatedly(Return("0x12341234"));
 
 	std::ostringstream oss;

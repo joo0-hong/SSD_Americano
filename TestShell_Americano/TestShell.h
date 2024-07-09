@@ -1,11 +1,12 @@
 #pragma once
 #include <string>
 
+#include "SSDDriver.h"
 #include "FileReader.h"
 
 class TestShell {
 public:
-	TestShell(const std::string& ssd_path
+	TestShell(SSDDriver* ssdDriver
 		, FileReader* fileReader);
 
 	void write(std::string lba, std::string data);
@@ -15,11 +16,10 @@ public:
 	void fullwrite(std::string data);
 	void fullread();
 private:
-	const std::string SSD_PATH;
-
+	SSDDriver* ssdDriver_;
 	FileReader* fileReader_;
 
-	void invokeSSDRead(std::string& lba);
+	void invokeSSDRead(const std::string& lba);
 	std::string getSSDReadData();
 
 	void helpExit() const;
