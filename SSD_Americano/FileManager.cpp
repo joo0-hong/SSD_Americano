@@ -10,11 +10,12 @@ public:
     FileManager(const string& filename) : filename{ filename } { }
 
     string read(const int linenumber) {
-        // TODO: Error handling of invalid linenumber
         string data = "";
         fstream file(filename);
 
         checkFileOpen(file);
+
+        checkLineNumberValid(file, linenumber);
 
         data = getLine(file, linenumber);
 
@@ -51,5 +52,30 @@ private:
 
             throw runtime_error("File can not be open.");
         }
+    }
+
+    void checkLineNumberValid(fstream& file, const int linenumber) {
+        int linecount = getLineCount(file);
+
+        if (linecount <= linenumber) {
+            throw runtime_error("nand.txt does not have line: " + linenumber);
+        }
+    }
+
+    int getLineCount(fstream& file) {
+        string line = "";
+        int currentline = 0;
+        streampos currentPos = file.tellg();
+
+        file.seekg(0);
+
+        while (getline(file, line)) {
+            currentline++;
+        }
+
+        file.clear();
+        file.seekg(currentPos);
+
+        return currentline;
     }
 };

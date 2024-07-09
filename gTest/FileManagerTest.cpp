@@ -63,11 +63,36 @@ TEST_F(FileManagerTestFixture, FileManagerWrite) {
 }
 
 TEST_F(FileManagerTestFixture, FileManagerReadFileTest) {
-    string data_out = "";
     vector<string> data = { "0x00000000", "0xFFFFFFFF" };
 
     writeFile(TESTFILENAME, data);
 
     verifyReadFileManager(0, data[0]);
     verifyReadFileManager(1, data[1]);
+}
+
+TEST_F(FileManagerTestFixture, FileManagerReadInvalidOffset) {
+    vector<string> data = { "0x00000000", "0xFFFFFFFF" };
+
+    writeFile(TESTFILENAME, data);
+
+    try {
+        fileManager->read(data.size());
+        FAIL();
+    }
+    catch (...) {
+        // PASS
+    }
+}
+
+TEST_F(FileManagerTestFixture, FileNotOpen) {
+    FileManager* invalidFileManager = new FileManager("InvalidFilename");
+
+    try {
+        invalidFileManager->read(0);
+        FAIL();
+    }
+    catch (...) {
+        // PASS
+    }
 }
