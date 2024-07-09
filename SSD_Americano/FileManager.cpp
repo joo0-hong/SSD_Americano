@@ -7,24 +7,20 @@ using namespace std;
 
 class FileManager {
 public:
-    FileManager(const string& filename) {
-        file.open(filename);
-        checkFileOpen();
-    }
-    ~FileManager() {
-        file.close();
-    }
+    FileManager(const string& filename) : filename{ filename } { }
 
     string read(const int linenumber) {
         // TODO: Error handling of invalid linenumber
+        string data = "";
+        fstream file(filename);
 
-        checkFileOpen();
+        checkFileOpen(file);
 
-        file.seekg(0);
+        data = getLine(file, linenumber);
 
-        string line = getLine(linenumber);
+        file.close();
 
-        return line;
+        return data;
     }
 
     void write(int linenumber, string data) {
@@ -33,22 +29,24 @@ public:
 
 private:
     string filename;
-    fstream file;
 
-    string getLine(const int linenumber) {
+    string getLine(fstream& file, const int linenumber) {
         string line = "";
         int currentline = 0;
 
+        file.seekg(0);
+
         while (getline(file, line)) {
             if (currentline == linenumber) {
-                return line;
+                break;
             }
             currentline++;
         }
+
         return line;
     }
 
-    void checkFileOpen() {
+    void checkFileOpen(fstream& file) {
         if (false == file.is_open()) {
 
             throw runtime_error("File can not be open.");
