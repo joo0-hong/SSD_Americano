@@ -92,7 +92,7 @@ TEST_F(TestShellFixture, Write) {
 TEST_F(TestShellFixture, FullRead) {
 	//arrange
 	EXPECT_CALL(mk, readFile)
-		.Times(100)
+		.Times(LBA_MAX)
 		.WillRepeatedly(Return("0x12341234"));
 
 	std::ostringstream oss;
