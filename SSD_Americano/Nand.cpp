@@ -34,7 +34,7 @@ public:
 
 	void error() override
 	{
-		resultFileManager->write(0, "NULL");
+		resultFileManager->write(0, "NULL      ");
 	}
 
 private:
