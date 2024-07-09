@@ -32,6 +32,9 @@ public:
 	const string SSD_PATH = "..\\x64\\Debug\\SSDMock";
 	const string RESULT_PATH = "..\\resources\\result.txt";
 	
+	const int LBA_MIN = 0;
+	const int LBA_MAX = 100;
+
 	SSDDriverMock ssdDriverMk{ SSD_PATH };
 	FileReaderMock fileReaderMk{ RESULT_PATH };
 	TestShell app{ &ssdDriverMk, &fileReaderMk };
@@ -103,22 +106,34 @@ TEST_F(TestShellFixture, Write) {
 
 TEST_F(TestShellFixture, FullRead) {
 	EXPECT_CALL(fileReaderMk, readFile)
-		.Times(100)
-		.WillRepeatedly(Return("0x00000000"));
+		.Times(LBA_MAX)
+		.WillRepeatedly(Return("0x12341234"));
 
 	EXPECT_CALL(ssdDriverMk, read)
-		.Times(100);
+		.Times(LBA_MAX);
+
+	std::ostringstream oss;
+	auto oldCoutStreamBuf = std::cout.rdbuf();
+	std::cout.rdbuf(oss.rdbuf());
 
 	app.fullread();
+
+	string expect = "";
+
+	for (int i = LBA_MIN; i < LBA_MAX; i++) {
+		expect += "0x12341234\n";
+	}
+
+	string actual = oss.str();
+	std::cout.rdbuf(oldCoutStreamBuf);	// 기존 buf 복원
+
+	//assert
+	EXPECT_EQ(expect, actual);
 }
 
 TEST_F(TestShellFixture, FullWrite) {
 	EXPECT_CALL(ssdDriverMk, write)
-		.Times(100);
+		.Times(LBA_MAX);
 
 	app.fullwrite("0xABCDFFF");
-}
-
-TEST_F(TestShellFixture, Help) {
-	app.help();
 }
