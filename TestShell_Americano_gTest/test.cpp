@@ -94,3 +94,7 @@ TEST_F(TestShellFixture, FullWrite) {
 TEST_F(TestShellFixture, Help) {
 	app.help();
 }
+
+TEST_F(TestShellFixture, TestApp1) {
+
+}
