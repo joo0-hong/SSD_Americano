@@ -21,9 +21,14 @@ TEST_F(TestShellFixture, Read_InvalidCommand) {
 	app.read("dsaf");
 }
 
-TEST_F(TestShellFixture, Write_Pass) {
-	string LBA("1");
-	string data("0x1298CDEF");
+TEST_F(TestShellFixture, Write) {
+	app.write("1", "0x1298CDEF");
+}
 
-	app.write(LBA, data);
+TEST_F(TestShellFixture, FullRead) {
+	app.fullread();
+}
+
+TEST_F(TestShellFixture, FullWrite) {
+	app.fullwrite("0xABCDFFF");
 }
