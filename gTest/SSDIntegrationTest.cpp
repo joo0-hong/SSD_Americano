@@ -22,12 +22,30 @@ protected:
         writeFile(TEST_RESULT_FILE, { "" });
     }
 
-    void processMain(int argc, char* argv[]) {
+    void mainRead(const int linenumber) {
+        char arg[11] = { };
+        itoa(linenumber, arg, 10);
+
+        char* arguments[] = { "ssd", "R", arg };
+
+        main(sizeof(arguments) / sizeof(char*), arguments);
+    }
+
+    void mainWrite(const int linenumber, const string data) {
+        char arg[11] = { };
+        itoa(linenumber, arg, 10);
+
+        char* arguments[] = { "ssd", "W", arg, (char*)data.c_str()};
+
+        main(sizeof(arguments) / sizeof(char*), arguments);
+    }
+
+    void main(const int argc, char* argv[]) {
         hostIntf.processCommand(argc, argv);
     }
 
-    void verifyFile(const string& filename, const vector<string>& expected) {
-        ifstream file(filename);
+    void verifyResultFile(const vector<string>& expected) {
+        ifstream file(TEST_RESULT_FILE);
         string line = "";
         vector<string> lines;
 
@@ -78,24 +96,34 @@ private:
 };
 
 TEST_F(SSDIntegrationTest, ReadTest) {
-    char* arguments[] = { "ssd", "R", "1" };
-    processMain(sizeof(arguments) / sizeof(char*), arguments);
+    // Arrange: 0x00000000
 
-    verifyFile(TEST_RESULT_FILE, { "0x00000000" });
+    // Act
+    mainRead(1);
+
+    // Assert
+    verifyResultFile({ "0x00000000" });
 }
 
 TEST_F(SSDIntegrationTest, WriteReadTest) {
-    char* argumentsWrite[] = { "ssd", "W", "7", "0x77777777" };
-    processMain(sizeof(argumentsWrite) / sizeof(char*), argumentsWrite);
+    // Arrange
+    int linenumber = 7;
+    string data = "0x77777777";
 
-    char* argumentsRead[] = { "ssd", "R", "7" };
-    processMain(sizeof(argumentsRead) / sizeof(char*), argumentsRead);
+    // Act
+    mainWrite(linenumber, data);
 
-    verifyFile(TEST_RESULT_FILE, { "0x77777777" });
+    // Assert
+    mainRead(linenumber);
+    verifyResultFile({ data });
 }
 TEST_F(SSDIntegrationTest, InvalidCommandTest) {
-    char* argumentsError[] = { "ssd", "T", "7" };
-    processMain(sizeof(argumentsError) / sizeof(char*), argumentsError);
+    // Arrange
+    char* invalidArgument[] = { "ssd", "T", "7" };
 
-    verifyFile(TEST_RESULT_FILE, { "NULL" });
+    // Act
+    main(sizeof(invalidArgument) / sizeof(char*), invalidArgument);
+
+    // Assert
+    verifyResultFile({ "NULL" });
 }

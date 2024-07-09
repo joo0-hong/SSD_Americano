@@ -7,10 +7,10 @@
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\lib\native\src\gtest\gtest-all.cc" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\lib\native\src\gmock\gmock-all.cc" />
-    <ClCompile Include="IntegrationTest.cpp" />
     <ClCompile Include="TestResult.txt">
       <Filter>리소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="SSDIntegrationTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
