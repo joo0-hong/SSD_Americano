@@ -127,7 +127,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="FileManagerImpl.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="TestShell.cpp" />
   </ItemGroup>
