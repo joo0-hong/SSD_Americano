@@ -22,18 +22,18 @@ TEST(SSDTest, NANDInterface) {
 }
 
 TEST(HostInterfaceTest, ParsingInputArgs) {
-	char exe[] = "TESTFILE.exe";
-	char a = 'W';
-	int adddr = 3;
-	int data = 0x1298cdef;
-	char* argv[] = { exe, &a, (char*)&adddr, (char*)&data };
+	char* exe = "TESTFILE.exe";
+	char* a = "W";
+	char* adddr = "3";
+	char* data = "0x1298cdef";
+	char* argv[] = { exe, a, adddr, data };
 
 	HostInterface hostIntf;
 	hostIntf.ParseCommand(4, argv);
 
 	EXPECT_EQ(WRITE, hostIntf.getCmd());
-	EXPECT_EQ(adddr, hostIntf.getAddr());
-	EXPECT_EQ(data, hostIntf.getData());
+	EXPECT_EQ(atoi(adddr), hostIntf.getAddr());
+	EXPECT_EQ(string(data), hostIntf.getData());
 }
 
 TEST(HostInterfaceTest, CheckingValidWriteCommands) {
@@ -60,7 +60,6 @@ TEST(HostInterfaceTest, CheckingValidReadCommands) {
 
 	EXPECT_EQ(false, result);
 }
-
 
 TEST(HostInterfaceTest, CheckingInvalidLBA) {
 	char exe[] = "TESTFILE.exe";

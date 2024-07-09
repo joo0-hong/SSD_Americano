@@ -12,21 +12,26 @@ public:
 			return;
 		}
 
-		if (*argv[1] == 'W') {
+		if (string(argv[1]) == "W") {
 			command = WRITE;
-			data = *((int*)argv[3]);
+			data = string(argv[3]);
 		}
-		else if (*argv[1] == 'R') {
+		else if (string(argv[1]) == "R") {
 			command = READ;
 		}
 		else {
 			cout << "ERROR" << endl;
 		}
 
-		addr = *((int*)argv[2]);
+		addr = atoi(argv[2]);
 	}
 
 	bool checkInvalidCommand(int argc, char* argv[]) {
+
+		if (string(argv[1]) != "R" && string(argv[1]) != "W") {
+			return true;
+		}
+
 		if (argc < MIN_VALID_ARGUMENT_NUM) {
 			return true;
 		}
@@ -72,14 +77,14 @@ public:
 	int getAddr() {
 		return addr;
 	}
-	int getData() {
+	string getData() {
 		return data;
 	}
 
 private:
 	int command = 0;
 	int addr = 0;
-	int data = 0;
+	string data;
 	const int MIN_VALID_ARGUMENT_NUM = 3;
 	const int VALID_READ_ARGUMENT_NUM = 3;
 	const int VALID_WRITE_ARGUMENT_NUM = 4;
