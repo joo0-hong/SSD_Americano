@@ -36,8 +36,6 @@ public:
 	TestShell app{ SSD_PATH, &mk };
 };
 
-// Parser 테스트수트~~~
-
 TEST_F(TestShellFixture, Read_InvalidLBA) {
 	//arrange
 	EXPECT_CALL(mk, readFile)
