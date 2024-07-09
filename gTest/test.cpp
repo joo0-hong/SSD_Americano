@@ -29,16 +29,16 @@ TEST(SSDTest, NANDInterface) {
 }
 
 TEST_F(HostIntfTestFixture, ParsingInputArgs) {
-	char exe[] = "TESTFILE.exe";
-	char a = 'W';
-	int adddr = 3;
-	string data = "0x1298cdef";
-	char* argv[] = { exe, &a, (char*)&adddr, (char*)&data };
+	char* exe = "TESTFILE.exe";
+	char* a = "W";
+	char* adddr = "3";
+	char* data = "0x1298CDEF";
+	char* argv[] = { exe, a, adddr, data };
 
-	hostIntf.ParseCommand(4, argv);
+	hostIntf.parseCommand(4, argv);
 
 	EXPECT_EQ(WRITE, hostIntf.getCmd());
-	EXPECT_EQ(adddr, hostIntf.getAddr());
+	EXPECT_EQ(atoi(adddr), hostIntf.getAddr());
 	EXPECT_EQ(string(data), hostIntf.getData());
 }
 
@@ -103,28 +103,37 @@ TEST_F(HostIntfTestFixture, CheckingInvalidData) {
 
 TEST_F(HostIntfTestFixture, StartWriteCmd) {
 	char exe[] = "TESTFILE.exe";
-	char a = 'W';
-	int adddr = 3;
-	int data = 0x1298cdef;
-	char* argv[] = { exe, &a, (char*)&adddr, (char*)&data };
+	char* a = "W";
+	char* adddr = "3";
+	char* data = "0x1298CDEF";
+	char* argv[] = { exe, a, adddr, data };
 
 	EXPECT_CALL(nand, write(_, _)).Times(1);
 
-	hostIntf.ParseCommand(4, argv);
+	hostIntf.parseCommand(4, argv);
 	hostIntf.checkInvalidCommand(4, argv);
-	hostIntf.ProcessCommand();
+	hostIntf.processCommand();
 }
 
 TEST_F(HostIntfTestFixture, StartReadCmd) {
 	char exe[] = "TESTFILE.exe";
-	char a = 'R';
-	int adddr = 3;
-	char* argv[] = { exe, &a, (char*)&adddr};
+	char* a = "R";
+	char* adddr = "3";
+	char* argv[] = { exe, a, adddr };
 
 	EXPECT_CALL(nand, read(_)).Times(1);
 
-	hostIntf.ParseCommand(3, argv);
-	hostIntf.checkInvalidCommand(4, argv);
-	hostIntf.ProcessCommand();
+	hostIntf.parseCommand(3, argv);
+	hostIntf.checkInvalidCommand(3, argv);
+	hostIntf.processCommand();
+}
 
+TEST_F(HostIntfTestFixture, dataStringCheck) {
+	char exe[] = "TESTFILE.exe";
+	char* a = "W";
+	char* adddr = "3";
+	char* data = "0x1298dead";
+	char* argv[] = { exe, a, adddr, data };
+
+	EXPECT_EQ(true, hostIntf.checkInvalidCommand(4, argv));
 }

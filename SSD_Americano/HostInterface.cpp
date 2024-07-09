@@ -50,19 +50,19 @@ private:
 class HostInterface {
 public:
 	HostInterface(NANDInterface* nand) : nandIntf(nand) {}
-	void ParseCommand(int argc, char* argv[]) {
-		if (*(argv[1]) == 'W') {
+	void parseCommand(int argc, char* argv[]) {
+		if (string(argv[1]) == "W") {
 			command = WRITE;
 			data = string(argv[3]);
 		}
-		else if (*(argv[1]) == 'R') {
+		else if (string(argv[1]) == "R") {
 			command = READ;
 		}
 		else {
-			cout << "ERROR" << endl;
+			cout << "PARSING ERROR : " << command << endl;
 		}
 
-		addr = *(argv[2]);
+		addr = atoi(argv[2]);
 	}
 
 	bool checkInvalidCommand(int argc, char* argv[]) {
@@ -70,19 +70,19 @@ public:
 			return true;
 		}
 
-		if (argv[1] != "R" && argv[1] != "W") {
+		if (string(argv[1]) != "R" && string(argv[1]) != "W") {
 			return true;
 		}
 
-		if (argv[1] == "R" && argc != VALID_READ_ARGUMENT_NUM) {
+		if (string(argv[1]) == "R" && argc != VALID_READ_ARGUMENT_NUM) {
 			return true;
 		}
 
-		if (argv[1] == "W" && argc != VALID_WRITE_ARGUMENT_NUM) {
+		if (string(argv[1]) == "W" && argc != VALID_WRITE_ARGUMENT_NUM) {
 			return true;
-		}		
+		}
 
-		if (argv[1] == "R" || argv[1] == "W") {
+		if (string(argv[1]) == "R" || string(argv[1]) == "W") {
 			for (const char ch : string(argv[2])) {
 				if ((ch >= '0') && (ch <= '9')) {
 					continue;
@@ -90,48 +90,41 @@ public:
 				cout << "Invalid LBA !!!" << endl;
 				return true;
 			}
-
 			int lba = atoi(argv[2]);
 			if (lba < MIN_LBA || lba > MAX_LBA) {
 				return true;
 			}
 		}
 
-		if (argv[1] == "W") {
+		if (string(argv[1]) == "W") {
 			string data = string(argv[3]);
 
 			if (data.length() != DATA_LENGTH) {
 				cout << "Invalid data length !!!" << endl;
 				return true;
 			}
-
 			string dataPreFix = data.substr(0, 2);
 			if (dataPreFix != string("0x")) {
-				cout << "Invalid Data: Data should start with 0x !!! " << dataPreFix<< endl;
+				cout << "Invalid Data: Data should start with 0x !!! " << dataPreFix << endl;
 				return true;
 			}
-
 			string dataNumber = data.substr(2, data.length());
 			for (const char ch : dataNumber) {
 				if ((ch >= '0') && (ch <= '9')) {
 					continue;
 				}
-
 				if ((ch >= 'A') && (ch <= 'F'))
 				{
 					continue;
 				}
-
 				cout << "Invalid Data !!!" << endl;
 				return true;
 			}
-
 		}
-
 		return false;
 	}
 
-	void ProcessCommand()
+	void processCommand()
 	{
 		Command* cmd;
 		if (command == READ)
@@ -145,6 +138,7 @@ public:
 			cmd = new ErrorCmd(nandIntf);
 		}
 		cmd->run();
+		delete cmd;
 	}
 
 	int getCmd() {
