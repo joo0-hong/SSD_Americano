@@ -3,7 +3,7 @@
 SSDDriver::SSDDriver(const string& ssdPath)
 	: ssdPath_{ ssdPath } {}
 
-void SSDDriver::write(const string&, const string& data) const {
+void SSDDriver::write(const string& lba, const string& data) const {
 	
 }
 
