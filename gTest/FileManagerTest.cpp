@@ -23,19 +23,20 @@ protected:
     void writeFile(const string& filename, const vector<string>& data) {
         ofstream file(filename);
 
-        if (file.is_open()) {
-
-            for (int i = 0; i < data.size(); i++) {
-                if (i == data.size() - 1) {
-                    file << data[i];
-                }
-                else {
-                    file << data[i] << endl;
-                }
-            }
-
-            file.close();
+        if (false == file.is_open()) {
+            FAIL();
         }
+
+        for (int i = 0; i < data.size(); i++) {
+            if (i == data.size() - 1) {
+                file << data[i];
+            }
+            else {
+                file << data[i] << endl;
+            }
+        }
+
+        file.close();
     }
 
     void verifyReadFileManager(const int linenumber, const string& expected) {

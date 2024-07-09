@@ -23,7 +23,6 @@ public:
     }
 
     void write(const int linenumber, const string& data) {
-        vector<std::string> lines;
         fstream file(filename, std::ios::in | std::ios::out);
 
         checkFileOpen(file);
