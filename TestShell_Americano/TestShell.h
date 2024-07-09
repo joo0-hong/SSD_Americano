@@ -16,7 +16,6 @@ public:
 	void fullread();
 private:
 	const std::string SSD_PATH;
-	const std::string RESULT_PATH;
 
 	FileManager* fileManager;
 
