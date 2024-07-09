@@ -28,9 +28,15 @@ public:
 	}
 	void help() {
 	}
-	void fullwrite() {
+	void fullwrite(std::string data) {
+		for (int lba = 0; lba < 100; lba++) {
+			write(std::to_string(lba), data);
+		}
 	}
 	void fullread() {
+		for (int lba = 0; lba < 100; lba++) {
+			read(std::to_string(lba));
+		}
 	}
 
 private:
