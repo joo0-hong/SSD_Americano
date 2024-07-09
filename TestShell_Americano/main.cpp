@@ -31,10 +31,10 @@ int checkCmd(vector<string> input) {
 	if (cmd == "help") {
 		return 3;
 	}
-	if (cmd == "full read") {
+	if (cmd == "fullread") {
 		return 4;
 	}
-	if (cmd == "full write") {
+	if (cmd == "fullwrite") {
 		return 5;
 	}
 	return -1;
