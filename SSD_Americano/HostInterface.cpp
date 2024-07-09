@@ -12,7 +12,7 @@ interface Command {
 
 class ReadCmd : public Command {
 public:
-	ReadCmd(int addr, NANDInterface* nand) : address(addr), nandIntf(nand){
+	ReadCmd(int addr, NANDInterface* nand) : address(addr), nandIntf(nand) {
 	}
 	void run() override {
 		nandIntf->read(address);
@@ -27,7 +27,7 @@ public:
 	WriteCmd(int addr, string data, NANDInterface* nand) : address(addr), data(data), nandIntf(nand) {
 	}
 	void run() override {
-		nandIntf->write(address,data);
+		nandIntf->write(address, data);
 	}
 private:
 	int address;
@@ -37,10 +37,10 @@ private:
 
 class ErrorCmd : public Command {
 public:
-	ErrorCmd(NANDInterface* nand) : nandIntf(nand){
+	ErrorCmd(NANDInterface* nand) : nandIntf(nand) {
 	}
 	void run() override {
-		// Ask File Mgr to write "NULL"
+		nandIntf->error();
 	}
 private:
 	int address;
@@ -113,20 +113,21 @@ public:
 	void processCommand(int argc, char* argv[])
 	{
 		Command* cmd;
-		if (checkInvalidCommand(argc, argv) == true){
+		if (checkInvalidCommand(argc, argv) == true) {
 			cmd = new ErrorCmd(nandIntf);
 		}
+		else
+		{
+			addr = atoi(argv[2]);
 
-		addr = atoi(argv[2]);
-
-		if (string(argv[1]) == "W") {
-			data = string(argv[3]);
-			cmd = new WriteCmd(addr, data, nandIntf);
+			if (string(argv[1]) == "W") {
+				data = string(argv[3]);
+				cmd = new WriteCmd(addr, data, nandIntf);
+			}
+			else if (string(argv[1]) == "R") {
+				cmd = new ReadCmd(addr, nandIntf);
+			}
 		}
-		else if (string(argv[1]) == "R") {
-			cmd = new ReadCmd(addr, nandIntf);
-		}
-
 		cmd->run();
 		delete cmd;
 	}

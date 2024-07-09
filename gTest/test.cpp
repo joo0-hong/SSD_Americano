@@ -119,3 +119,16 @@ TEST_F(HostIntfTestFixture, dataStringCheck) {
 
 	EXPECT_EQ(true, hostIntf.checkInvalidCommand(4, argv));
 }
+
+TEST_F(HostIntfTestFixture, WrongCommandNameCheck) {
+	char exe[] = "TESTFILE.exe";
+	char* a = "WRITE";
+	char* adddr = "3";
+	char* data = "0x1298dead";
+	char* argv[] = { exe, a, adddr, data };
+
+	EXPECT_CALL(nand, error()).Times(1);
+
+	hostIntf.processCommand(4, argv);
+}
+
