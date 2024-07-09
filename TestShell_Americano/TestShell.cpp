@@ -3,14 +3,14 @@
 #include <string>
 
 #include "TestShell.h"
-#include "FileManager.h"
+#include "FileReader.h"
 
 using namespace std;
 
 TestShell::TestShell(const std::string& ssd_path
-	, FileManager* fileManagerImpl)
+	, FileReader* fileReader)
 	: SSD_PATH{ ssd_path }
-	, fileManager{ fileManagerImpl } {}
+	, fileReader_{ fileReader } {}
 
 void TestShell::write(std::string lba, std::string data) {
 	string cmd("W");
@@ -30,7 +30,7 @@ void TestShell::invokeSSDRead(std::string& lba)
 	system(ret.c_str());
 }
 string TestShell::getSSDReadData() {
-	return fileManager->readFile();
+	return fileReader_->readFile();
 }
 void TestShell::exit() {
 }

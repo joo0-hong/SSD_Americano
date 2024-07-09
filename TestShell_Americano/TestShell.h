@@ -1,12 +1,12 @@
 #pragma once
 #include <string>
 
-#include "FileManager.h"
+#include "FileReader.h"
 
 class TestShell {
 public:
 	TestShell(const std::string& ssd_path
-		, FileManager* fileManagerImpl);
+		, FileReader* fileReader);
 
 	void write(std::string lba, std::string data);
 	void read(std::string lba);
@@ -17,7 +17,7 @@ public:
 private:
 	const std::string SSD_PATH;
 
-	FileManager* fileManager;
+	FileReader* fileReader_;
 
 	void invokeSSDRead(std::string& lba);
 	std::string getSSDReadData();
