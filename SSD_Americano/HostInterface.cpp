@@ -27,12 +27,11 @@ public:
 	}
 
 	bool checkInvalidCommand(int argc, char* argv[]) {
-
-		if (string(argv[1]) != "R" && string(argv[1]) != "W") {
+		if (argc < MIN_VALID_ARGUMENT_NUM) {
 			return true;
 		}
 
-		if (argc < MIN_VALID_ARGUMENT_NUM) {
+		if (string(argv[1]) != "R" && string(argv[1]) != "W") {
 			return true;
 		}
 
