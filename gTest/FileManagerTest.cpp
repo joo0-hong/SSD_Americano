@@ -11,14 +11,27 @@ class FileManagerTestFixture : public testing::Test {
 protected:
     void SetUp() {
         fileManager = new FileManager(TESTFILENAME);
+
+        vector<string> data;
+        for (int i = 0; i < MAX_FILE_LINE_COUNT; i++) {
+            data.push_back(INITIAL_ZERO_STRING);
+        }
+
+        writeFile(TESTFILENAME, data);
     }
 
     void writeFile(const string& filename, const vector<string>& data) {
         ofstream file(filename);
 
         if (file.is_open()) {
-            for (const auto& line : data) {
-                file << line << endl;
+
+            for (int i = 0; i < data.size(); i++) {
+                if (i == data.size() - 1) {
+                    file << data[i];
+                }
+                else {
+                    file << data[i] << endl;
+                }
             }
 
             file.close();
@@ -33,6 +46,7 @@ protected:
     FileManager* fileManager;
     const string TESTFILENAME = "TestNand.txt";
     const string INITIAL_ZERO_STRING = "0x00000000";
+    const int MAX_FILE_LINE_COUNT = 100;
 };
 
 TEST_F(FileManagerTestFixture, FileManager) {
@@ -73,30 +87,13 @@ TEST_F(FileManagerTestFixture, FileManagerReadFileTest) {
 }
 
 TEST_F(FileManagerTestFixture, FileManagerAllZeroReadFileTest) {
-    // Arrange
-    vector<string> data;
-    for (int i = 0; i < 100; i++) {
-        data.push_back(INITIAL_ZERO_STRING);
-    }
-
-    writeFile(TESTFILENAME, data);
-
     // Act & Assert
-    for (int i = 0; i < 100; i++) {
+    for (int i = 0; i < MAX_FILE_LINE_COUNT; i++) {
         verifyReadFileManager(i, INITIAL_ZERO_STRING);
     }
 }
 
 TEST_F(FileManagerTestFixture, FileManagerWriteFileTest) {
-    // Arrange
-    vector<string> data;
-
-    for (int i = 0; i < 100; i++) {
-        data.push_back(INITIAL_ZERO_STRING);
-    }
-
-    writeFile(TESTFILENAME, data);
-
     // Act
     fileManager->write(0, "0x12341234");
     fileManager->write(99, "0x43214321");
@@ -111,18 +108,31 @@ TEST_F(FileManagerTestFixture, FileManagerWriteFileTest) {
 }
 
 TEST_F(FileManagerTestFixture, FileManagerWriteInvalidOffset) {
-    // Arrange
-    vector<string> data;
-
-    for (int i = 0; i < 100; i++) {
-        data.push_back(INITIAL_ZERO_STRING);
-    }
-
-    writeFile(TESTFILENAME, data);
-
     // Act & Assert
     try {
-        fileManager->write(100, "0x12341234");
+        fileManager->write(MAX_FILE_LINE_COUNT, "0x12341234");
+        FAIL();
+    }
+    catch (...) {
+        // PASS
+    }
+}
+
+TEST_F(FileManagerTestFixture, FileManagerWriteNegativeOffset) {
+    // Act & Assert
+    try {
+        fileManager->write(-1, "0x12341234");
+        FAIL();
+    }
+    catch (...) {
+        // PASS
+    }
+}
+
+TEST_F(FileManagerTestFixture, FileManagerReadNegativeOffset) {
+    // Act & Assert
+    try {
+        fileManager->read(-1);
         FAIL();
     }
     catch (...) {
