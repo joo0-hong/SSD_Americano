@@ -112,12 +112,8 @@ public:
 
 	void processCommand(int argc, char* argv[])
 	{
-		Command* cmd;
-		if (checkInvalidCommand(argc, argv) == true) {
-			cmd = new ErrorCmd(nandIntf);
-		}
-		else
-		{
+		Command* cmd = new ErrorCmd(nandIntf);
+		if (checkInvalidCommand(argc, argv) == false) {
 			addr = atoi(argv[2]);
 
 			if (string(argv[1]) == "W") {
@@ -128,6 +124,7 @@ public:
 				cmd = new ReadCmd(addr, nandIntf);
 			}
 		}
+
 		cmd->run();
 		delete cmd;
 	}
