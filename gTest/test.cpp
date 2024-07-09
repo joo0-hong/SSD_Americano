@@ -12,8 +12,14 @@ public:
 	MOCK_METHOD(void, error, (), (override));
 };
 
+class HostIntfTestFixture : public testing::Test {
+public :
+	NiceMock<MockedNand> nand;
+	HostInterface hostIntf{ &nand };
+};
+
 TEST(SSDTest, NANDInterface) {
-    MockedNand nand;
+	NiceMock<MockedNand> nand;
 
     EXPECT_CALL(nand, read(_)).Times(1);
     EXPECT_CALL(nand, write(_, _)).Times(1);
@@ -22,81 +28,112 @@ TEST(SSDTest, NANDInterface) {
 	nand.write(0, " ");
 }
 
-TEST(HostInterfaceTest, ParsingInputArgs) {
+TEST_F(HostIntfTestFixture, ParsingInputArgs) {
 	char* exe = "TESTFILE.exe";
 	char* a = "W";
 	char* adddr = "3";
 	char* data = "0x1298CDEF";
 	char* argv[] = { exe, a, adddr, data };
 
-	HostInterface hostIntf;
-	hostIntf.ParseCommand(4, argv);
+	hostIntf.parseCommand(4, argv);
 
 	EXPECT_EQ(WRITE, hostIntf.getCmd());
 	EXPECT_EQ(atoi(adddr), hostIntf.getAddr());
 	EXPECT_EQ(string(data), hostIntf.getData());
 }
 
-TEST(HostInterfaceTest, CheckingInvalidArgumentNum) {
+TEST_F(HostIntfTestFixture, CheckingInvalidArgumentNum) {
 	char exe[] = "TESTFILE.exe";
 	char* a = "W";
 	char* adddr = "3";
 	char* data = "0x1298CDEF";
 	char* argv[] = { exe, a, adddr, data };
 
-	HostInterface hostIntf;
 	bool result = hostIntf.checkInvalidCommand(2, argv);
 
 	EXPECT_EQ(true, result);
 }
 
-TEST(HostInterfaceTest, CheckingValidWriteCommands) {
+TEST_F(HostIntfTestFixture, CheckingValidWriteCommands) {
 	char exe[] = "TESTFILE.exe";
 	char* a = "W";
 	char* adddr = "3";
 	char* data = "0x1298CDEF";
 	char* argv[] = { exe, a, adddr, data };
 
-	HostInterface hostIntf;
 	bool result = hostIntf.checkInvalidCommand(4, argv);
 
 	EXPECT_EQ(false, result);
 }
 
-TEST(HostInterfaceTest, CheckingValidReadCommands) {
+TEST_F(HostIntfTestFixture, CheckingValidReadCommands) {
 	char exe[] = "TESTFILE.exe";
 	char* a = "R";
 	char* adddr = "3";
 	char* argv[] = { exe, a, adddr};
 
-	HostInterface hostIntf;
 	bool result = hostIntf.checkInvalidCommand(3, argv);
 
 	EXPECT_EQ(false, result);
 }
 
-TEST(HostInterfaceTest, CheckingInvalidLBA) {
+TEST_F(HostIntfTestFixture, CheckingInvalidLBA) {
 	char exe[] = "TESTFILE.exe";
 	char* a = "W";
 	char* adddr = "111";
 	char* data = "0x1298CDEF";
 	char* argv[] = { exe, a, adddr, data };
 
-	HostInterface hostIntf;
 	bool result = hostIntf.checkInvalidCommand(4, argv);
 
 	EXPECT_EQ(true, result);
 }
 
-TEST(HostInterfaceTest, CheckingInvalidData) {
+TEST_F(HostIntfTestFixture, CheckingInvalidData) {
 	char exe[] = "TESTFILE.exe";
 	char* a = "W";
 	char* adddr = "3";
 	char* data = "0x1298CDEW";
 	char* argv[] = { exe, a, adddr, data };
 
-	HostInterface hostIntf;
 	bool result = hostIntf.checkInvalidCommand(4, argv);
 
 	EXPECT_EQ(true, result);
+}
+
+TEST_F(HostIntfTestFixture, StartWriteCmd) {
+	char exe[] = "TESTFILE.exe";
+	char* a = "W";
+	char* adddr = "3";
+	char* data = "0x1298CDEF";
+	char* argv[] = { exe, a, adddr, data };
+
+	EXPECT_CALL(nand, write(_, _)).Times(1);
+
+	hostIntf.parseCommand(4, argv);
+	hostIntf.checkInvalidCommand(4, argv);
+	hostIntf.processCommand();
+}
+
+TEST_F(HostIntfTestFixture, StartReadCmd) {
+	char exe[] = "TESTFILE.exe";
+	char* a = "R";
+	char* adddr = "3";
+	char* argv[] = { exe, a, adddr };
+
+	EXPECT_CALL(nand, read(_)).Times(1);
+
+	hostIntf.parseCommand(3, argv);
+	hostIntf.checkInvalidCommand(3, argv);
+	hostIntf.processCommand();
+}
+
+TEST_F(HostIntfTestFixture, dataStringCheck) {
+	char exe[] = "TESTFILE.exe";
+	char* a = "W";
+	char* adddr = "3";
+	char* data = "0x1298dead";
+	char* argv[] = { exe, a, adddr, data };
+
+	EXPECT_EQ(true, hostIntf.checkInvalidCommand(4, argv));
 }
