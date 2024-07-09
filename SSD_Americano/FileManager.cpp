@@ -25,7 +25,28 @@ public:
     }
 
     void write(int linenumber, string data) {
-        return;
+        vector<std::string> lines;
+        string line = "";
+        fstream file(filename);
+
+        checkFileOpen(file);
+
+        checkLineNumberValid(file, linenumber);
+
+        while (getline(file, line)) {
+            lines.push_back(line);
+        }
+
+        lines[linenumber] = data;
+
+        file.clear();
+        file.seekg(0);
+
+        for (const auto& l : lines) {
+            file << l << std::endl;
+        }
+
+        file.close();
     }
 
 private:
@@ -56,7 +77,9 @@ private:
 
     void checkLineNumberValid(fstream& file, const int linenumber) {
         int linecount = getLineCount(file);
-
+        if (linenumber < 0) {
+            throw runtime_error("Negative line number:" + linenumber);
+        }
         if (linecount <= linenumber) {
             throw runtime_error("nand.txt does not have line: " + linenumber);
         }

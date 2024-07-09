@@ -32,6 +32,7 @@ protected:
 
     FileManager* fileManager;
     const string TESTFILENAME = "TestNand.txt";
+    const string INITIAL_ZERO_STRING = "0x00000000";
 };
 
 TEST_F(FileManagerTestFixture, FileManager) {
@@ -71,6 +72,63 @@ TEST_F(FileManagerTestFixture, FileManagerReadFileTest) {
     verifyReadFileManager(1, data[1]);
 }
 
+TEST_F(FileManagerTestFixture, FileManagerAllZeroReadFileTest) {
+    // Arrange
+    vector<string> data;
+    for (int i = 0; i < 100; i++) {
+        data.push_back(INITIAL_ZERO_STRING);
+    }
+
+    writeFile(TESTFILENAME, data);
+
+    // Act & Assert
+    for (int i = 0; i < 100; i++) {
+        verifyReadFileManager(i, INITIAL_ZERO_STRING);
+    }
+}
+
+TEST_F(FileManagerTestFixture, FileManagerWriteFileTest) {
+    // Arrange
+    vector<string> data;
+
+    for (int i = 0; i < 100; i++) {
+        data.push_back(INITIAL_ZERO_STRING);
+    }
+
+    writeFile(TESTFILENAME, data);
+
+    // Act
+    fileManager->write(0, "0x12341234");
+    fileManager->write(99, "0x43214321");
+
+    // Assert
+    for (int i = 1; i < 99; i++) {
+        verifyReadFileManager(i, INITIAL_ZERO_STRING);
+    }
+
+    verifyReadFileManager(0, "0x12341234");
+    verifyReadFileManager(99, "0x43214321");
+}
+
+TEST_F(FileManagerTestFixture, FileManagerWriteInvalidOffset) {
+    // Arrange
+    vector<string> data;
+
+    for (int i = 0; i < 100; i++) {
+        data.push_back(INITIAL_ZERO_STRING);
+    }
+
+    writeFile(TESTFILENAME, data);
+
+    // Act & Assert
+    try {
+        fileManager->write(100, "0x12341234");
+        FAIL();
+    }
+    catch (...) {
+        // PASS
+    }
+}
 TEST_F(FileManagerTestFixture, FileManagerReadInvalidOffset) {
     vector<string> data = { "0x00000000", "0xFFFFFFFF" };
 
