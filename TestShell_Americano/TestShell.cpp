@@ -2,116 +2,107 @@
 #include <fstream>
 #include <string>
 
+#include "TestShell.h"
 #include "FileManager.h"
 
 using namespace std;
 
-class TestShell {
-public:
-	TestShell(const std::string& ssd_path
-		, FileManager* fileManagerImpl)
-		: SSD_PATH{ ssd_path }
-		, fileManager{ fileManagerImpl } {}
+TestShell::TestShell(const std::string& ssd_path
+	, FileManager* fileManagerImpl)
+	: SSD_PATH{ ssd_path }
+	, fileManager{ fileManagerImpl } {}
 
-	void write(std::string lba, std::string data) {
-		string cmd("W");
-		string ret = SSD_PATH + " " + cmd + " " + lba + " " + data;
-		system(ret.c_str());
-	}
+void TestShell::write(std::string lba, std::string data) {
+	string cmd("W");
+	string ret = SSD_PATH + " " + cmd + " " + lba + " " + data;
+	system(ret.c_str());
+}
 
-	void read(std::string lba) {
-		invokeSSDRead(lba);
+void TestShell::read(std::string lba) {
+	invokeSSDRead(lba);
 
-		std::cout << getSSDReadData() << std::endl;
+	std::cout << getSSDReadData() << std::endl;
+}
+void TestShell::invokeSSDRead(std::string& lba)
+{
+	string cmd("R");
+	std::string ret = SSD_PATH + " " + cmd + " " + lba;
+	system(ret.c_str());
+}
+string TestShell::getSSDReadData() {
+	return fileManager->readFile();
+}
+void TestShell::exit() {
+}
+void TestShell::help() {
+	helpWrite();
+	helpRead();
+	helpExit();
+	helpHelp();
+	helpFullWrite();
+	helpFullRead();
+}
+void TestShell::fullwrite(std::string data) {
+	for (int lba = 0; lba < 100; lba++) {
+		write(std::to_string(lba), data);
 	}
-	void exit() {
+}
+void TestShell::fullread() {
+	for (int lba = 0; lba < 100; lba++) {
+		read(std::to_string(lba));
 	}
-	void help() {
-		helpWrite();
-		helpRead();
-		helpExit();
-		helpHelp();
-		helpFullWrite();
-		helpFullRead();
-	}
-	void fullwrite(std::string data) {
-		for (int lba = 0; lba < 100; lba++) {
-			write(std::to_string(lba), data);
-		}
-	}
-	void fullread() {
-		for (int lba = 0; lba < 100; lba++) {
-			read(std::to_string(lba));
-		}
-	}
+}
 
-private:
-	const std::string SSD_PATH;
-	const std::string RESULT_PATH;
+void TestShell::helpExit() const {
+	string name{ "exit" };
+	string synopsis{ "exit []" };
+	string description{ "exit the Test Shell" };
 
-	FileManager* fileManager;
+	displayHelp(name, synopsis, description);
+}
+void TestShell::helpHelp() const {
+	string name{ "help" };
+	string synopsis{ "help []" };
+	string description{ "dispaly help information about the Test Shell" };
 
-	void invokeSSDRead(std::string& lba)
-	{
-		string cmd("R");
-		std::string ret = SSD_PATH + " " + cmd + " " + lba;
-		system(ret.c_str());
-	}
-	std::string getSSDReadData() {
-		return fileManager->readFile();
-	} 
+	displayHelp(name, synopsis, description);
+}
+void TestShell::helpFullRead() const {
+	string name{ "fullread" };
+	string synopsis{ "fullread []" };
+	string description{ "read data from LBA #0 to #99" };
 
-	void helpExit() const {
-		string name{ "exit" };
-		string synopsis{ "exit []" };
-		string description{ "exit the Test Shell" };
+	displayHelp(name, synopsis, description);
+}
+void TestShell::helpFullWrite() const {
+	string name{ "fullwrite" };
+	string synopsis{ "fullwrite [DATA]" };
+	string description{ "write data from LBA #0 to #99" };
 
-		displayHelp(name, synopsis, description);
-	}
-	void helpHelp() const {
-		string name{ "help" };
-		string synopsis{ "help []" };
-		string description{ "dispaly help information about the Test Shell" };
+	displayHelp(name, synopsis, description);
+}
+void TestShell::helpRead() const {
+	string name{ "read" };
+	string synopsis{ "read [LBA]" };
+	string description{ "read data from LBA" };
 
-		displayHelp(name, synopsis, description);
-	}
-	void helpFullRead() const {
-		string name{ "fullread" };
-		string synopsis{ "fullread []" };
-		string description{ "read data from LBA #0 to #99" };
+	displayHelp(name, synopsis, description);
+}
+void TestShell::helpWrite() const {
+	string name{ "write" };
+	string synopsis{ "write[LBA][DATA]" };
+	string description{ "write data to LBA" };
 
-		displayHelp(name, synopsis, description);
-	}
-	void helpFullWrite() const {
-		string name{ "fullwrite" };
-		string synopsis{ "fullwrite [DATA]" };
-		string description{ "write data from LBA #0 to #99" };
+	displayHelp(name, synopsis, description);
+}
 
-		displayHelp(name, synopsis, description);
-	}
-	void helpRead() const {
-		string name{ "read" };
-		string synopsis{ "read [LBA]" };
-		string description{ "read data from LBA" };
-		
-		displayHelp(name, synopsis, description);
-	}
-	void helpWrite() const {
-		string name{ "write" };
-		string synopsis{ "write[LBA][DATA]" };
-		string description{ "write data to LBA" };
-
-		displayHelp(name, synopsis, description);
-	}
-
-	void displayHelp(const std::string& name, const std::string& synopsis, const std::string& description)  const {
-		std::cout << "======================================================" << std::endl;
-		std::cout << "[NAME]" << std::endl;
-		std::cout << name << std::endl << std::endl;
-		std::cout << "[SYNOPSIS]" << std::endl;
-		std::cout << "- " << synopsis << std::endl << std::endl;
-		std::cout << "[DESCRIPTION]" << std::endl;
-		std::cout << "- " << description << std::endl;
-		std::cout << "======================================================" << std::endl << std::endl;
-	}
-};
+void TestShell::displayHelp(const std::string& name, const std::string& synopsis, const std::string& description)  const {
+	std::cout << "======================================================" << std::endl;
+	std::cout << "[NAME]" << std::endl;
+	std::cout << name << std::endl << std::endl;
+	std::cout << "[SYNOPSIS]" << std::endl;
+	std::cout << "- " << synopsis << std::endl << std::endl;
+	std::cout << "[DESCRIPTION]" << std::endl;
+	std::cout << "- " << description << std::endl;
+	std::cout << "======================================================" << std::endl << std::endl;
+}
