@@ -1,4 +1,4 @@
-#include <string>
+Ôªø#include <string>
 
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
@@ -45,7 +45,7 @@ TEST_F(TestShellFixture, Read_InvalidLBA) {
 	LBA = "abcd";
 	app.read(LBA);
 
-	std::cout.rdbuf(oldCoutStreamBuf);	// ±‚¡∏ buf ∫πø¯
+	std::cout.rdbuf(oldCoutStreamBuf);	// Í∏∞Ï°¥ buf Î≥µÏõê
 
 	string expect = "NULL\nNULL\n";
 	string actual = oss.str();
@@ -67,7 +67,7 @@ TEST_F(TestShellFixture, Read_ValidLBA) {
 	string LBA{ "0" };
 	app.read(LBA);
 
-	std::cout.rdbuf(oldCoutStreamBuf);	// ±‚¡∏ buf ∫πø¯
+	std::cout.rdbuf(oldCoutStreamBuf);	// Í∏∞Ï°¥ buf Î≥µÏõê
 
 	string expect = "0x12341234\n";
 	string actual = oss.str();
