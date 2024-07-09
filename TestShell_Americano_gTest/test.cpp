@@ -27,6 +27,9 @@ public:
 	
 	MockFileManager mk{ RESULT_PATH };
 	TestShell app{ SSD_PATH, &mk };
+
+	const int LBA_MIN = 0;
+	const int LBA_MAX = 100;
 };
 
 // Parser 테스트수트~~~
@@ -87,13 +90,31 @@ TEST_F(TestShellFixture, Write) {
 }
 
 TEST_F(TestShellFixture, FullRead) {
+	//arrange
+	EXPECT_CALL(mk, readFile)
+		.Times(100)
+		.WillRepeatedly(Return("0x12341234"));
+
+	std::ostringstream oss;
+	auto oldCoutStreamBuf = std::cout.rdbuf();
+	std::cout.rdbuf(oss.rdbuf());
+
+	//action
 	app.fullread();
+	
+	//action
+	std::cout.rdbuf(oldCoutStreamBuf);	// 기존 buf 복원
+	string expect = "";
+	for (int i = LBA_MIN; i < LBA_MAX; i++) {
+		expect += "0x12341234\n";
+	}
+
+	string actual = oss.str();
+
+	//assert
+	EXPECT_EQ(expect, actual);
 }
 
 TEST_F(TestShellFixture, FullWrite) {
 	app.fullwrite("0xABCDFFF");
-}
-
-TEST_F(TestShellFixture, Help) {
-	app.help();
 }
