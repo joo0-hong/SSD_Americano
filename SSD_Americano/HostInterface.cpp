@@ -1,29 +1,66 @@
 #include <iostream>
 #include <string>
+#include "NandInterface.h"
 using namespace std;
 
 static const int READ = 1;
 static const int WRITE = 2;
 
+interface CommandProcessor {
+	virtual void run() = 0;
+};
+
+class ReadProcessor : public CommandProcessor {
+public:
+	ReadProcessor(int addr) : address(addr) {
+	}
+	void run() override {
+		Nand& nand = Nand::getInstance();
+		nand.read(address);
+	}
+private:
+	int address;
+};
+
+class WriteProcessor : public CommandProcessor {
+public:
+	WriteProcessor(int addr, string data) : address(addr), data(data) {
+	}
+	void run() override {
+		Nand& nand = Nand::getInstance();
+		nand.write(address, data);
+	}
+private:
+	int address;
+	string data;
+};
+
+class ErrorProcessor : public CommandProcessor {
+public:
+	ErrorProcessor() {
+	}
+	void run() override {
+		// Ask File Mgr to write "NULL"
+	}
+private:
+	int address;
+};
+
 class HostInterface {
 public:
 	void ParseCommand(int argc, char* argv[]) {
-		if (checkInvalidCommand(argc, argv)) {
-			return;
-		}
-
-		if (string(argv[1]) == "W") {
+		if (*(argv[1]) == 'W') {
 			command = WRITE;
 			data = string(argv[3]);
 		}
-		else if (string(argv[1]) == "R") {
+		else if (*(argv[1]) == 'R') {
 			command = READ;
 		}
 		else {
 			cout << "ERROR" << endl;
 		}
 
-		addr = atoi(argv[2]);
+		addr = *(argv[2]);
 	}
 
 	bool checkInvalidCommand(int argc, char* argv[]) {
@@ -31,19 +68,19 @@ public:
 			return true;
 		}
 
-		if (string(argv[1]) != "R" && string(argv[1]) != "W") {
+		if (argv[1] != "R" && argv[1] != "W") {
 			return true;
 		}
 
-		if (string(argv[1]) == "R" && argc != VALID_READ_ARGUMENT_NUM) {
+		if (argv[1] == "R" && argc != VALID_READ_ARGUMENT_NUM) {
 			return true;
 		}
 
-		if (string(argv[1]) == "W" && argc != VALID_WRITE_ARGUMENT_NUM) {
+		if (argv[1] == "W" && argc != VALID_WRITE_ARGUMENT_NUM) {
 			return true;
 		}		
 
-		if (string(argv[1]) == "R" || string(argv[1]) == "W") {
+		if (argv[1] == "R" || argv[1] == "W") {
 			for (const char ch : string(argv[2])) {
 				if ((ch >= '0') && (ch <= '9')) {
 					continue;
@@ -58,7 +95,7 @@ public:
 			}
 		}
 
-		if (string(argv[1]) == "W") {
+		if (argv[1] == "W") {
 			string data = string(argv[3]);
 
 			if (data.length() != DATA_LENGTH) {
@@ -90,6 +127,22 @@ public:
 		}
 
 		return false;
+	}
+
+	void ProcessCommand()
+	{
+		CommandProcessor* cmd;
+		if (command == READ)
+		{
+			cmd = new ReadProcessor(addr);
+		}
+		else if (command == WRITE) {
+			cmd = new WriteProcessor(addr, data);
+		}
+		else {
+			cmd = new ErrorProcessor();
+		}
+		cmd->run();
 	}
 
 	int getCmd() {
