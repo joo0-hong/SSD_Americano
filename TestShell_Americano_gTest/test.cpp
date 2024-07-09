@@ -29,6 +29,8 @@ public:
 	TestShell app{ SSD_PATH, &mk };
 };
 
+// Parser 테스트수트~~~
+
 TEST_F(TestShellFixture, Read_InvalidLBA) {
 	//arrange
 	EXPECT_CALL(mk, readFile)
@@ -75,11 +77,11 @@ TEST_F(TestShellFixture, Read_ValidLBA) {
 	//assert
 	EXPECT_EQ(expect, actual);
 }
+
 TEST_F(TestShellFixture, Write_Pass) {
 	string LBA("1");
 	string data("0x1298CDEF");
 }
-
 TEST_F(TestShellFixture, Write) {
 	app.write("1", "0x1298CDEF");
 }
