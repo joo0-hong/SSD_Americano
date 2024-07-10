@@ -7,11 +7,19 @@ using namespace std;
 
 class Logger {
 public:
-	static void print(const string& funcName, const string& content);
+	static Logger& getInstance();
+	void print(const string& funcName, const string& content);
 private:
-	static string GetUntilFileName(void);
-	static bool CheckFileOpen(std::fstream& file);
-	static void WriteToLatestLog(const string& funcName, const string& content, fstream& file);
-	static bool isExceedMaxFileSize(std::fstream& file);
+	Logger() {
+
+	}
+	Logger& operator=(const Logger& other) = delete;
+	Logger(const Logger& other) = delete;
+
+	string GetUntilFileName(void);
+	bool CheckFileOpen(std::fstream& file);
+	void WriteToLatestLog(const string& funcName, const string& content, fstream& file);
+	bool isExceedMaxFileSize(std::fstream& file);
+
 	static const int MAX_FILE_SIZE = 10 * 1024;
 };

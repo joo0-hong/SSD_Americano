@@ -4,7 +4,10 @@
 #include <vector>
 #include "Logger.h"
 
-
+Logger& Logger::getInstance() {
+	static Logger instance;
+	return instance;
+}
 void Logger::print(const string& funcName, const string& content) {
 	string filepath = "..\\..\\resources\\log\\";
 	string currentFileName = "latest.log";
@@ -53,8 +56,7 @@ void Logger::WriteToLatestLog(const string& funcName, const string& content, fst
 	tm time;
 	localtime_s(&time, &timer);
 
-	string logTime = string("[")
-		+ to_string(time.tm_year - 100)
+	string logTime = to_string(time.tm_year - 100)
 		+ string(".")
 		+ to_string(time.tm_mon)
 		+ string(".")
@@ -62,10 +64,9 @@ void Logger::WriteToLatestLog(const string& funcName, const string& content, fst
 		+ string(" ")
 		+ to_string(time.tm_hour)
 		+ string(":")
-		+ to_string(time.tm_min)
-		+ string("]");
+		+ to_string(time.tm_min);
 
-	file << format("{0} {1: <20} : {2: <20}\n", logTime, funcName, content);
+	file << format("[{0: <13}] {1: <20} : {2: <20}\n", logTime, funcName, content);
 }
 
 string Logger::GetUntilFileName()
