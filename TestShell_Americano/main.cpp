@@ -14,7 +14,7 @@ using namespace std;
 
 int main() {
 	const std::string SSD_PATH = "SSD_Americano";
-	const std::string RESULT_PATH = "..\\resources\\result.txt";
+	const std::string RESULT_PATH = "..\\..\\resources\\result.txt";
 
 	SSDDriver ssdDriver{ SSD_PATH };
 	FileReader fileReaderMk{ RESULT_PATH };
