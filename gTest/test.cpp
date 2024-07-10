@@ -18,6 +18,7 @@ class MockedNand : public NANDInterface {
 public:
 	MOCK_METHOD(void, read, (int lba), (override));
 	MOCK_METHOD(void, write, (int lba, string data), (override));
+	MOCK_METHOD(void, erase, (int lba, string size), (override));
 	MOCK_METHOD(void, error, (), (override));
 };
 
@@ -35,6 +36,10 @@ public:
 		argv[IDX_COMMAND] = "R";
 		argv[IDX_ADDRESS] = "3";
 	}
+	void SetNormalErase() {
+		argv[IDX_COMMAND] = "E";
+		argv[IDX_ADDRESS] = "3";
+	}
 
 	NiceMock<MockedNand> nand;
 	HostInterface hostIntf{ &nand };
@@ -47,11 +52,13 @@ private:
 TEST(SSDTest, NANDInterface) {
 	NiceMock<MockedNand> nand;
 
-	EXPECT_CALL(nand, read(_)).Times(1);
-	EXPECT_CALL(nand, write(_, _)).Times(1);
+    EXPECT_CALL(nand, read(_)).Times(1);
+    EXPECT_CALL(nand, write(_, _)).Times(1);
+	EXPECT_CALL(nand, erase(_, _)).Times(1);
 
 	nand.read(0);
 	nand.write(0, " ");
+	nand.erase(0, " ");
 }
 
 TEST_F(HostIntfTestFixture, CheckingInvalidArgumentNum) {
@@ -128,6 +135,33 @@ TEST_F(HostIntfTestFixture, WrongCommandNameCheck) {
 	hostIntf.processCommand(4, argv);
 }
 
+TEST_F(HostIntfTestFixture, CheckingValidEraseCommand) {
+	SetNormalErase();
+	argv[IDX_DATA] = "10";
+
+	bool result = hostIntf.checkInvalidCommand(4, argv);
+
+	EXPECT_EQ(false, result);
+}
+
+TEST_F(HostIntfTestFixture, CheckingInvalidEraseSize) {
+	SetNormalErase();
+	argv[IDX_DATA] = "1A";
+
+	bool result = hostIntf.checkInvalidCommand(4, argv);
+
+	EXPECT_EQ(true, result);
+}
+
+TEST_F(HostIntfTestFixture, CheckingInvalidEraseArguementNum) {
+	SetNormalErase();
+	argv[IDX_DATA] = "5";
+
+	bool result = hostIntf.checkInvalidCommand(3, argv);
+
+	EXPECT_EQ(true, result);
+}
+
 TEST(NANDTest, NANDWriteRead) {
 	NAND nand{ "TestNand.txt", "TestResult.txt" };
 
@@ -139,4 +173,22 @@ TEST(NANDTest, NANDError) {
 	NAND nand{ "TestNand.txt", "TestResult.txt" };
 
 	nand.error();
+}
+
+TEST(NANDTest, NANDEraseTooLargeSize) {
+	NAND nand{ "TestNand.txt", "TestResult.txt" };
+	int lba = 0;
+	string eraseSize = "20";
+
+	nand.write(3, "0x1298DEAD");
+	nand.write(13, "0x1298DEAD");
+	nand.erase(0, eraseSize);
+}
+
+TEST(NANDTest, NANDEraseSmallLeftSize) {
+	NAND nand{ "TestNand.txt", "TestResult.txt" };
+	string eraseSize = "5";
+
+	nand.write(99, "0x1298DEAD");
+	nand.erase(98, eraseSize);
 }
