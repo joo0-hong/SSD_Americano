@@ -1,43 +1,30 @@
+#include "Nand.h"
 #pragma once
-#include <iostream>
-#include <fstream>
 
-#include "NANDInterface.h"
-#include "FileManager.cpp"
+NAND::NAND(string nandFile, string resultFile)
+{
+	nandFileManager = new FileManager{ nandFile };
+	resultFileManager = new FileManager{ resultFile };
+}
 
-using namespace std;
+NAND::~NAND()
+{
+	delete nandFileManager;
+	delete resultFileManager;
+}
 
-class NAND : public NANDInterface {
-public:
-	NAND(string nandFile, string resultFile)
-	{
-		nandFileManager = new FileManager{ nandFile };
-		resultFileManager = new FileManager{ resultFile };
-	}
+void NAND::read(int lba)
+{
+	string result = nandFileManager->read(lba);
+	resultFileManager->write(0, result);
+}
 
-	~NAND()
-	{
-		delete nandFileManager;
-		delete resultFileManager;
-	}
+void NAND::write(int lba, string data)
+{
+	nandFileManager->write(lba, data);
+}
 
-	void read(int lba) override
-	{
-		string result = nandFileManager->read(lba);
-		resultFileManager->write(0, result);
-	}
-
-	void write(int lba, string data) override
-	{
-		nandFileManager->write(lba, data);
-	}
-
-	void error() override
-	{
-		resultFileManager->write(0, "NULL");
-	}
-
-private:
-	FileManager* nandFileManager;
-	FileManager* resultFileManager;
-};
+void NAND::error()
+{
+	resultFileManager->write(0, "NULL");
+}
