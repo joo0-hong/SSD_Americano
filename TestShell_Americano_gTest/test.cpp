@@ -161,7 +161,7 @@ TEST_F(TestShellFixture, TestApp1) {
 	std::cout.rdbuf(oss.rdbuf());
 
 	//action
-	app.testapp1("0x11111111");
+	app.testapp1();
 
 	std::cout.rdbuf(oldCoutStreamBuf);	// 기존 buf 복원
 
@@ -187,7 +187,7 @@ TEST_F(TestShellFixture, TestApp2) {
 		.Times(AtLeast(1));
 
 	//action
-	bool actual = app.testApp2();
+	bool actual = app.testapp2();
 
 	//assert
 	EXPECT_EQ(true, actual);
