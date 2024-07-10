@@ -55,7 +55,7 @@ void EraseCmd::checkSizeValid(char* param)
 	}
 
 	int eraseSize = stoi(string(param));
-	if (eraseSize <= 0 && eraseSize > 10) {
+	if ((eraseSize < 0) || (10 < eraseSize)) {
 		throw invalid_argument("Invalid erase size");
 	}
 }

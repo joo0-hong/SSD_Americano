@@ -55,10 +55,10 @@ void WriteCmd::checkDataValid(char* param)
 	}
 	string dataNumber = dataValue.substr(2, dataValue.length());
 	for (const char ch : dataNumber) {
-		if ((ch >= '0') && (ch <= '9')) {
+		if (('0' <= ch) && (ch <= '9')) {
 			continue;
 		}
-		if ((ch >= 'A') && (ch <= 'F'))
+		if (('A' <= ch) && (ch <= 'F'))
 		{
 			continue;
 		}

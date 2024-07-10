@@ -12,7 +12,8 @@ enum hostArguIndex {
 	IDX_COMMAND,
 	IDX_ADDRESS,
 	IDX_DATA,
-	IDX_MAX = IDX_DATA,
+	IDX_SIZE = IDX_DATA,
+	IDX_MAX,
 };
 
 class MockedNand : public NANDInterface {
@@ -143,7 +144,7 @@ TEST_F(HostIntfTestFixture, CheckingValidEraseCommand) {
 
 TEST_F(HostIntfTestFixture, CheckingInvalidEraseSize) {
 	SetNormalErase();
-	argv[IDX_DATA] = "1A";
+	argv[IDX_SIZE] = "1A";
 
 	EXPECT_CALL(nand, error()).Times(1);
 
@@ -152,11 +153,22 @@ TEST_F(HostIntfTestFixture, CheckingInvalidEraseSize) {
 
 TEST_F(HostIntfTestFixture, CheckingInvalidEraseArguementNum) {
 	SetNormalErase();
-	argv[IDX_DATA] = "5";
+	argv[IDX_SIZE] = "5";
 
 	EXPECT_CALL(nand, error()).Times(1);
 
 	hostIntf.processCommand(3, argv);
+}
+
+TEST_F(HostIntfTestFixture, FailEvenWhenErrorCommand) {
+	SetNormalErase();
+	argv[IDX_SIZE] = "5";
+
+	EXPECT_CALL(nand, error())
+		.Times(1)
+		.WillOnce(Throw(std::runtime_error("Fail")));
+
+	EXPECT_NO_THROW(hostIntf.processCommand(3, argv));
 }
 
 TEST(NANDTest, NANDWriteRead) {

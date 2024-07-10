@@ -65,7 +65,7 @@ protected:
         EXPECT_EQ(expected.size(), lines.size());
 
         for (int i = 0; i < lines.size(); i++) {
-            EXPECT_EQ(lines[i], expected[i]);
+            EXPECT_THAT(lines[i], Eq(expected[i]));
         }
 
         file.close();
@@ -155,6 +155,28 @@ TEST_F(SSDIntegrationTest, InvalidReadArguments) {
     verifyResultFile({ "NULL" });
 }
 
+TEST_F(SSDIntegrationTest, InvalidReadLBA) {
+    // Arrange
+    char* invalidArgument[] = { "ssd", "R", "7A" };
+
+    // Act
+    main(sizeof(invalidArgument) / sizeof(char*), invalidArgument);
+
+    // Assert
+    verifyResultFile({ "NULL" });
+}
+
+TEST_F(SSDIntegrationTest, InvalidReadLBARange) {
+    // Arrange
+    char* invalidArgument[] = { "ssd", "R", "100" };
+
+    // Act
+    main(sizeof(invalidArgument) / sizeof(char*), invalidArgument);
+
+    // Assert
+    verifyResultFile({ "NULL" });
+}
+
 TEST_F(SSDIntegrationTest, InvalidWriteArguments) {
     // Arrange
     char* invalidArgument[] = { "ssd", "W", "7"};
@@ -197,4 +219,48 @@ TEST_F(SSDIntegrationTest, InvalidWriteDataNoPrefix_0x) {
 
     // Assert
     verifyResultFile({ "NULL" });
+}
+
+TEST_F(SSDIntegrationTest, InvalidEraseLBA) {
+    // Arrange
+    char* invalidArgument[] = { "ssd", "E", "7A", "10"};
+
+    // Act
+    main(sizeof(invalidArgument) / sizeof(char*), invalidArgument);
+
+    // Assert
+    verifyResultFile({ "NULL" });
+}
+
+TEST_F(SSDIntegrationTest, InvalidEraseLBARange) {
+    // Arrange
+    char* invalidArgument[] = { "ssd", "E", "100", "10" };
+
+    // Act
+    main(sizeof(invalidArgument) / sizeof(char*), invalidArgument);
+
+    // Assert
+    verifyResultFile({ "NULL" });
+}
+
+TEST_F(SSDIntegrationTest, InvalidEraseSize) {
+    // Arrange
+    char* invalidArgument[] = { "ssd", "E", "0", "11" };
+
+    // Act
+    main(sizeof(invalidArgument) / sizeof(char*), invalidArgument);
+
+    // Assert
+    verifyResultFile({ "NULL" });
+}
+
+TEST_F(SSDIntegrationTest, InvalidEraseSize0) {
+    // Arrange
+    char* invalidArgument[] = { "ssd", "E", "0", "0" };
+
+    // Act (Do nothing)
+    main(sizeof(invalidArgument) / sizeof(char*), invalidArgument);
+
+    // Assert
+    verifyResultFile({ "" });
 }
