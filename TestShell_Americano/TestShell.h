@@ -15,6 +15,7 @@ public:
 	void help();
 	void fullwrite(std::string data);
 	void fullread();
+
 	void erase(std::string lba, std::string zise);
 	void erase_range(std::string start_lba, std::string end_lba);
 

@@ -41,5 +41,11 @@
     <ClInclude Include="SSDDriver.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="CheckCommand.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Command.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
