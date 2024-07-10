@@ -9,6 +9,7 @@ public:
 	SSDDriver(const string& ssdPath);
 	virtual void write(const string& lba, const string& data) const;
 	virtual void read(const string& lba) const;
+	virtual void erase(const string& lba, const string& size) const;
 
 private:
 	const string ssdPath_;

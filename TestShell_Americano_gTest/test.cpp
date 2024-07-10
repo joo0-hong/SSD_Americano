@@ -26,6 +26,7 @@ public:
 
 	MOCK_METHOD(void, write, (const string& lba, const string& data), (const override));
 	MOCK_METHOD(void, read, (const string& lba), (const override));
+	MOCK_METHOD(void, erase, (const string& lba, const string& size), (const override));
 };
 
 class TestShellFixture : public testing::Test {
@@ -190,6 +191,69 @@ TEST_F(TestShellFixture, TestApp2) {
 
 	//assert
 	EXPECT_EQ(true, actual);
+}
+
+TEST_F(TestShellFixture, erase_with_start0_size100) {
+	EXPECT_CALL(ssdDriverMk, erase)
+		.Times(10);
+
+	app.erase("0", "100");
+}
+
+TEST_F(TestShellFixture, erase_with_start0_size1000) {
+	EXPECT_CALL(ssdDriverMk, erase)
+		.Times(10);
+
+	app.erase("0", "1000");
+}
+
+TEST_F(TestShellFixture, erase_with_start99_size11) {
+	EXPECT_CALL(ssdDriverMk, erase)
+		.Times(1);
+
+	app.erase("99", "11");
+}
+
+TEST_F(TestShellFixture, erase_with_start100_size1) {
+	EXPECT_CALL(ssdDriverMk, erase)
+		.Times(0);
+
+	app.erase("100", "1");
+}
+
+TEST_F(TestShellFixture, eraserange) {
+	EXPECT_CALL(ssdDriverMk, erase)
+		.Times(1);
+
+	app.erase_range("1", "2");
+}
+
+TEST_F(TestShellFixture, eraserange_start0_end100) {
+	EXPECT_CALL(ssdDriverMk, erase)
+		.Times(10);
+
+	app.erase_range("0", "100");
+}
+
+TEST_F(TestShellFixture, eraserange_start0_end1000) {
+	EXPECT_CALL(ssdDriverMk, erase)
+		.Times(10);
+
+	app.erase_range("0", "1000");
+}
+
+TEST_F(TestShellFixture, eraserange_start99_end100) {
+	EXPECT_CALL(ssdDriverMk, erase)
+		.Times(1);
+
+	app.erase_range("99", "100");
+}
+
+TEST_F(TestShellFixture, eraserange_start99_end1000) {
+	EXPECT_CALL(ssdDriverMk, erase)
+		.Times(1);
+
+	app.erase_range("99", "1000");
 }
 
 TEST(CheckCommand, CheckCommand_InvalidCommand_r) {

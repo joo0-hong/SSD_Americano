@@ -2,13 +2,62 @@
 #include "ErrorCmd.h"
 #include "WriteCmd.h"
 #include "ReadCmd.h"
+#include "EraseCmd.h"
+
+void HostInterface::processCommand(int argc, char* argv[])
+{
+	Command* cmd = nullptr;
+	bool isInvalidCmd = checkInvalidCommand(argc, argv);
+
+	if (isInvalidCmd == true) {
+		cmd = new ErrorCmd(nandIntf);
+	}
+	else if (string(argv[1]) == "W") {
+		addr = atoi(argv[2]);
+		data = string(argv[3]);
+		cmd = new WriteCmd(addr, data, nandIntf);
+	}
+	else if (string(argv[1]) == "R") {
+		addr = atoi(argv[2]);
+		cmd = new ReadCmd(addr, nandIntf);
+	}
+	else if (string(argv[1]) == "E") {
+		addr = atoi(argv[2]);
+		size = string(argv[3]);
+		cmd = new EraseCmd(addr, size, nandIntf);
+	}
+
+	cmd->run();
+	delete cmd;
+}
 
 bool HostInterface::checkInvalidCommand(int argc, char* argv[]) {
+	if (checkInvalidArguementNumber(argc, argv)) {
+		return true;
+	}
+
+	if (checkInvalidLBA(argv)) {
+		return true;
+	}
+
+	if (checkInvalidDataToWrite(argv)) {
+		return true;
+	}
+
+	if (checkEraseSize(argv)) {
+		return true;
+	}
+
+	return false;
+}
+
+bool HostInterface::checkInvalidArguementNumber(int argc, char* argv[])
+{
 	if (argc < MIN_VALID_ARGUMENT_NUM) {
 		return true;
 	}
 
-	if (string(argv[1]) != "R" && string(argv[1]) != "W") {
+	if (string(argv[1]) != "R" && string(argv[1]) != "W" && string(argv[1]) != "E") {
 		return true;
 	}
 
@@ -20,7 +69,16 @@ bool HostInterface::checkInvalidCommand(int argc, char* argv[]) {
 		return true;
 	}
 
-	if (string(argv[1]) == "R" || string(argv[1]) == "W") {
+	if (string(argv[1]) == "E" && argc != VALID_ERASE_ARGUMENT_NUM) {
+		return true;
+	}
+
+	return false;
+}
+
+bool HostInterface::checkInvalidLBA(char* argv[])
+{
+	if (string(argv[1]) == "R" || string(argv[1]) == "W" || string(argv[1]) == "E") {
 		for (const char ch : string(argv[2])) {
 			if ((ch >= '0') && (ch <= '9')) {
 				continue;
@@ -30,10 +88,17 @@ bool HostInterface::checkInvalidCommand(int argc, char* argv[]) {
 		}
 		int lba = atoi(argv[2]);
 		if (lba < MIN_LBA || lba > MAX_LBA) {
+			cout << "LBA is out of range !!!" << endl;
 			return true;
 		}
 	}
 
+	return false;
+}
+
+
+bool HostInterface::checkInvalidDataToWrite(char* argv[])
+{
 	if (string(argv[1]) == "W") {
 		string data = string(argv[3]);
 
@@ -59,29 +124,29 @@ bool HostInterface::checkInvalidCommand(int argc, char* argv[]) {
 			return true;
 		}
 	}
+
 	return false;
 }
 
-void HostInterface::processCommand(int argc, char* argv[])
+bool HostInterface::checkEraseSize(char* argv[])
 {
-	Command* cmd = nullptr;
-	bool isInvalidCmd = checkInvalidCommand(argc, argv);
+	if (string(argv[1]) == "E") {
+		for (const char ch : string(argv[3])) {
+			if ((ch >= '0') && (ch <= '9')) {
+				continue;
+			}
+			cout << "Invalid erase size !!!" << endl;
+			return true;
+		}
 
-	if (isInvalidCmd == true) {
-		cmd = new ErrorCmd(nandIntf);
-	}
-	else if (string(argv[1]) == "W") {
-		addr = atoi(argv[2]);
-		data = string(argv[3]);
-		cmd = new WriteCmd(addr, data, nandIntf);
-	}
-	else if (string(argv[1]) == "R") {
-		addr = atoi(argv[2]);
-		cmd = new ReadCmd(addr, nandIntf);
+		int eraseSize = stoi(string(argv[3]));
+		if (eraseSize <= 0 && eraseSize > MAX_ERASE_SIZE) {
+			cout << "Invalid erase size !!!" << endl;
+			return true;
+		}
 	}
 
-	cmd->run();
-	delete cmd;
+	return false;
 }
 
 inline int HostInterface::getCmd() {
