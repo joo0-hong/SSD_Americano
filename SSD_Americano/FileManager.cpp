@@ -2,79 +2,76 @@
 #include <iostream>
 
 string FileManager::read(const int linenumber) {
-    string data = "";
-    fstream file(filename, std::ios::in);
+    vector<string> lines = { };
 
-    checkFileOpen(file);
+    checkInCapacity(linenumber);
 
-    data = readData(file, linenumber);
+    lines = getFileData();
+    checkValidLinenumber(linenumber, lines.size());
 
-    file.close();
-
-    return data;
+    return lines[linenumber];
 }
 
 void FileManager::write(const int linenumber, const string& data) {
-    fstream file(filename, std::ios::in | std::ios::out);
+    vector<string> lines = { };
+
+    checkInCapacity(linenumber);
+
+    lines = getFileData();
+    checkValidLinenumber(linenumber, lines.size());
+
+    lines[linenumber] = data;
+
+    setFileData(lines);
+}
+
+vector<string> FileManager::getFileData() {
+    fstream file(filename, ios::in);
+    vector<string> lines = { };
+    string line = "";
 
     checkFileOpen(file);
 
-    writeData(file, linenumber, data);
+    while (getline(file, line)) {
+        lines.push_back(line);
+    }
+    
+    file.close();
+    return lines;
+}
+
+void FileManager::setFileData(vector<string> lines) {
+    fstream file(filename, ios::out);
+
+    checkFileOpen(file);
+
+    for (int i = 0; i < lines.size(); i++) {
+        file << lines[i] << endl;
+    }
 
     file.close();
 }
 
-string FileManager::readData(fstream& file, const int linenumber) {
-    string line = "";
-    streampos pos = getPosition(file, linenumber);
-
-    file.seekg(pos);
-
-    if (!getline(file, line)) {
-        throw runtime_error("File status is not unstable");
-    }
-
-    return line;
-}
-
-void FileManager::writeData(fstream& file, const int linenumber, const string& data) {
-    streampos pos = getPosition(file, linenumber);
-
-    file.seekp(pos);
-
-    file << data;
-}
-
-streampos FileManager::getPosition(fstream& file, const int linenumber) {
-    int curLinenumber = 0;
-    string line = "";
-
-    initFileDiscriptor(file);
-
-    while ((curLinenumber < linenumber) && (getline(file, line))) {
-        curLinenumber++;
-    }
-
-    streampos pos = file.tellg();
-    checkValidPosition(pos, curLinenumber, linenumber);
-
-    return pos;
-}
-
-void FileManager::initFileDiscriptor(fstream& file) {
-    file.clear();
-    file.seekg(0);
-    file.seekp(0);
-}
-
-void FileManager::checkValidPosition(const streampos pos, const int curLinenumber, const int linenumber) {
-    if ((-1 == pos) || (curLinenumber != linenumber)) {
-        throw runtime_error("Invalid line number: " + linenumber);
-    }
-}
-
 void FileManager::checkFileOpen(fstream& file) {
-    if (false == file.is_open()) {
-        throw runtime_error("File can not be open.");
+    if (true == file.is_open()) {
+        return;
     }
+
+    throw runtime_error("File can not be open.");
+}
+
+void FileManager::checkInCapacity(const int linenumber) {
+    if ((0 <= linenumber) && (linenumber <= MAX_LINENUMBER)) {
+        return;
+    }
+
+    throw runtime_error("Invalid line number: " + linenumber);
+}
+
+void FileManager::checkValidLinenumber(const int linenumber, const int fileLinecount) {
+    if (fileLinecount > linenumber) {
+        return;
+    }
+
+    throw runtime_error("Invalid line number: " + linenumber);
 }
