@@ -16,7 +16,7 @@ NAND::~NAND()
 void NAND::read(int lba)
 {
 	string result = nandFileManager->read(lba);
-	resultFileManager->write(0, result);
+	resultFileManager->writeResult(0, result);
 }
 
 void NAND::write(int lba, string data)
@@ -41,5 +41,5 @@ void NAND::erase(int lba, string size) {
 
 void NAND::error()
 {
-	resultFileManager->write(0, "NULL");
+	resultFileManager->writeResult(0, "NULL");
 }

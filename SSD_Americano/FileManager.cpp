@@ -25,24 +25,46 @@ void FileManager::write(const int linenumber, const string& data) {
 }
 
 string FileManager::readData(fstream& file, const int linenumber) {
-    string line = "";
-    streampos pos = getPosition(file, linenumber);
+    vector<string> lines = { };
 
-    file.seekg(pos);
+    lines = getFileData(file, linenumber, linenumber);
 
-    if (!getline(file, line)) {
-        throw runtime_error("File status is not unstable");
+    if (1 != lines.size()) {
+        throw runtime_error("Invalid line number: " + linenumber);
     }
 
-    return line;
+    return lines[0];
 }
 
 void FileManager::writeData(fstream& file, const int linenumber, const string& data) {
-    streampos pos = getPosition(file, linenumber);
+    vector<string> lines = { };
 
-    file.seekp(pos);
+    lines = getFileData(file, 0, 0x7FFFFFFF);
 
+    if (lines.size() <= linenumber) {
+        throw runtime_error("Invalid line number: " + linenumber);
+    }
+
+    lines[linenumber] = data;
+
+    initFileDiscriptor(file);
+
+    for (int i = 0; i < lines.size(); i++) {
+        if (i + 1 < lines.size()) {
+            file << lines[i] << endl;
+        }
+        else {
+            file << lines[i];
+        }
+    }
+}
+
+void FileManager::writeResult(const int linenumber, const string& data) {
+    fstream file(filename, std::ios::in | std::ios::out);
+
+    initFileDiscriptor(file);
     file << data;
+
 }
 
 streampos FileManager::getPosition(fstream& file, const int linenumber) {
@@ -65,6 +87,24 @@ void FileManager::initFileDiscriptor(fstream& file) {
     file.clear();
     file.seekg(0);
     file.seekp(0);
+}
+
+vector<string> FileManager::getFileData(fstream& file, const int startLinenumber, const int endLinenumber) {
+    vector<string> lines = { };
+    string line = "";
+    int curLinenumber = 0;
+
+    initFileDiscriptor(file);
+
+    while (getline(file, line)) {
+        if ((startLinenumber <= curLinenumber) && (curLinenumber <= endLinenumber)) {
+            lines.push_back(line);
+        }
+
+        curLinenumber++;
+    }
+
+    return lines;
 }
 
 void FileManager::checkValidPosition(const streampos pos, const int curLinenumber, const int linenumber) {

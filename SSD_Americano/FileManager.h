@@ -11,6 +11,7 @@ public:
     FileManager(const string& filename) : filename{ filename } { }
     string read(const int linenumber);
     void write(const int linenumber, const string& data);
+    void writeResult(const int linenumber, const string& data);
 
 private:
     string filename;
@@ -20,6 +21,7 @@ private:
 
     streampos getPosition(fstream& file, const int linenumber);
     void initFileDiscriptor(fstream& file);
+    vector<string> getFileData(fstream& file, const int startLinenumber, const int endLinenumber);
     void checkValidPosition(const streampos pos, const int curLinenumber, const int linenumber);
     void checkFileOpen(fstream& file);
 };
