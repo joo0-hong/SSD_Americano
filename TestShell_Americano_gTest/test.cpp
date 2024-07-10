@@ -162,8 +162,7 @@ TEST(CheckCommand, CheckCommand_InvalidCommand_NoCommand) {
 	EXPECT_EQ(-1, checker.checkCmd(test_input, arg1, arg2));
 }
 
-
-TEST(CheckCommand, CheckCommand_ValidLBA_0) {
+TEST(CheckCommand, CheckCommand_read_ValidLBA_0) {
 	string test_input = "read 0";
 	string arg1, arg2;
 
@@ -172,53 +171,53 @@ TEST(CheckCommand, CheckCommand_ValidLBA_0) {
 	EXPECT_EQ(0x1, checker.checkCmd(test_input, arg1, arg2));
 }
 
-TEST(CheckCommand, CheckCommand_InvalidLBA_NotNumber_r) {
+TEST(CheckCommand, CheckCommand_read_InvalidLBA_NotNumber_r) {
 	string test_input = "read r";
 	string arg1, arg2;
 
 	CheckCommand checker;
 	
-	EXPECT_EQ(0xff, checker.checkCmd(test_input, arg1, arg2));
+	EXPECT_EQ(-2, checker.checkCmd(test_input, arg1, arg2));
 }
 
-TEST(CheckCommand, CheckCommand_InvalidLBA_NotNumber_0x10) {
+TEST(CheckCommand, CheckCommand_read_InvalidLBA_NotNumber_0x10) {
 	string test_input = "read 0x10";
 	string arg1, arg2;
 
 	CheckCommand checker;
 
-	EXPECT_EQ(0xff, checker.checkCmd(test_input, arg1, arg2));
+	EXPECT_EQ(-2, checker.checkCmd(test_input, arg1, arg2));
 }
 
-TEST(CheckCommand, CheckCommand_InvalidLBA_NotNumber_A) {
+TEST(CheckCommand, CheckCommand_read_InvalidLBA_NotNumber_A) {
 	string test_input = "read A";
 	string arg1, arg2;
 
 	CheckCommand checker;
 
-	EXPECT_EQ(0xff, checker.checkCmd(test_input, arg1, arg2));
+	EXPECT_EQ(-2, checker.checkCmd(test_input, arg1, arg2));
 }
 
-TEST(CheckCommand, CheckCommand_InvalidLBA_OutOfRange_minus1) {
+TEST(CheckCommand, CheckCommand_read_InvalidLBA_OutOfRange_minus1) {
 	string test_input = "read -1";
 	string arg1, arg2;
 
 	CheckCommand checker;
 
-	EXPECT_EQ(0xff, checker.checkCmd(test_input, arg1, arg2));
+	EXPECT_EQ(-2, checker.checkCmd(test_input, arg1, arg2));
 
 }
 
-TEST(CheckCommand, CheckCommand_InvalidLBA_OutOfRange_101) {
+TEST(CheckCommand, CheckCommand_read_InvalidLBA_OutOfRange_101) {
 	string test_input = "read 101";
 	string arg1, arg2;
 
 	CheckCommand checker;
 
-	EXPECT_EQ(0xff, checker.checkCmd(test_input, arg1, arg2));
+	EXPECT_EQ(-2, checker.checkCmd(test_input, arg1, arg2));
 }
 
-TEST(CheckCommand, CheckCommand_ValidData_0x12345678) {
+TEST(CheckCommand, CheckCommand_write_ValidData_0x12345678) {
 	string test_input = "write 1 0x12345678";
 	string arg1, arg2;
 
@@ -227,39 +226,39 @@ TEST(CheckCommand, CheckCommand_ValidData_0x12345678) {
 	EXPECT_EQ(0x0, checker.checkCmd(test_input, arg1, arg2));
 }
 
-TEST(CheckCommand, CheckCommand_InvalidData_NoPrefix_12345678) {
+TEST(CheckCommand, CheckCommand_write_InvalidData_NoPrefix_12345678) {
 	string test_input = "write 1 12345678";
 	string arg1, arg2;
 
 	CheckCommand checker;
 
-	EXPECT_EQ(0xff, checker.checkCmd(test_input, arg1, arg2));
+	EXPECT_EQ(-2, checker.checkCmd(test_input, arg1, arg2));
 }
 
-TEST(CheckCommand, CheckCommand_InvalidData_Not10digit_0x1234) {
+TEST(CheckCommand, CheckCommand_write_InvalidData_Not10digit_0x1234) {
 	string test_input = "write 1 0x1234";
 	string arg1, arg2;
 
 	CheckCommand checker;
 
-	EXPECT_EQ(0xff, checker.checkCmd(test_input, arg1, arg2));
+	EXPECT_EQ(-2, checker.checkCmd(test_input, arg1, arg2));
 }
 
-TEST(CheckCommand, CheckCommand_InvalidData_NotNumber_0xABCDEFGH) {
+TEST(CheckCommand, CheckCommand_write_InvalidData_NotNumber_0xABCDEFGH) {
 	string test_input = "write 1 0xABCDEFGH";
 	string arg1, arg2;
 
 	CheckCommand checker;
 
-	EXPECT_EQ(0xff, checker.checkCmd(test_input, arg1, arg2));
+	EXPECT_EQ(-2, checker.checkCmd(test_input, arg1, arg2));
 }
 
-TEST(CheckCommand, CheckCommand_InvalidData_NotNumber_r) {
+TEST(CheckCommand, CheckCommand_write_InvalidData_NotNumber_r) {
 	string test_input = "write 1 r";
 	string arg1, arg2;
 
 	CheckCommand checker;
 
-	EXPECT_EQ(0xff, checker.checkCmd(test_input, arg1, arg2));
+	EXPECT_EQ(-2, checker.checkCmd(test_input, arg1, arg2));
 }
 
