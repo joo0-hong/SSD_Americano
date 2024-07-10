@@ -143,6 +143,37 @@ TEST_F(TestShellFixture, Help) {
 	app.help();
 }
 
+TEST_F(TestShellFixture, TestApp1) {
+	//arrange
+	EXPECT_CALL(ssdDriverMk, write)
+		.Times(LBA_MAX);
+
+	EXPECT_CALL(ssdDriverMk, read)
+		.Times(LBA_MAX);
+
+	EXPECT_CALL(fileReaderMk, readFile)
+		.Times(LBA_MAX)
+		.WillRepeatedly(Return("0x11111111"));
+
+	std::ostringstream oss;
+	auto oldCoutStreamBuf = std::cout.rdbuf();
+	std::cout.rdbuf(oss.rdbuf());
+
+	//action
+	app.testapp1("0x11111111");
+
+	std::cout.rdbuf(oldCoutStreamBuf);	// 기존 buf 복원
+
+	//assert
+	string expect = "";
+	for (int i = LBA_MIN; i < LBA_MAX; ++i) {
+		expect += "0x11111111\n";
+	}
+	string actual = oss.str();
+
+	EXPECT_EQ(expect, actual);
+}
+
 TEST(CheckCommand, CheckCommand_InvalidCommand_r) {
 	string test_input = "r";
 	string arg1, arg2;
@@ -262,4 +293,3 @@ TEST(CheckCommand, CheckCommand_InvalidData_NotNumber_r) {
 
 	EXPECT_EQ(0xff, checker.checkCmd(test_input, arg1, arg2));
 }
-
