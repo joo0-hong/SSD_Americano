@@ -13,12 +13,12 @@
 using namespace std;
 
 int main() {
-	const std::string SSD_PATH = "..\\x64\\Debug\\SSDMock";
+	const std::string SSD_PATH = "..\\x64\\Debug\\SSD_Americano";
 	const std::string RESULT_PATH = "..\\resources\\result.txt";
 
-	SSDDriver ssdDriverMk{ SSD_PATH };
+	SSDDriver ssdDriver{ SSD_PATH };
 	FileReader fileReaderMk{ RESULT_PATH };
-	TestShell app{ &ssdDriverMk, &fileReaderMk };
+	TestShell app{ &ssdDriver, &fileReaderMk };
 
 	CheckCommand checker;
 
@@ -32,11 +32,11 @@ int main() {
 
 		switch (cmd) {
 		case 0:
-			cout << "write" << endl;
+			cout << "write (" <<arg1 << ", " << arg2 << ")" << endl;
 			app.write(arg1, arg2);
 			break;
 		case 1:
-			cout << "read" << endl;
+			cout << "read (" << arg1 << ")" << endl;
 			app.read(arg1);
 			break;
 		case 2:
@@ -48,7 +48,7 @@ int main() {
 			app.help();
 			break;
 		case 4:
-			cout << "fullwrite" << endl;
+			cout << "fullwrite (" << arg1 << ")" << endl;
 			app.fullwrite(arg1);
 			break;
 		case 5:

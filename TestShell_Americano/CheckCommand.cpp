@@ -11,10 +11,9 @@ using namespace std;
 class CheckCommand {
 public:
 
-	int checkCmd(string input, string arg1, string arg2) {
+	int checkCmd(string input, string& arg1, string& arg2) {
 
-		char delimeter = ' ';
-		vector<string> result = split(input, delimeter);
+		vector<string> result = split(input);
 
 		if (result.size() < 1) {
 			cout << "Empty Command" << endl;
@@ -89,15 +88,18 @@ public:
 		return INVALID_COMMAND;
 	}
 
+
 private:
 
 	const int INVALID_COMMAND = -1;
-	const int INVALID_ARGUMENT = 0xff;
+	const int INVALID_ARGUMENT = -2;
 
-	vector<string> split(string input, char delimiter) {
+	vector<string> split(string input) {
 		istringstream iss(input);
 		string buffer;
 		vector<string> result;
+		char delimiter = ' ';
+
 		int num = 0;
 
 		while (getline(iss, buffer, delimiter) && num < 3) {
@@ -107,7 +109,6 @@ private:
 
 		return result;
 	}
-
 	bool isValidLBA(string arg) {
 
 		if ((atoi(arg.c_str()) == 0) && (arg.compare("0") != 0)) {
@@ -146,15 +147,6 @@ private:
 		arg.erase(0, 2);
 		if (is_xdigits(arg) == false) {
 			cout << "Data should have only A~F, 0~9" << endl;
-			return false;
-		}
-
-		unsigned int num;
-		istringstream iss(arg);
-		iss >> hex >> num;
-
-		if (num < 0x00000000 || num > 0xFFFFFFFF) {
-			cout << "Data should be number (0x00000000 ~ 0xFFFFFFFF)" << endl;
 			return false;
 		}
 
