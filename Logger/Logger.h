@@ -11,9 +11,10 @@ public:
 	static Logger& getInstance();
 	void print(const string& funcName, const string& content);
 private:
-	Logger() {
-
-	}
+	static const string LOG_PATH;
+	static const string LATEST_LOG_FILE_NAME;
+	
+	Logger();
 	Logger& operator=(const Logger& other) = delete;
 	Logger(const Logger& other) = delete;
 
@@ -24,9 +25,6 @@ private:
 
 	static const int MAX_FILE_SIZE = 10 * 1024;
 
-	static const string LOG_PATH;
-	static const string LATEST_LOG_FILE_NAME;
-	
 	static string getUntilLogFileName();
 	static string getFileNameWithoutExt(const string& filePath);
 	static void renameLogFileToZip(const string& fname);
