@@ -1,29 +1,31 @@
 ﻿#include <iostream>
 #include <ctime>
-#include <experimental/filesystem>
+#include <filesystem>
 #include <vector>
 #include "Logger.h"
 
+Logger& Logger::getInstance() {
+	static Logger instance;
+	return instance;
+}
 void Logger::print(const string& funcName, const string& content) {
-	string filepath = "../resources/";
+	string filepath = "..\\..\\resources\\log\\";
 	string currentFileName = "latest.log";
 	string currentFileFullPath = filepath + currentFileName;
 
-	// open file with app option (append)
-	fstream file(currentFileName, ios::in | ios::out | ios::app);
+	cout << "current file name : " << currentFileFullPath << endl;
 
-	// check file open
+	fstream file(currentFileFullPath, ios::in | ios::out | ios::app);
 	if (CheckFileOpen(file) == false) {
 		return;
 	}
 
-	// Check size and renaming
-	if (file.tellg() >= Logger::MAX_FILE_SIZE) {
+	if (isExceedMaxFileSize(file)) {
 		file.close();
 
 		// if there is any until file, rename to zip
 		string path = filepath + "*.log";
-		for (const auto& file : std::experimental::filesystem::directory_iterator(path)) {
+		for (const auto& file : std::filesystem::directory_iterator(path)) {
 			cout << file.path() << "Needs to be renamed to ZIP" << endl;
 		}
 
@@ -36,12 +38,35 @@ void Logger::print(const string& funcName, const string& content) {
 		file.open(currentFileName, ios::in | ios::out | ios::app);
 	}
 
-	// Write to file
-	string str = funcName + " :: " + content;
-	file << str;
+	WriteToLatestLog(funcName, content, file);
 
-	// close file
 	file.close();
+}
+
+bool Logger::isExceedMaxFileSize(std::fstream& file)
+{
+	file.seekg(0, ios_base::end);
+	cout << "file size = " << file.tellg() << " Bytes" << endl;
+	return file.tellg() >= Logger::MAX_FILE_SIZE;
+}
+
+void Logger::WriteToLatestLog(const string& funcName, const string& content, fstream& file)
+{
+	time_t timer = time(NULL);
+	tm time;
+	localtime_s(&time, &timer);
+
+	string logTime = to_string(time.tm_year - 100)
+		+ string(".")
+		+ to_string(time.tm_mon)
+		+ string(".")
+		+ to_string(time.tm_mday)
+		+ string(" ")
+		+ to_string(time.tm_hour)
+		+ string(":")
+		+ to_string(time.tm_min);
+
+	file << format("[{0: <13}] {1: <20} : {2: <20}\n", logTime, funcName, content);
 }
 
 string Logger::GetUntilFileName()
@@ -50,11 +75,20 @@ string Logger::GetUntilFileName()
 	tm time;
 
 	localtime_s(&time, &timer);
-	//until_240710_11h_46m_50s.log)
+	// example : until_240710_11h_46m_50s.log
 	return "until"
-		+ to_string(time.tm_year)
+		+ string("_")
+		+ to_string(time.tm_year - 100)
 		+ to_string(time.tm_mon)
-		+ to_string(time.tm_wday);
+		+ to_string(time.tm_wday)
+		+ string("_")
+		+ to_string(time.tm_hour)
+		+ string("h_")
+		+ to_string(time.tm_min)
+		+ string("m_")
+		+ to_string(time.tm_sec)
+		+ string("s")
+		+ ".log";
 }
 
 bool Logger::CheckFileOpen(std::fstream& file)
