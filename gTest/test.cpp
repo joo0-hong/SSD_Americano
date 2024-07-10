@@ -128,6 +128,44 @@ TEST_F(HostIntfTestFixture, WrongCommandNameCheck) {
 	hostIntf.processCommand(4, argv);
 }
 
+TEST_F(HostIntfTestFixture, CheckingValidEraseCommand) {
+	char exe[] = "TESTFILE.exe";
+	char* a = "E";
+	char* adddr = "3";
+	char* size = "10";
+	char* argv[] = { exe, a, adddr, size };
+
+	bool result = hostIntf.checkInvalidCommand(4, argv);
+
+	EXPECT_EQ(false, result);
+}
+
+TEST_F(HostIntfTestFixture, CheckingInvalidEraseSize) {
+	int argc = 4;
+	char exe[] = "TESTFILE.exe";
+	char* a = "E";
+	char* adddr = "3";
+	char* size = "1A";
+	char* argv[] = { exe, a, adddr, size };
+
+	bool result = hostIntf.checkInvalidCommand(4, argv);
+
+	EXPECT_EQ(true, result);
+}
+
+TEST_F(HostIntfTestFixture, CheckingInvalidEraseArguementNum) {
+	int argc = 3;
+	char exe[] = "TESTFILE.exe";
+	char* a = "E";
+	char* adddr = "3";
+	char* size = "5";
+	char* argv[] = { exe, a, adddr, size };
+
+	bool result = hostIntf.checkInvalidCommand(3, argv);
+
+	EXPECT_EQ(true, result);
+}
+
 TEST(NANDTest, NANDWriteRead) {
 	NAND nand{ "TestNand.txt", "TestResult.txt" };
 
@@ -140,3 +178,4 @@ TEST(NANDTest, NANDError) {
 
 	nand.error();
 }
+
