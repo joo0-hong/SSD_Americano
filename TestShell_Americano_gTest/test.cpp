@@ -222,9 +222,39 @@ TEST_F(TestShellFixture, erase_with_start100_size1) {
 }
 
 TEST_F(TestShellFixture, eraserange) {
-	app.erase_range("0", "99");
+	EXPECT_CALL(ssdDriverMk, erase)
+		.Times(1);
+
+	app.erase_range("1", "2");
 }
 
+TEST_F(TestShellFixture, eraserange_start0_end100) {
+	EXPECT_CALL(ssdDriverMk, erase)
+		.Times(10);
+
+	app.erase_range("0", "100");
+}
+
+TEST_F(TestShellFixture, eraserange_start0_end1000) {
+	EXPECT_CALL(ssdDriverMk, erase)
+		.Times(10);
+
+	app.erase_range("0", "1000");
+}
+
+TEST_F(TestShellFixture, eraserange_start99_end100) {
+	EXPECT_CALL(ssdDriverMk, erase)
+		.Times(1);
+
+	app.erase_range("99", "100");
+}
+
+TEST_F(TestShellFixture, eraserange_start99_end1000) {
+	EXPECT_CALL(ssdDriverMk, erase)
+		.Times(1);
+
+	app.erase_range("99", "1000");
+}
 
 TEST(CheckCommand, CheckCommand_InvalidCommand_r) {
 	string test_input = "r";
