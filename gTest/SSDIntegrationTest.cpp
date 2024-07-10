@@ -2,6 +2,7 @@
 #include "gmock/gmock.h"
 #include "../SSD_Americano/HostInterface.cpp"
 #include "../SSD_Americano/Nand.cpp"
+#include "../SSD_Americano/FileManager.cpp"
 
 #include <vector>
 #include <string>

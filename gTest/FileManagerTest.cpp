@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
-#include "../SSD_Americano/FileManager.cpp"
+#include "../SSD_Americano/FileManager.h"
 
 #include <fstream>
 #include <string>
