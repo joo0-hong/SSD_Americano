@@ -128,6 +128,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Command.h" />
+    <ClCompile Include="CommandBuffer.cpp" />
     <ClCompile Include="ErrorCmd.h" />
     <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="HostInterface.cpp" />
@@ -136,6 +137,7 @@
     <ClCompile Include="WriteCmd.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CommandBuffer.h" />
     <ClInclude Include="EraseCmd.h" />
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="HostInterface.h" />
