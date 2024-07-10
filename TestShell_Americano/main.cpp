@@ -13,8 +13,8 @@
 using namespace std;
 
 int main() {
-	const std::string SSD_PATH = "..\\x64\\Debug\\SSD_Americano";
-	const std::string RESULT_PATH = "..\\resources\\result.txt";
+	const std::string SSD_PATH = "SSD_Americano";
+	const std::string RESULT_PATH = "..\\..\\resources\\result.txt";
 
 	SSDDriver ssdDriver{ SSD_PATH };
 	FileReader fileReaderMk{ RESULT_PATH };
@@ -26,7 +26,8 @@ int main() {
 	string arg1, arg2;
 	char delimeter = '\n';
 
-	while (true) {
+	bool ret = true;
+	while (ret) {
 		getline(cin, input, delimeter);
 		int cmd = checker.checkCmd(input, arg1, arg2);
 
@@ -41,7 +42,7 @@ int main() {
 			break;
 		case 2:
 			cout << "exit" << endl;
-			app.exit();
+			ret = app.exit();
 			break;
 		case 3:
 			cout << "help" << endl;
