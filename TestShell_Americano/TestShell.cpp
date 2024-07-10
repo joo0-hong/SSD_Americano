@@ -29,7 +29,8 @@ void TestShell::invokeSSDRead(const std::string& lba)
 string TestShell::getSSDReadData() {
 	return fileReader_->readFile();
 }
-void TestShell::exit() {
+bool TestShell::exit() {
+	return false;
 }
 void TestShell::help() {
 	helpWrite();
