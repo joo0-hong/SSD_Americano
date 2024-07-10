@@ -24,7 +24,7 @@ void Logger::print(const string& funcName, const string& content) {
 	// open file with app option (append)
 	fstream file(currentFileFullPath, ios::in | ios::out | ios::app);
 
-	if (CheckFileOpen(file) == false) {
+	if (checkFileOpen(file) == false) {
 		return;
 	}
 
@@ -33,9 +33,11 @@ void Logger::print(const string& funcName, const string& content) {
 
 		// if there is any until file, rename to zip
 		string fileName = getUntilLogFileName();
-		cout << fileName << " Needs to be renamed to ZIP" << endl;
 		
-		renameLogFileToZip(getFileNameWithoutExt(fileName));
+		if (fileName != "") {
+			cout << fileName << " Needs to be renamed to ZIP" << endl;
+			renameLogFileToZip(getFileNameWithoutExt(fileName));
+		}
 
 		//// Create new until file
 		//string newFileFullPath = LOG_PATH + GetUntilFileName();
@@ -45,12 +47,12 @@ void Logger::print(const string& funcName, const string& content) {
 		file.open(currentFileFullPath, ios::in | ios::out | ios::app);
 	}
 
-	WriteToLatestLog(funcName, content, file);
+	writeToLatestLog(funcName, content, file);
 
 	file.close();
 }
 
-bool Logger::CheckFileOpen(std::fstream& file)
+bool Logger::checkFileOpen(std::fstream& file)
 {
 	if (false == file.is_open()) {
 		cout << "FILE should be opened " << endl;
@@ -70,7 +72,6 @@ string Logger::getUntilLogFileName()
 {
 	string result = "";
 	for (const auto& file : directory_iterator(LOG_PATH)) {
-		result = file.path().filename().string();
 		string fname = result;
 		
 		if (fname == LATEST_LOG_FILE_NAME) {
@@ -83,6 +84,7 @@ string Logger::getUntilLogFileName()
 		fname.erase(0, pos + delimiter.length());
 
 		if (fname == "log") {
+			result = file.path().filename().string();
 			break;
 		}
 
@@ -106,7 +108,7 @@ void Logger::renameLogFileToZip(const string& fname)
 	}
 }
 
-string Logger::GetUntilFileName()
+string Logger::getUntilFileName()
 {
 	time_t timer = time(NULL);
 	tm time;
@@ -128,7 +130,7 @@ string Logger::GetUntilFileName()
 		+ ".log";
 }
 
-void Logger::WriteToLatestLog(const string& funcName, const string& content, fstream& file)
+void Logger::writeToLatestLog(const string& funcName, const string& content, fstream& file)
 {
 	time_t timer = time(NULL);
 	tm time;
