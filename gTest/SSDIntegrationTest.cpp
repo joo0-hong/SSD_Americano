@@ -119,6 +119,16 @@ TEST_F(SSDIntegrationTest, WriteReadTest) {
     verifyResultFile({ data });
 }
 
+TEST_F(SSDIntegrationTest, NoArgumentTest) {
+    char* invalidArgument[] = { "ssd" };
+
+    // Act
+    main(sizeof(invalidArgument) / sizeof(char*), invalidArgument);
+
+    // Assert
+    verifyResultFile({ "NULL" });
+}
+
 TEST_F(SSDIntegrationTest, InvalidCommandTest) {
     // Arrange
     char* invalidArgument[] = { "ssd", "T", "7" };
