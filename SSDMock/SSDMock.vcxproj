@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{97fce958-0e40-462d-b8b1-d3f560dbed96}</ProjectGuid>
-    <RootNamespace>TestShellAmericano</RootNamespace>
+    <ProjectGuid>{0536d501-95b5-4911-8115-0f7ae24fc0e0}</ProjectGuid>
+    <RootNamespace>SSDMock</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -127,16 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="FileReader.cpp" />
-    <ClCompile Include="CheckCommand.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="SSDDriver.cpp" />
-    <ClCompile Include="TestShell.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="FileReader.h" />
-    <ClInclude Include="SSDDriver.h" />
-    <ClInclude Include="TestShell.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
