@@ -36,6 +36,10 @@ public:
 		argv[IDX_COMMAND] = "R";
 		argv[IDX_ADDRESS] = "3";
 	}
+	void SetNormalErase() {
+		argv[IDX_COMMAND] = "E";
+		argv[IDX_ADDRESS] = "3";
+	}
 
 	NiceMock<MockedNand> nand;
 	HostInterface hostIntf{ &nand };
@@ -132,11 +136,8 @@ TEST_F(HostIntfTestFixture, WrongCommandNameCheck) {
 }
 
 TEST_F(HostIntfTestFixture, CheckingValidEraseCommand) {
-	char exe[] = "TESTFILE.exe";
-	char* a = "E";
-	char* adddr = "3";
-	char* size = "10";
-	char* argv[] = { exe, a, adddr, size };
+	SetNormalErase();
+	argv[IDX_DATA] = "10";
 
 	bool result = hostIntf.checkInvalidCommand(4, argv);
 
@@ -144,12 +145,8 @@ TEST_F(HostIntfTestFixture, CheckingValidEraseCommand) {
 }
 
 TEST_F(HostIntfTestFixture, CheckingInvalidEraseSize) {
-	int argc = 4;
-	char exe[] = "TESTFILE.exe";
-	char* a = "E";
-	char* adddr = "3";
-	char* size = "1A";
-	char* argv[] = { exe, a, adddr, size };
+	SetNormalErase();
+	argv[IDX_DATA] = "1A";
 
 	bool result = hostIntf.checkInvalidCommand(4, argv);
 
@@ -157,12 +154,8 @@ TEST_F(HostIntfTestFixture, CheckingInvalidEraseSize) {
 }
 
 TEST_F(HostIntfTestFixture, CheckingInvalidEraseArguementNum) {
-	int argc = 3;
-	char exe[] = "TESTFILE.exe";
-	char* a = "E";
-	char* adddr = "3";
-	char* size = "5";
-	char* argv[] = { exe, a, adddr, size };
+	SetNormalErase();
+	argv[IDX_DATA] = "5";
 
 	bool result = hostIntf.checkInvalidCommand(3, argv);
 
