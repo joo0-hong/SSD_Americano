@@ -4,6 +4,16 @@
 #include "ReadCmd.h"
 #include "EraseCmd.h"
 
+class CommandFactory {
+public:
+	Command* buildCommand(char* argv[], NANDInterface* nandIntf) {
+		if (std::string(argv[1]) == "W") return new WriteCmd(argv, nandIntf);
+		if (std::string(argv[1]) == "R") return new ReadCmd(argv, nandIntf);
+		if (std::string(argv[1]) == "E") return new EraseCmd(argv, nandIntf);
+		return nullptr;
+	}
+};
+
 void HostInterface::processCommand(int argc, char* argv[])
 {
 	Command* cmd = nullptr;
@@ -12,19 +22,9 @@ void HostInterface::processCommand(int argc, char* argv[])
 	if (isInvalidCmd == true) {
 		cmd = new ErrorCmd(nandIntf);
 	}
-	else if (string(argv[1]) == "W") {
-		addr = atoi(argv[2]);
-		data = string(argv[3]);
-		cmd = new WriteCmd(addr, data, nandIntf);
-	}
-	else if (string(argv[1]) == "R") {
-		addr = atoi(argv[2]);
-		cmd = new ReadCmd(addr, nandIntf);
-	}
-	else if (string(argv[1]) == "E") {
-		addr = atoi(argv[2]);
-		size = string(argv[3]);
-		cmd = new EraseCmd(addr, size, nandIntf);
+	else {
+		CommandFactory fac;
+		cmd = fac.buildCommand(argv, nandIntf);
 	}
 
 	cmd->run();

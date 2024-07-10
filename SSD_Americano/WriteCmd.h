@@ -1,13 +1,11 @@
 #pragma once
 #include "Command.h"
 #include "NandInterface.h"
-#include <string>
-
-using namespace std;
 
 class WriteCmd : public Command {
 public:
-	WriteCmd(int addr, string data, NANDInterface* nand) : address(addr), data(data), nandIntf(nand) {
+	WriteCmd(char* argv[], NANDInterface* nand) 
+		: address(atoi(argv[2])), data(string(argv[3])), nandIntf(nand) {
 	}
 	void run() override {
 		nandIntf->write(address, data);

@@ -4,7 +4,8 @@
 
 class ReadCmd : public Command {
 public:
-	ReadCmd(int addr, NANDInterface* nand) : address(addr), nandIntf(nand) {
+	ReadCmd(char* argv[], NANDInterface* nand) 
+		: address(atoi(argv[2])), nandIntf(nand) {
 	}
 	void run() override {
 		nandIntf->read(address);
