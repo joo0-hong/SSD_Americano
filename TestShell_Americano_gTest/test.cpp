@@ -221,6 +221,11 @@ TEST_F(TestShellFixture, erase_with_start100_size1) {
 	app.erase("100", "1");
 }
 
+TEST_F(TestShellFixture, eraserange) {
+	app.erase_range("0", "99");
+}
+
+
 TEST(CheckCommand, CheckCommand_InvalidCommand_r) {
 	string test_input = "r";
 	string arg1, arg2;
