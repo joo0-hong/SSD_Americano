@@ -137,3 +137,10 @@ bool TestShell::testApp2() {
 
 	return true;
 }
+
+void TestShell::erase(std::string lba, std::string size) {
+
+}
+
+void TestShell::erase_range(std::string start_lba, std::string end_lba) {
+}

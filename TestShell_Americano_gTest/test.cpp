@@ -192,6 +192,11 @@ TEST_F(TestShellFixture, TestApp2) {
 	EXPECT_EQ(true, actual);
 }
 
+TEST_F(TestShellFixture, erase) {
+	app.erase("0", "1");
+
+}
+
 TEST(CheckCommand, CheckCommand_InvalidCommand_r) {
 	string test_input = "r";
 	string arg1, arg2;
