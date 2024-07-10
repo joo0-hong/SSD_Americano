@@ -169,6 +169,8 @@ bool CheckCommand::isValidSize(string arg) {
 		cout << "LBA should be decimal number" << endl;
 		return false;
 	}
+
+	return true;
 }
 
 bool CheckCommand::isValidRange(string arg1, string arg2) {
