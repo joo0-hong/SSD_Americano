@@ -188,6 +188,7 @@ TEST(NANDTest, NANDEraseTooLargeSize) {
 	int lba = 0;
 	string eraseSize = "20";
 
+	nand.write(3, "0x1298DEAD");
 	nand.erase(lba, eraseSize);
 }
 
@@ -196,5 +197,6 @@ TEST(NANDTest, NANDEraseSmallLeftSize) {
 	int lba = 98;
 	string eraseSize = "5";
 
+	nand.write(99, "0x1298DEAD");
 	nand.erase(lba, eraseSize);
 }
