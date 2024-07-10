@@ -6,6 +6,11 @@ class ErrorCmd : public Command {
 public:
 	ErrorCmd(NANDInterface* nand) : nandIntf(nand) {
 	}
+
+	void parse(int paramCount, char* param[]) override {
+		return;
+	}
+
 	void run() override {
 		nandIntf->error();
 	}
