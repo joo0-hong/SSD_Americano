@@ -31,16 +31,23 @@ void Logger::print(const string& funcName, const string& content) {
 	if (isExceedMaxFileSize(file)) {
 		file.close();
 
-		// if there is any until file, rename to zip
-		string fileName = getUntilLogFileName();
+		// if there is some until_file, rename to zip
+		string untilLogFileName = getUntilLogFileName();
 		
-		if (fileName != "") {
-			cout << fileName << " Needs to be renamed to ZIP" << endl;
-			renameLogFileToZip(getFileNameWithoutExt(fileName));
+		if (untilLogFileName != "") {
+			cout << untilLogFileName << " Needs to be renamed to ZIP" << endl;
+			
+			string oldName = LOG_PATH + untilLogFileName;
+			string newName = LOG_PATH + getFileNameWithoutExt(untilLogFileName) + ".zip";
+
+			renameLogFileToZip(oldName, newName);
 		}
 
-		//// Create new until file
-		//string newFileFullPath = LOG_PATH + GetUntilFileName();
+		// Create new until file
+		string oldName = LOG_PATH + LATEST_LOG_FILE_NAME;
+		string newName = LOG_PATH + getUntilFileName();
+
+		renameLogFileToZip(oldName, newName);
 		//cout << "RENAMING result = " << res << endl;
 
 		// re-open file
@@ -72,7 +79,7 @@ string Logger::getUntilLogFileName()
 {
 	string result = "";
 	for (const auto& file : directory_iterator(LOG_PATH)) {
-		string fname = result;
+		string fname = file.path().filename().string();
 		
 		if (fname == LATEST_LOG_FILE_NAME) {
 			continue;
@@ -87,7 +94,6 @@ string Logger::getUntilLogFileName()
 			result = file.path().filename().string();
 			break;
 		}
-
 	}
 
 	return result;
@@ -96,11 +102,8 @@ string Logger::getFileNameWithoutExt(const string& fname)
 {
 	return fname.substr(0, fname.find("."));
 }
-void Logger::renameLogFileToZip(const string& fname)
+void Logger::renameLogFileToZip(const string& oldName, const string& newName)
 {
-	string oldName = LOG_PATH + fname + ".log";
-	string newName = LOG_PATH + fname + ".zip";
-
 	int ret = rename(oldName.c_str(), newName.c_str());
 
 	if (ret != 0) {

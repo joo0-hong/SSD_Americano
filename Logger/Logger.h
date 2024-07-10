@@ -27,5 +27,5 @@ private:
 
 	static string getUntilLogFileName();
 	static string getFileNameWithoutExt(const string& filePath);
-	static void renameLogFileToZip(const string& fname);
+	static void renameLogFileToZip(const string& oldName, const string& newName);
 };
