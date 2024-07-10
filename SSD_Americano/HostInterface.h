@@ -30,4 +30,9 @@ private:
 	const int MAX_LBA = 99;
 	const int DATA_LENGTH = 10;
 	const int MAX_ERASE_SIZE = 10;
+
+	bool checkInvalidArguementNumber(int argc, char* argv[]);
+	bool checkInvalidLBA(char* argv[]);
+	bool checkInvalidDataToWrite(char* argv[]);
+	bool checkEraseSize(char* argv[]);
 };
