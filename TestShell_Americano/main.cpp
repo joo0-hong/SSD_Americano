@@ -26,9 +26,7 @@ int main() {
 	string arg1, arg2;
 	char delimeter = '\n';
 
-	bool ret = true;
-
-	while (ret) {
+	while (true) {
 		getline(cin, input, delimeter);
 		int cmd = checker.checkCmd(input, arg1, arg2);
 
@@ -43,7 +41,7 @@ int main() {
 			break;
 		case 2:
 			cout << "exit" << endl;
-			ret = app.exit();
+			app.exit();
 			break;
 		case 3:
 			cout << "help" << endl;
