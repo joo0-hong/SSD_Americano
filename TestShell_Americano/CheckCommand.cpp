@@ -67,6 +67,14 @@ int CheckCommand::checkCmd(string input, string& arg1, string& arg2) {
 		return static_cast<int>(Command::FULLREAD);
 	}
 
+	if (cmd == "testapp1") {
+		return static_cast<int>(Command::TESTAPP1);
+	}
+
+	if (cmd == "testapp2") {
+		return static_cast<int>(Command::TESTAPP2);
+	}
+
 	if (cmd == "erase") {
 
 		if (result.size() < INPUT_COMMAND_ARG1_ARG2) {
