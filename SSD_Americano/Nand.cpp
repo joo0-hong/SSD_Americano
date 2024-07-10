@@ -24,6 +24,21 @@ void NAND::write(int lba, string data)
 	nandFileManager->write(lba, data);
 }
 
+void NAND::erase(int lba, string size) {
+	int actualSize = stoi(size);
+
+	if (actualSize > MAX_ERASE_SIZE) {
+		actualSize = MAX_ERASE_SIZE;
+	}
+	if (lba + actualSize - 1 > MAX_ADDR) {
+		actualSize = actualSize - (lba + actualSize - 1 - MAX_ADDR);
+	}
+
+	for (int addr = lba; addr < lba + actualSize; addr++) {
+		nandFileManager->write(addr, INITIAL_DATA);
+	}
+}
+
 void NAND::error()
 {
 	resultFileManager->write(0, "NULL");

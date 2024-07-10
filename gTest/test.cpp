@@ -18,6 +18,7 @@ class MockedNand : public NANDInterface {
 public:
 	MOCK_METHOD(void, read, (int lba), (override));
 	MOCK_METHOD(void, write, (int lba, string data), (override));
+	MOCK_METHOD(void, erase, (int lba, string size), (override));
 	MOCK_METHOD(void, error, (), (override));
 };
 
@@ -179,3 +180,19 @@ TEST(NANDTest, NANDError) {
 	nand.error();
 }
 
+
+TEST(NANDTest, NANDEraseTooLargeSize) {
+	NAND nand{ "TestNand.txt", "TestResult.txt" };
+	int lba = 0;
+	string eraseSize = "20";
+
+	nand.erase(lba, eraseSize);
+}
+
+TEST(NANDTest, NANDEraseSmallLeftSize) {
+	NAND nand{ "TestNand.txt", "TestResult.txt" };
+	int lba = 98;
+	string eraseSize = "5";
+
+	nand.erase(lba, eraseSize);
+}

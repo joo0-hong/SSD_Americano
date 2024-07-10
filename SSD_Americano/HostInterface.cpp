@@ -8,7 +8,7 @@ bool HostInterface::checkInvalidCommand(int argc, char* argv[]) {
 		return true;
 	}
 
-	if (string(argv[1]) != "R" && string(argv[1]) != "W") {
+	if (string(argv[1]) != "R" && string(argv[1]) != "W" && string(argv[1]) != "E") {
 		return true;
 	}
 
@@ -17,6 +17,10 @@ bool HostInterface::checkInvalidCommand(int argc, char* argv[]) {
 	}
 
 	if (string(argv[1]) == "W" && argc != VALID_WRITE_ARGUMENT_NUM) {
+		return true;
+	}
+
+	if (string(argv[1]) == "E" && argc != VALID_ERASE_ARGUMENT_NUM) {
 		return true;
 	}
 
@@ -59,6 +63,23 @@ bool HostInterface::checkInvalidCommand(int argc, char* argv[]) {
 			return true;
 		}
 	}
+
+	if (string(argv[1]) == "E") {
+		for (const char ch : string(argv[3])) {
+			if ((ch >= '0') && (ch <= '9')) {
+				continue;
+			}
+			cout << "Invalid erase size !!!" << endl;
+			return true;
+		}
+
+		int eraseSize = stoi(string(argv[3]));
+		if (eraseSize <= 0 && eraseSize > MAX_ERASE_SIZE) {
+			cout << "Invalid erase size !!!" << endl;
+			return true;
+		}
+	}
+
 	return false;
 }
 
