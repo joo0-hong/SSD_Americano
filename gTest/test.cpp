@@ -182,21 +182,20 @@ TEST(NANDTest, NANDError) {
 	nand.error();
 }
 
-
 TEST(NANDTest, NANDEraseTooLargeSize) {
 	NAND nand{ "TestNand.txt", "TestResult.txt" };
 	int lba = 0;
 	string eraseSize = "20";
 
 	nand.write(3, "0x1298DEAD");
-	nand.erase(lba, eraseSize);
+	nand.write(13, "0x1298DEAD");
+	nand.erase(0, eraseSize);
 }
 
 TEST(NANDTest, NANDEraseSmallLeftSize) {
 	NAND nand{ "TestNand.txt", "TestResult.txt" };
-	int lba = 98;
 	string eraseSize = "5";
 
 	nand.write(99, "0x1298DEAD");
-	nand.erase(lba, eraseSize);
+	nand.erase(98, eraseSize);
 }
