@@ -42,7 +42,7 @@ void Logger::print(const string& funcName, const string& content) {
 		//cout << "RENAMING result = " << res << endl;
 
 		// re-open file
-		file.open(LATEST_LOG_FILE_NAME, ios::in | ios::out | ios::app);
+		file.open(currentFileFullPath, ios::in | ios::out | ios::app);
 	}
 
 	WriteToLatestLog(funcName, content, file);
