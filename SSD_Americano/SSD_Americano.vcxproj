@@ -127,7 +127,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="FileManager.cpp" />
+    <ClCompile Include="HostInterface.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Nand.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="NandInterface.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
