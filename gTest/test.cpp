@@ -1,8 +1,8 @@
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 #include "../SSD_Americano/NandInterface.h"
-#include "../SSD_Americano/HostInterface.cpp"
-#include "../SSD_Americano/Nand.cpp"
+#include "../SSD_Americano/HostInterface.h"
+#include "../SSD_Americano/Nand.h"
 
 using namespace testing;
 
