@@ -174,6 +174,24 @@ TEST_F(TestShellFixture, TestApp1) {
 	EXPECT_EQ(expect, actual);
 }
 
+TEST_F(TestShellFixture, TestApp2) {
+	//arrange
+	EXPECT_CALL(fileReaderMk, readFile)
+		.Times(AtLeast(1))
+		.WillRepeatedly(Return("0x12345678"));
+
+	EXPECT_CALL(ssdDriverMk, read)
+		.Times(AtLeast(1));
+	EXPECT_CALL(ssdDriverMk, write)
+		.Times(AtLeast(1));
+
+	//action
+	bool actual = app.testApp2();
+
+	//assert
+	EXPECT_EQ(true, actual);
+}
+
 TEST(CheckCommand, CheckCommand_InvalidCommand_r) {
 	string test_input = "r";
 	string arg1, arg2;

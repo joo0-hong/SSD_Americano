@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
 
 #include "TestShell.h"
 #include "FileReader.h"
@@ -47,10 +48,6 @@ void TestShell::fullread() {
 	for (int lba = 0; lba < 100; lba++) {
 		read(std::to_string(lba));
 	}
-}
-void TestShell::testapp1(const string& data) {
-	fullwrite(data);
-	fullread();
 }
 
 void TestShell::helpWrite() const {
@@ -110,4 +107,32 @@ void TestShell::displayHelp(const std::string& name, const std::string& synopsis
 	std::cout << "[DESCRIPTION]" << std::endl;
 	std::cout << "- " << description << std::endl;
 	std::cout << "======================================================" << std::endl << std::endl;
+}
+
+void TestShell::testapp1(const string& data) {
+	fullwrite(data);
+	fullread();
+}
+
+bool TestShell::testApp2() {
+	vector<string> LBA = { "0", "1", "2", "3", "4", "5" };
+	const int iter_max = 30;
+
+	string data = "0xAAAABBBB";
+	for (int iter = 0; iter < iter_max; iter++) {
+		for (auto lba : LBA) {
+			write(lba, data);
+		}
+	}
+	
+	data = "0x12345678";
+	for (auto lba : LBA) {
+		write(lba, data);
+		read(lba);
+		
+		if (data != getSSDReadData())
+			return false;
+	}
+
+	return true;
 }
