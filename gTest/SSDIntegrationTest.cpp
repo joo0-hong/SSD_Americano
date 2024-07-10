@@ -20,7 +20,7 @@ protected:
         }
 
         writeFile(TEST_NAND_FILE, data);
-        writeFile(TEST_RESULT_FILE, { "" });
+        writeFile(TEST_RESULT_FILE, { "\n" });
     }
 
     void mainRead(const int linenumber) {
