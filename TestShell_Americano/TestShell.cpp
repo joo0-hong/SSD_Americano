@@ -109,11 +109,17 @@ void TestShell::displayHelp(const std::string& name, const std::string& synopsis
 	std::cout << "======================================================" << std::endl << std::endl;
 }
 
+void TestShell::testapp1(const string& data) {
+	fullwrite(data);
+	fullread();
+}
+
 bool TestShell::testApp2() {
 	vector<string> LBA = { "0", "1", "2", "3", "4", "5" };
-	
+	const int iter_max = 30;
+
 	string data = "0xAAAABBBB";
-	for (int i = 0; i < 30; i++) {
+	for (int iter = 0; iter < iter_max; iter++) {
 		for (auto lba : LBA) {
 			write(lba, data);
 		}

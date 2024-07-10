@@ -6,6 +6,7 @@
 #include "../TestShell_Americano/TestShell.cpp"
 #include "../TestShell_Americano/FileReader.cpp"
 #include "../TestShell_Americano/SSDDriver.cpp"
+#include "../TestShell_Americano/CheckCommand.cpp"
 
 using namespace std;
 using namespace testing;
@@ -138,6 +139,41 @@ TEST_F(TestShellFixture, FullWrite) {
 	app.fullwrite("0xABCDFFF");
 }
 
+TEST_F(TestShellFixture, Help) {
+	app.help();
+}
+
+TEST_F(TestShellFixture, TestApp1) {
+	//arrange
+	EXPECT_CALL(ssdDriverMk, write)
+		.Times(LBA_MAX);
+
+	EXPECT_CALL(ssdDriverMk, read)
+		.Times(LBA_MAX);
+
+	EXPECT_CALL(fileReaderMk, readFile)
+		.Times(LBA_MAX)
+		.WillRepeatedly(Return("0x11111111"));
+
+	std::ostringstream oss;
+	auto oldCoutStreamBuf = std::cout.rdbuf();
+	std::cout.rdbuf(oss.rdbuf());
+
+	//action
+	app.testapp1("0x11111111");
+
+	std::cout.rdbuf(oldCoutStreamBuf);	// 기존 buf 복원
+
+	//assert
+	string expect = "";
+	for (int i = LBA_MIN; i < LBA_MAX; ++i) {
+		expect += "0x11111111\n";
+	}
+	string actual = oss.str();
+
+	EXPECT_EQ(expect, actual);
+}
+
 TEST_F(TestShellFixture, TestApp2) {
 	//arrange
 	EXPECT_CALL(fileReaderMk, readFile)
@@ -154,4 +190,124 @@ TEST_F(TestShellFixture, TestApp2) {
 
 	//assert
 	EXPECT_EQ(true, actual);
+}
+
+TEST(CheckCommand, CheckCommand_InvalidCommand_r) {
+	string test_input = "r";
+	string arg1, arg2;
+
+	CheckCommand checker;
+
+	EXPECT_EQ(-1, checker.checkCmd(test_input, arg1, arg2));
+}
+
+
+TEST(CheckCommand, CheckCommand_InvalidCommand_NoCommand) {
+	string test_input = " ";
+	string arg1, arg2;
+
+	CheckCommand checker;
+
+	EXPECT_EQ(-1, checker.checkCmd(test_input, arg1, arg2));
+}
+
+
+TEST(CheckCommand, CheckCommand_ValidLBA_0) {
+	string test_input = "read 0";
+	string arg1, arg2;
+
+	CheckCommand checker;
+
+	EXPECT_EQ(0x1, checker.checkCmd(test_input, arg1, arg2));
+}
+
+TEST(CheckCommand, CheckCommand_InvalidLBA_NotNumber_r) {
+	string test_input = "read r";
+	string arg1, arg2;
+
+	CheckCommand checker;
+	
+	EXPECT_EQ(0xff, checker.checkCmd(test_input, arg1, arg2));
+}
+
+TEST(CheckCommand, CheckCommand_InvalidLBA_NotNumber_0x10) {
+	string test_input = "read 0x10";
+	string arg1, arg2;
+
+	CheckCommand checker;
+
+	EXPECT_EQ(0xff, checker.checkCmd(test_input, arg1, arg2));
+}
+
+TEST(CheckCommand, CheckCommand_InvalidLBA_NotNumber_A) {
+	string test_input = "read A";
+	string arg1, arg2;
+
+	CheckCommand checker;
+
+	EXPECT_EQ(0xff, checker.checkCmd(test_input, arg1, arg2));
+}
+
+TEST(CheckCommand, CheckCommand_InvalidLBA_OutOfRange_minus1) {
+	string test_input = "read -1";
+	string arg1, arg2;
+
+	CheckCommand checker;
+
+	EXPECT_EQ(0xff, checker.checkCmd(test_input, arg1, arg2));
+
+}
+
+TEST(CheckCommand, CheckCommand_InvalidLBA_OutOfRange_101) {
+	string test_input = "read 101";
+	string arg1, arg2;
+
+	CheckCommand checker;
+
+	EXPECT_EQ(0xff, checker.checkCmd(test_input, arg1, arg2));
+}
+
+TEST(CheckCommand, CheckCommand_ValidData_0x12345678) {
+	string test_input = "write 1 0x12345678";
+	string arg1, arg2;
+
+	CheckCommand checker;
+
+	EXPECT_EQ(0x0, checker.checkCmd(test_input, arg1, arg2));
+}
+
+TEST(CheckCommand, CheckCommand_InvalidData_NoPrefix_12345678) {
+	string test_input = "write 1 12345678";
+	string arg1, arg2;
+
+	CheckCommand checker;
+
+	EXPECT_EQ(0xff, checker.checkCmd(test_input, arg1, arg2));
+}
+
+TEST(CheckCommand, CheckCommand_InvalidData_Not10digit_0x1234) {
+	string test_input = "write 1 0x1234";
+	string arg1, arg2;
+
+	CheckCommand checker;
+
+	EXPECT_EQ(0xff, checker.checkCmd(test_input, arg1, arg2));
+}
+
+TEST(CheckCommand, CheckCommand_InvalidData_NotNumber_0xABCDEFGH) {
+	string test_input = "write 1 0xABCDEFGH";
+	string arg1, arg2;
+
+	CheckCommand checker;
+
+	EXPECT_EQ(0xff, checker.checkCmd(test_input, arg1, arg2));
+}
+
+TEST(CheckCommand, CheckCommand_InvalidData_NotNumber_r) {
+	string test_input = "write 1 r";
+	string arg1, arg2;
+
+	CheckCommand checker;
+
+	EXPECT_EQ(0xff, checker.checkCmd(test_input, arg1, arg2));
 }

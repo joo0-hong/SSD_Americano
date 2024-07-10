@@ -16,6 +16,7 @@ public:
 	void fullwrite(std::string data);
 	void fullread();
 
+	void testapp1(const string& data);
 	bool testApp2();
 private:
 	SSDDriver* ssdDriver_;
