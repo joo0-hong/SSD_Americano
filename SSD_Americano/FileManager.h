@@ -14,14 +14,16 @@ public:
     void writeResult(const int linenumber, const string& data);
 
 private:
+    const int MAX_LINENUMBER = 99;
+
     string filename;
 
     string readData(fstream& file, const int linenumber);
     void writeData(fstream& file, const int linenumber, const string& data);
 
-    streampos getPosition(fstream& file, const int linenumber);
-    void initFileDiscriptor(fstream& file);
-    vector<string> getFileData(fstream& file, const int startLinenumber, const int endLinenumber);
-    void checkValidPosition(const streampos pos, const int curLinenumber, const int linenumber);
+    void checkValidLinenumber(const int linenumber);
     void checkFileOpen(fstream& file);
+
+    vector<string> readFileData();
+    void writeFileData(vector<string> lines);
 };

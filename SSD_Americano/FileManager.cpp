@@ -7,6 +7,8 @@ string FileManager::read(const int linenumber) {
 
     checkFileOpen(file);
 
+    checkValidLinenumber(linenumber);
+
     data = readData(file, linenumber);
 
     file.close();
@@ -19,6 +21,8 @@ void FileManager::write(const int linenumber, const string& data) {
 
     checkFileOpen(file);
 
+    checkValidLinenumber(linenumber);
+
     writeData(file, linenumber, data);
 
     file.close();
@@ -27,19 +31,19 @@ void FileManager::write(const int linenumber, const string& data) {
 string FileManager::readData(fstream& file, const int linenumber) {
     vector<string> lines = { };
 
-    lines = getFileData(file, linenumber, linenumber);
+    lines = readFileData();
 
-    if (1 != lines.size()) {
+    if (lines.size() <= linenumber) {
         throw runtime_error("Invalid line number: " + linenumber);
     }
 
-    return lines[0];
+    return lines[linenumber];
 }
 
 void FileManager::writeData(fstream& file, const int linenumber, const string& data) {
     vector<string> lines = { };
 
-    lines = getFileData(file, 0, 0x7FFFFFFF);
+    lines = readFileData();
 
     if (lines.size() <= linenumber) {
         throw runtime_error("Invalid line number: " + linenumber);
@@ -47,74 +51,60 @@ void FileManager::writeData(fstream& file, const int linenumber, const string& d
 
     lines[linenumber] = data;
 
-    initFileDiscriptor(file);
-
-    for (int i = 0; i < lines.size(); i++) {
-        if (i + 1 < lines.size()) {
-            file << lines[i] << endl;
-        }
-        else {
-            file << lines[i];
-        }
-    }
+    writeFileData(lines);
 }
 
 void FileManager::writeResult(const int linenumber, const string& data) {
-    fstream file(filename, std::ios::in | std::ios::out);
+    fstream file(filename, std::ios::out);
 
-    initFileDiscriptor(file);
     file << data;
 
-}
-
-streampos FileManager::getPosition(fstream& file, const int linenumber) {
-    int curLinenumber = 0;
-    string line = "";
-
-    initFileDiscriptor(file);
-
-    while ((curLinenumber < linenumber) && (getline(file, line))) {
-        curLinenumber++;
-    }
-
-    streampos pos = file.tellg();
-    checkValidPosition(pos, curLinenumber, linenumber);
-
-    return pos;
-}
-
-void FileManager::initFileDiscriptor(fstream& file) {
-    file.clear();
-    file.seekg(0);
-    file.seekp(0);
-}
-
-vector<string> FileManager::getFileData(fstream& file, const int startLinenumber, const int endLinenumber) {
-    vector<string> lines = { };
-    string line = "";
-    int curLinenumber = 0;
-
-    initFileDiscriptor(file);
-
-    while (getline(file, line)) {
-        if ((startLinenumber <= curLinenumber) && (curLinenumber <= endLinenumber)) {
-            lines.push_back(line);
-        }
-
-        curLinenumber++;
-    }
-
-    return lines;
-}
-
-void FileManager::checkValidPosition(const streampos pos, const int curLinenumber, const int linenumber) {
-    if ((-1 == pos) || (curLinenumber != linenumber)) {
-        throw runtime_error("Invalid line number: " + linenumber);
-    }
+    file.close();
 }
 
 void FileManager::checkFileOpen(fstream& file) {
+    if (true == file.is_open()) {
+        return;
+    }
+
+    throw runtime_error("File can not be open.");
+}
+
+vector<string> FileManager::readFileData() {
+    ifstream file(filename);
+    vector<string> lines = { };
+    string line = "";
+
     if (false == file.is_open()) {
         throw runtime_error("File can not be open.");
     }
+
+    while (getline(file, line)) {
+        lines.push_back(line);
+    }
+    
+    file.close();
+    return lines;
+}
+
+void FileManager::writeFileData(vector<string> lines) {
+    ofstream file(filename);
+
+    if (false == file.is_open()) {
+        throw runtime_error("File can not be open.");
+    }
+
+    for (int i = 0; i < lines.size(); i++) {
+        file << lines[i] << endl;
+    }
+
+    file.close();
+}
+
+void FileManager::checkValidLinenumber(const int linenumber) {
+    if ((0 <= linenumber) && (linenumber <= MAX_LINENUMBER)) {
+        return;
+    }
+
+    throw runtime_error("Invalid line number: " + linenumber);
 }
