@@ -2,6 +2,7 @@
 #include "ErrorCmd.h"
 #include "WriteCmd.h"
 #include "ReadCmd.h"
+#include "EraseCmd.h"
 
 bool HostInterface::checkInvalidCommand(int argc, char* argv[]) {
 	if (argc < MIN_VALID_ARGUMENT_NUM) {
@@ -99,6 +100,11 @@ void HostInterface::processCommand(int argc, char* argv[])
 	else if (string(argv[1]) == "R") {
 		addr = atoi(argv[2]);
 		cmd = new ReadCmd(addr, nandIntf);
+	}
+	else if (string(argv[1]) == "E") {
+		addr = atoi(argv[2]);
+		size = string(argv[3]);
+		cmd = new EraseCmd(addr, size, nandIntf);
 	}
 
 	cmd->run();

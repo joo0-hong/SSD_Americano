@@ -136,6 +136,7 @@
     <ClCompile Include="WriteCmd.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="EraseCmd.h" />
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="HostInterface.h" />
     <ClInclude Include="Nand.h" />

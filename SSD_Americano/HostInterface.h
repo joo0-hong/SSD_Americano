@@ -20,6 +20,7 @@ private:
 	int command = 0;
 	int addr = 0;
 	string data;
+	string size;
 
 	const int MIN_VALID_ARGUMENT_NUM = 3;
 	const int VALID_READ_ARGUMENT_NUM = 3;

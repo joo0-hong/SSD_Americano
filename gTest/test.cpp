@@ -48,11 +48,13 @@ private:
 TEST(SSDTest, NANDInterface) {
 	NiceMock<MockedNand> nand;
 
-	EXPECT_CALL(nand, read(_)).Times(1);
-	EXPECT_CALL(nand, write(_, _)).Times(1);
+    EXPECT_CALL(nand, read(_)).Times(1);
+    EXPECT_CALL(nand, write(_, _)).Times(1);
+	EXPECT_CALL(nand, erase(_, _)).Times(1);
 
 	nand.read(0);
 	nand.write(0, " ");
+	nand.erase(0, " ");
 }
 
 TEST_F(HostIntfTestFixture, CheckingInvalidArgumentNum) {
