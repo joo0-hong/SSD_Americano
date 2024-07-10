@@ -161,4 +161,6 @@ void TestShell::erase(std::string lba, std::string size) {
 }
 
 void TestShell::erase_range(std::string start_lba, std::string end_lba) {
+	int total_size = std::stoi(end_lba) - std::stoi(start_lba);
+	erase(start_lba, std::to_string(total_size));
 }
