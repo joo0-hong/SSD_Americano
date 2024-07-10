@@ -5,6 +5,11 @@
 
 using namespace std;
 
+struct ARGUMENTS {
+	int count;
+	char** value;
+};
+
 class HostInterface {
 public:
 	HostInterface(NANDInterface* nand) : nandIntf(nand) { }
@@ -13,4 +18,7 @@ public:
 
 private:
 	NANDInterface* nandIntf;
+
+	void processErrorCommand();
+	ARGUMENTS getNextArgument(ARGUMENTS argument);
 };

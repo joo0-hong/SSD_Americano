@@ -6,7 +6,7 @@
 
 class CommandFactory {
 public:
-    static Command* getNewCommand(const string& command, NANDInterface* nand) {
+    static Command* newCommand(const string& command, NANDInterface* nand) {
         if ("R" == command) {
             return new ReadCmd(nand);
         }
@@ -18,5 +18,9 @@ public:
         }
 
         throw invalid_argument("This command is not available.");
+    }
+
+    static Command* newErrorCommand(NANDInterface* nand) {
+        return new ErrorCmd(nand);
     }
 };

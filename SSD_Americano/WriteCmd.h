@@ -12,23 +12,54 @@ public:
 	}
 
 	void parse(int paramCount, char* param[]) override {
-		if (paramCount != 2) {
-			throw invalid_argument("Invalid Parameter Count");
+		checkParamValid(paramCount, param);
+
+		address = atoi(param[0]);
+		data = param[1];
+	}
+
+	void run() override {
+		nandIntf->write(address, data);
+	}
+
+private:
+	NANDInterface* nandIntf;
+	int address;
+	string data;
+
+	void checkParamValid(int paramCount, char* param[]) {
+		checkParamCountValid(paramCount);
+		checkLBAValid(param[0]);
+		checkDataValid(param[1]);
+	}
+
+	void checkParamCountValid(int paramCount)
+	{
+		if (paramCount == 2) {
+			return;
 		}
 
-		for (const char ch : string(param[0])) {
+		throw invalid_argument("Invalid Parameter Count");
+	}
+
+	void checkLBAValid(char* param)
+	{
+		for (const char ch : string(param)) {
 			if ((ch >= '0') && (ch <= '9')) {
 				continue;
 			}
 			throw invalid_argument("Invalid LBA");
 		}
 
-		int lba = atoi(param[0]);
+		int lba = atoi(param);
 		if (lba < 0 || lba > 99) {
 			throw invalid_argument("LBA is out of range");
 		}
+	}
 
-		string dataValue = string(param[1]);
+	void checkDataValid(char* param)
+	{
+		string dataValue = string(param);
 
 		if (dataValue.length() != 10) {
 			throw invalid_argument("Invalid data length");
@@ -49,16 +80,5 @@ public:
 			}
 			throw invalid_argument("Invalid Data:  Data should 0-9 or A-F");
 		}
-
-		address = atoi(param[0]);
-		data = param[1];
 	}
-
-	void run() override {
-		nandIntf->write(address, data);
-	}
-private:
-	NANDInterface* nandIntf;
-	int address;
-	string data;
 };

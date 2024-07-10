@@ -3,24 +3,53 @@
 
 void HostInterface::processCommand(int argc, char* argv[])
 {
-	Command* cmd = nullptr;
+	Command* command = nullptr;
+	ARGUMENTS param = { };
+	param.count = argc;
+	param.value = argv;
 
 	try {
-		if (argc < 2) {
-			throw invalid_argument("There is no argument.");
-		}
+		param = getNextArgument(param);
+		string cmd = string(*param.value);
+		command = CommandFactory::newCommand(cmd, nandIntf);
 
-		cmd = CommandFactory::getNewCommand(string(argv[1]), nandIntf);
-
-		cmd->parse(argc - 2, &argv[2]);
-		cmd->run();
+		param = getNextArgument(param);
+		command->parse(param.count, param.value);
+		command->run();
 	}
 	catch (...) {
-		delete cmd;
-		cmd = new ErrorCmd(nandIntf);
-		cmd->run();
+		processErrorCommand();
 	}
 
-	delete cmd;
+	if (nullptr != command) {
+		delete command;
+	}
 }
 
+void HostInterface::processErrorCommand() {
+	Command* command = nullptr;
+
+	try {
+		command = CommandFactory::newErrorCommand(nandIntf);
+		command->run();
+	}
+	catch (...) {
+		; // Logging
+	}
+
+	if (nullptr != command) {
+		delete command;
+	}
+}
+
+ARGUMENTS HostInterface::getNextArgument(ARGUMENTS argument) {
+	ARGUMENTS nextArgument = argument;
+	nextArgument.count--;
+	nextArgument.value++;
+
+	if (nextArgument.count <= 0) {
+		throw invalid_argument("Argument does not remain.");
+	}
+
+	return nextArgument;
+}
