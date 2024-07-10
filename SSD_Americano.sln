@@ -17,8 +17,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestShell_Americano", "Test
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestShell_Americano_gTest", "TestShell_Americano_gTest\TestShell_Americano_gTest.vcxproj", "{AF589EEF-A9A0-4A2E-9D92-9AE70EB4171F}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SSDMock", "SSDMock\SSDMock.vcxproj", "{0536D501-95B5-4911-8115-0F7AE24FC0E0}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -59,14 +57,6 @@ Global
 		{AF589EEF-A9A0-4A2E-9D92-9AE70EB4171F}.Release|x64.Build.0 = Release|x64
 		{AF589EEF-A9A0-4A2E-9D92-9AE70EB4171F}.Release|x86.ActiveCfg = Release|Win32
 		{AF589EEF-A9A0-4A2E-9D92-9AE70EB4171F}.Release|x86.Build.0 = Release|Win32
-		{0536D501-95B5-4911-8115-0F7AE24FC0E0}.Debug|x64.ActiveCfg = Debug|x64
-		{0536D501-95B5-4911-8115-0F7AE24FC0E0}.Debug|x64.Build.0 = Debug|x64
-		{0536D501-95B5-4911-8115-0F7AE24FC0E0}.Debug|x86.ActiveCfg = Debug|Win32
-		{0536D501-95B5-4911-8115-0F7AE24FC0E0}.Debug|x86.Build.0 = Debug|Win32
-		{0536D501-95B5-4911-8115-0F7AE24FC0E0}.Release|x64.ActiveCfg = Release|x64
-		{0536D501-95B5-4911-8115-0F7AE24FC0E0}.Release|x64.Build.0 = Release|x64
-		{0536D501-95B5-4911-8115-0F7AE24FC0E0}.Release|x86.ActiveCfg = Release|Win32
-		{0536D501-95B5-4911-8115-0F7AE24FC0E0}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
