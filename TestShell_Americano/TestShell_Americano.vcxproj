@@ -135,6 +135,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CheckCommand.h" />
+    <ClInclude Include="Command.h" />
     <ClInclude Include="FileReader.h" />
     <ClInclude Include="SSDDriver.h" />
     <ClInclude Include="TestShell.h" />
