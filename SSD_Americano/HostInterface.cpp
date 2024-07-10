@@ -112,17 +112,20 @@ public:
 
 	void processCommand(int argc, char* argv[])
 	{
-		Command* cmd = new ErrorCmd(nandIntf);
-		if (checkInvalidCommand(argc, argv) == false) {
-			addr = atoi(argv[2]);
+		Command* cmd = nullptr;
+		bool isInvalidCmd = checkInvalidCommand(argc, argv);
 
-			if (string(argv[1]) == "W") {
-				data = string(argv[3]);
-				cmd = new WriteCmd(addr, data, nandIntf);
-			}
-			else if (string(argv[1]) == "R") {
-				cmd = new ReadCmd(addr, nandIntf);
-			}
+		if (isInvalidCmd == true) {
+			cmd = new ErrorCmd(nandIntf);
+		}
+		else if (string(argv[1]) == "W") {
+			addr = atoi(argv[2]);
+			data = string(argv[3]);
+			cmd = new WriteCmd(addr, data, nandIntf);
+		}
+		else if (string(argv[1]) == "R") {
+			addr = atoi(argv[2]);
+			cmd = new ReadCmd(addr, nandIntf);
 		}
 
 		cmd->run();
