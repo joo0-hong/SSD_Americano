@@ -1,11 +1,4 @@
-#include <iostream>
-#include <filesystem>
-#include <cstdlib>
-#include <string>
-#include <vector>
-#include <sstream>
-
-#include "CheckCommand.cpp"
+#include "CheckCommand.h"
 #include "TestShell.h"
 #include "FileReader.h"
 #include "SSDDriver.h"
