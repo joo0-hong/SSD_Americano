@@ -137,3 +137,30 @@ bool TestShell::testApp2() {
 
 	return true;
 }
+
+void TestShell::erase(std::string lba, std::string size) {
+	int total_size = std::stoi(size);
+	if (total_size > 100) {
+		total_size = 100;
+	}
+	int lba_start = std::stoi(lba);
+	const int ERASE_LBA_MAX = 10;
+	const int LBA_MAX = 100;
+
+	while (lba_start < LBA_MAX) {
+		int lba_size = (total_size <= ERASE_LBA_MAX) ? total_size : ERASE_LBA_MAX;
+		ssdDriver_->erase(std::to_string(lba_start), std::to_string(lba_size));
+
+		if (total_size <= ERASE_LBA_MAX) {
+			break;
+		}
+
+		lba_start += ERASE_LBA_MAX;
+		total_size -= ERASE_LBA_MAX;
+	}
+}
+
+void TestShell::erase_range(std::string start_lba, std::string end_lba) {
+	int total_size = std::stoi(end_lba) - std::stoi(start_lba);
+	erase(start_lba, std::to_string(total_size));
+}
