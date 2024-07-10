@@ -3,6 +3,10 @@
 #include "../SSD_Americano/HostInterface.cpp"
 #include "../SSD_Americano/Nand.cpp"
 #include "../SSD_Americano/FileManager.cpp"
+#include "../SSD_Americano/EraseCmd.cpp"
+#include "../SSD_Americano/WriteCmd.cpp"
+#include "../SSD_Americano/ReadCmd.cpp"
+#include "../SSD_Americano/ErrorCmd.cpp"
 
 #include <vector>
 #include <string>

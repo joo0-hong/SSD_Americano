@@ -31,6 +31,7 @@ void HostInterface::processErrorCommand() {
 
 	try {
 		command = CommandFactory::newErrorCommand(nandIntf);
+		command->parse(0, nullptr);
 		command->run();
 	}
 	catch (...) {
