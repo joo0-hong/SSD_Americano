@@ -1,11 +1,4 @@
-#include <iostream>
-#include <filesystem>
-#include <cstdlib>
-#include <string>
-#include <vector>
-#include <sstream>
-
-#include "CheckCommand.cpp"
+#include "CheckCommand.h"
 #include "TestShell.h"
 #include "FileReader.h"
 #include "SSDDriver.h"
@@ -32,34 +25,42 @@ int main() {
 		int cmd = checker.checkCmd(input, arg1, arg2);
 
 		switch (cmd) {
-		case 0:
+		case static_cast<int>(Command::WRITE):
 			cout << "write (" <<arg1 << ", " << arg2 << ")" << endl;
 			app.write(arg1, arg2);
 			break;
-		case 1:
+		case static_cast<int>(Command::READ):
 			cout << "read (" << arg1 << ")" << endl;
 			app.read(arg1);
 			break;
-		case 2:
+		case static_cast<int>(Command::EXIT):
 			cout << "exit" << endl;
 			ret = app.exit();
 			break;
-		case 3:
+		case static_cast<int>(Command::HELP):
 			cout << "help" << endl;
 			app.help();
 			break;
-		case 4:
+		case static_cast<int>(Command::FULLWRITE):
 			cout << "fullwrite (" << arg1 << ")" << endl;
 			app.fullwrite(arg1);
 			break;
-		case 5:
+		case static_cast<int>(Command::FULLREAD):
 			cout << "fullread" << endl;
 			app.fullread();
 			break;
-		case -1:
+		case static_cast<int>(Command::ERASE):
+			cout << "erase (" << arg1 << ", " << arg2 << ")" << endl;
+			app.erase(arg1, arg2);
+			break;
+		case static_cast<int>(Command::ERASE_RANGE):
+			cout << "erase_range (" << arg1 << ", " << arg2 << ")" << endl;
+			app.erase_range(arg1, arg2);
+			break;
+		case static_cast<int>(Command::INVALID_COMMAND):
 			cout << "INVALID COMMAND" << endl;
 			break;
-		default:
+		case static_cast<int>(Command::INVALID_ARGUMENT):
 			cout << "INVALID ARGUMENT" << endl;
 			break;
 		}
