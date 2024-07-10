@@ -41,5 +41,5 @@ void NAND::erase(int lba, string size) {
 
 void NAND::error()
 {
-	resultFileManager->write(0, "NULL");
+	resultFileManager-> write(0, "NULL");
 }
