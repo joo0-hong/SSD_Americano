@@ -110,12 +110,14 @@ void TestShell::displayHelp(const std::string& name, const std::string& synopsis
 	std::cout << "======================================================" << std::endl << std::endl;
 }
 
-void TestShell::testapp1(const string& data) {
-	fullwrite(data);
+bool TestShell::testapp1() {
+	fullwrite("0x11111111");
 	fullread();
+
+	return true;
 }
 
-bool TestShell::testApp2() {
+bool TestShell::testapp2() {
 	vector<string> LBA = { "0", "1", "2", "3", "4", "5" };
 	const int iter_max = 30;
 

@@ -51,11 +51,11 @@ int main() {
 			break;
 		case static_cast<int>(Command::TESTAPP1):
 			cout << "testapp1" << endl;
-			app.testapp1("0x11111111");
+			app.testapp1();
 			break;
 		case static_cast<int>(Command::TESTAPP2):
 			cout << "testapp2" << endl;
-			app.testApp2();
+			app.testapp2();
 			break;
 		case static_cast<int>(Command::ERASE):
 			cout << "erase (" << arg1 << ", " << arg2 << ")" << endl;
