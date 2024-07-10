@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
 
 #include "TestShell.h"
 #include "FileReader.h"
@@ -109,45 +110,23 @@ void TestShell::displayHelp(const std::string& name, const std::string& synopsis
 }
 
 bool TestShell::testApp2() {
+	vector<string> LBA = { "0", "1", "2", "3", "4", "5" };
+	
+	string data = "0xAAAABBBB";
 	for (int i = 0; i < 30; i++) {
-		write("0", "0xAAAABBBB");
-		write("1", "0xAAAABBBB");
-		write("2", "0xAAAABBBB");
-		write("3", "0xAAAABBBB");
-		write("4", "0xAAAABBBB");
-		write("5", "0xAAAABBBB");
+		for (auto lba : LBA) {
+			write(lba, data);
+		}
 	}
 	
-	write("0", "0x12345678");
-	write("1", "0x12345678");
-	write("2", "0x12345678");
-	write("3", "0x12345678");
-	write("4", "0x12345678");
-	write("5", "0x12345678");
-
-	read("0");
-	if ("0x12345678" != getSSDReadData())
-		return false;
-
-	read("1");
-	if ("0x12345678" != getSSDReadData())
-		return false;
-
-	read("2");
-	if ("0x12345678" != getSSDReadData())
-		return false;
-
-	read("3");
-	if ("0x12345678" != getSSDReadData())
-		return false;
-
-	read("4");
-	if ("0x12345678" != getSSDReadData())
-		return false;
-
-	read("5");
-	if ("0x12345678" != getSSDReadData())
-		return false;
+	data = "0x12345678";
+	for (auto lba : LBA) {
+		write(lba, data);
+		read(lba);
+		
+		if (data != getSSDReadData())
+			return false;
+	}
 
 	return true;
 }

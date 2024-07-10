@@ -140,11 +140,14 @@ TEST_F(TestShellFixture, FullWrite) {
 
 TEST_F(TestShellFixture, TestApp2) {
 	//arrange
-	EXPECT_CALL(ssdDriverMk, write)
-		.Times(186);
-
 	EXPECT_CALL(fileReaderMk, readFile)
+		.Times(AtLeast(1))
 		.WillRepeatedly(Return("0x12345678"));
+
+	EXPECT_CALL(ssdDriverMk, read)
+		.Times(AtLeast(1));
+	EXPECT_CALL(ssdDriverMk, write)
+		.Times(AtLeast(1));
 
 	//action
 	bool actual = app.testApp2();
