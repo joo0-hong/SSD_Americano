@@ -1,7 +1,7 @@
 #pragma once
-#include "CommandOptimizer.h"
 #include <vector>
 #include "FileManager.h"
+#include "CommandTypes.h"
 
 using namespace std;
 

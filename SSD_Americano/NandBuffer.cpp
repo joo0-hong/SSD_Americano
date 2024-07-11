@@ -1,5 +1,6 @@
 #include "NandBuffer.h"
 #include "CommandConverter.h"
+#include "CommandOptimizer.h"
 
 NANDBuffer::NANDBuffer(string bufferFile) {
 	fileManager = new FileManager{ bufferFile };
