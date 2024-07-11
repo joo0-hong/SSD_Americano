@@ -32,7 +32,7 @@ void Logger::print(const string& funcName, const string& content) {
 		file.close();
 
 		// if there is some until_file, rename to zip
-		string untilLogFileName = getUntilLogFileName();
+		string untilLogFileName = findUntilLogFileNameInDirectory();
 		
 		if (untilLogFileName != "") {
 			cout << untilLogFileName << " Needs to be renamed to ZIP" << endl;
@@ -45,7 +45,7 @@ void Logger::print(const string& funcName, const string& content) {
 
 		// Create new until file
 		string oldName = LOG_PATH + LATEST_LOG_FILE_NAME;
-		string newName = LOG_PATH + getUntilFileName();
+		string newName = LOG_PATH + createUntilLogFileName();
 
 		renameLogFileToZip(oldName, newName);
 		//cout << "RENAMING result = " << res << endl;
@@ -75,7 +75,7 @@ bool Logger::isExceedMaxFileSize(std::fstream& file)
 	return file.tellg() >= Logger::MAX_FILE_SIZE;
 }
 
-string Logger::getUntilLogFileName()
+string Logger::findUntilLogFileNameInDirectory()
 {
 	string result = "";
 	for (const auto& file : directory_iterator(LOG_PATH)) {
@@ -111,7 +111,7 @@ void Logger::renameLogFileToZip(const string& oldName, const string& newName)
 	}
 }
 
-string Logger::getUntilFileName()
+string Logger::createUntilLogFileName()
 {
 	time_t timer = time(NULL);
 	tm time;
