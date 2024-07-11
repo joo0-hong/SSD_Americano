@@ -76,7 +76,7 @@ bool HostInterface::processCommand(string input, std::vector<std::string> expect
 	
 	string arg1, arg2;
 	int cmd = checkCmd(input, arg1, arg2);
-	bool result = false;
+	bool result = true;
 	
 	switch (cmd) {
 	case static_cast<int>(Command::WRITE):
