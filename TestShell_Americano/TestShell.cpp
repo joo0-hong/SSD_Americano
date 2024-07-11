@@ -166,3 +166,19 @@ void TestShell::erase_range(std::string start_lba, std::string end_lba) {
 	int total_size = std::stoi(end_lba) - std::stoi(start_lba);
 	erase(start_lba, std::to_string(total_size));
 }
+
+bool TestShell::run(std::string scenario) {
+	bool ret = false;
+
+	std::cout << scenario << " --- " << "Run...";
+ 
+	if ("testapp1" == scenario) {
+		ret = testapp1();
+	}
+
+	string result = ret == true ? "Pass" : "Fail!";
+
+	std::cout << scenario << " --- " << "Run..." << result << std::endl;
+
+	return ret;
+}

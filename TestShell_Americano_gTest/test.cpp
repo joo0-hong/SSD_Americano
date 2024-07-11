@@ -256,6 +256,19 @@ TEST_F(TestShellFixture, eraserange_start99_end1000) {
 	app.erase_range("99", "1000");
 }
 
+TEST_F(TestShellFixture, runner) {
+	EXPECT_CALL(fileReaderMk, readFile)
+		.Times(AtLeast(1));
+
+	EXPECT_CALL(ssdDriverMk, read)
+		.Times(AtLeast(1));
+	EXPECT_CALL(ssdDriverMk, write)
+		.Times(AtLeast(1));
+
+	app.run("testapp1");
+}
+
+
 TEST(CheckCommand, CheckCommand_InvalidCommand_r) {
 	string test_input = "r";
 	string arg1, arg2;

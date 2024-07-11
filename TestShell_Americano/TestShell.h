@@ -21,6 +21,8 @@ public:
 	bool testapp2();
 	void flush() {};
 
+	bool run(std::string scenario);
+
 private:
 	SSDDriver* ssdDriver_;
 	FileReader* fileReader_;
