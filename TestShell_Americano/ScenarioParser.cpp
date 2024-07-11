@@ -12,9 +12,9 @@ ScenarioParser& ScenarioParser::getInstance() {
 	return sp;
 }
 
-pair<vector<string>, vector<string>> ScenarioParser::test() {
+pair<vector<string>, vector<vector<string>>> ScenarioParser::test() {
 	vector<string> inputs;
-	vector<string> expects;
+	vector<vector<string>> expects;
 
 	rapidjson::Document document;
 
@@ -22,8 +22,7 @@ pair<vector<string>, vector<string>> ScenarioParser::test() {
 		return make_pair(inputs, expects);
 	}
 
-	if (document.HasMember("scenario") == false
-		|| document["scenario"].IsArray() == false) {
+	if (checkDocument(document) == false) {
 		return make_pair(inputs, expects);
 	}
 
@@ -37,31 +36,32 @@ pair<vector<string>, vector<string>> ScenarioParser::test() {
 			string actionName = actionJson["name"].GetString();
 			cout << actionName << endl;
 
-			string input = "", expect = "";
+			string input = "";
+			vector<string> expect;
 			if (actionName == "fullwrite") {
 				input = getFullwriteInputString(actionJson);
 				inputs.push_back(input);
+				expects.push_back(expect);
 
 				continue;
 			}
 			if (actionName == "fullread") {
 				input = getFullReadInputString();
 				cout << "input: " << input << endl;
-				inputs.push_back(input);
 
 				// fullread일 때 100개 expect data 넣기
 				if (actionJson.HasMember("expect")) {
-					auto& expectJson = actionJson["expect"];
-					if (expectJson.IsArray()) {}
-					else {
-						for (int i = 0; i < 100; ++i) {
-							expects.push_back(expectJson.GetString());
-						}
+					string expectData = actionJson["expect"].GetString();
+					for (int i = 0; i < 100; ++i) {
+						expect.push_back(expectData);
 					}
 				}
+				
+				inputs.push_back(input);
+				expects.push_back(expect);
+				
 				continue;
 			}
-
 
 			int start = 0, end = 1;
 			if (actionJson.HasMember("rotate_ranges")) {
@@ -94,17 +94,24 @@ pair<vector<string>, vector<string>> ScenarioParser::test() {
 							auto& expectJson = actionJson["expect"];
 							if (expectJson.IsArray()) {}
 							else {
-								expects.push_back(expectJson.GetString());
+								expect.push_back(expectJson.GetString());
 							}
 						}
 					}
 					inputs.push_back(input);
+					expects.push_back(expect);
 				}
 			}
 		}
 	}
 
 	return make_pair(inputs, expects);
+}
+
+bool ScenarioParser::checkDocument(rapidjson::Document& document)
+{
+	return document.HasMember("scenario")
+		&& document["scenario"].IsArray();
 }
 
 string ScenarioParser::getWriteInputString(rapidjson::Value& actionJson, int lba) {
