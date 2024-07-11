@@ -63,8 +63,6 @@ bool HostInterface::processScenario(ScenarioParser & scenario) {
 
 		string result = ret == true ? "Pass" : "Fail";
 		std::cout << result << std::endl;
-
-		if (false == ret) break;
 	}
 
 	app->setscenariomode(false);
