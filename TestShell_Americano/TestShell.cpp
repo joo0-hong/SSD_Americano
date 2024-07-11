@@ -6,6 +6,7 @@
 #include "TestShell.h"
 #include "FileReader.h"
 
+
 using namespace std;
 
 TestShell::TestShell(SSDDriver* ssdDriver
@@ -15,10 +16,31 @@ TestShell::TestShell(SSDDriver* ssdDriver
 	setup();
 }
 
-
 void TestShell::setup() {
 	scenarioMap_["testapp1"] = &TestShell::testapp1;
 	scenarioMap_["testapp2"] = &TestShell::testapp2;
+
+	commandMap_ = {
+			{"write", [&](const std::string& arg1, const std::string& arg2) { write(arg1, arg2); }},
+			{"read", [&](const std::string& arg1, const std::string&) { read(arg1); }},
+			{"exit", [&](const std::string&, const std::string&) { exit(); }},
+			{"help", [&](const std::string&, const std::string&) { help(); }},
+			{"fullwrite", [&](const std::string& arg1, const std::string&) { fullwrite(arg1); }},
+			{"fullread", [&](const std::string&, const std::string&) { fullread(); }},
+			{"erase", [&](const std::string& arg1, const std::string& arg2) { erase(arg1, arg2); }},
+			{"erase_range", [&](const std::string& arg1, const std::string& arg2) { erase_range(arg1, arg2); }},
+			{"flush", [&](const std::string&, const std::string&) { flush(); }}
+	};
+}
+
+bool TestShell::runCommand(std::string cmd, std::string arg1, std::string arg2) {
+	auto it = commandMap_.find(cmd);
+	if (it == commandMap_.end()) {
+		return false;
+	}
+
+	it->second(arg1, arg2);
+	return cmd != "exit";
 }
 
 void TestShell::write(const std::string lba, const std::string data) {
