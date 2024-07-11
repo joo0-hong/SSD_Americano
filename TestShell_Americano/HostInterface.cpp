@@ -46,9 +46,11 @@ bool HostInterface::processScenario(ScenarioParser & scenario) {
 
 	app->setscenariomode(true);
 
-	scenario.test();	
+	pair<vector<string>, vector<vector<string>>> test = scenario.test();
 
-	//TODO: call processCommand
+	for (int i = 0; i < test.first.size(); i++) {
+		processCommand(test.first[i], test.second[i]);
+	}
 
 	app->setscenariomode(false);
 
