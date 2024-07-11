@@ -65,6 +65,10 @@ int main() {
 			cout << "erase_range (" << arg1 << ", " << arg2 << ")" << endl;
 			app.erase_range(arg1, arg2);
 			break;
+		case static_cast<int>(Command::FLUSH):
+			cout << "flush" << endl;
+			app.flush();
+			break;
 		case static_cast<int>(Command::INVALID_COMMAND):
 			cout << "INVALID COMMAND" << endl;
 			break;

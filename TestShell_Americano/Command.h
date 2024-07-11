@@ -14,6 +14,9 @@ enum class Command {
     ERASE = 8,
     ERASE_RANGE = 9,
 
+    FLUSH = 10,
+
+
     INVALID_COMMAND = -1,
     INVALID_ARGUMENT = -2
 };
