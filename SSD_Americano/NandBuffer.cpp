@@ -95,6 +95,41 @@ void NANDBuffer::optimizeCommands() {
 				}
 				commandBuffer[j].cmdtype = 0;
 			}
+
+			for (int j = i - 1; j >= 0; j--) {
+				if (i == j) {
+					continue;
+				}
+				if (commandBuffer[j].cmdtype != 'E') {
+					continue;
+				}
+
+				if (false == 
+					(((cmd.offset <= commandBuffer[j].offset + commandBuffer[j].size) 
+					&& (commandBuffer[j].offset <= cmd.offset + cmd.size)))) {
+					continue;
+				}
+
+				int start_offset = min(cmd.offset, commandBuffer[j].offset);
+				int end_offset = max(cmd.offset + cmd.size, commandBuffer[j].offset + commandBuffer[j].size);
+
+				bool continueFlag = false;
+				for (int k = j + 1; k < i; k++) {
+					if ((commandBuffer[k].cmdtype == 'W') &&
+						((start_offset <= commandBuffer[k].offset) && (commandBuffer[k].offset < end_offset))) {
+						continueFlag = true;
+					}
+				}
+				if (continueFlag) {
+					continue;
+				}
+
+				cmd.offset = start_offset;
+				cmd.size = end_offset - start_offset;
+
+				commandBuffer[j].cmdtype = 0;
+			}
+
 		}
 	}
 }
