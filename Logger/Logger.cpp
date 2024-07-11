@@ -92,8 +92,6 @@ string Logger::getFileNameWithoutExt(const string& fname)
 
 void Logger::renameLogToZIPFile(const std::string& untilLogFileName)
 {
-	cout << untilLogFileName << " Needs to be renamed to ZIP" << endl;
-
 	string oldName = LOG_PATH + untilLogFileName;
 	string newName = LOG_PATH + getFileNameWithoutExt(untilLogFileName) + ".zip";
 
