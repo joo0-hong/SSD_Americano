@@ -29,6 +29,8 @@ private:
 	FileManager* fileManager;
 	vector<COMMAND_ENTRY> commandBuffer;
 
+	void addCommand(COMMAND_ENTRY command);
+
 	void loadCommands();
 	void storeCommands();
 	void optimizeCommands();
