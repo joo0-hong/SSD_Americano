@@ -17,8 +17,7 @@ void WriteCmd::checkParamValid(int paramCount, char* param[]) {
 	checkDataValid(param[1]);
 }
 
-void WriteCmd::checkParamCountValid(int paramCount)
-{
+void WriteCmd::checkParamCountValid(int paramCount) {
 	if (paramCount == 2) {
 		return;
 	}
@@ -26,40 +25,24 @@ void WriteCmd::checkParamCountValid(int paramCount)
 	throw invalid_argument("Invalid Parameter Count");
 }
 
-void WriteCmd::checkLBAValid(char* param)
-{
-	for (const char ch : string(param)) {
-		if ((ch >= '0') && (ch <= '9')) {
-			continue;
-		}
-		throw invalid_argument("Invalid LBA");
-	}
-
-	int lba = atoi(param);
-	if (lba < 0 || lba > 99) {
-		throw invalid_argument("LBA is out of range");
-	}
-}
-
-void WriteCmd::checkDataValid(char* param)
-{
+void WriteCmd::checkDataValid(char* param) {
 	string dataValue = string(param);
 
-	if (dataValue.length() != 10) {
+	if (dataValue.length() != DATA_SIZE) {
 		throw invalid_argument("Invalid data length");
 	}
 
-	string dataPreFix = dataValue.substr(0, 2);
+	string dataPreFix = dataValue.substr(0, PREFIX_SIZE);
 	if (dataPreFix != string("0x")) {
 		throw invalid_argument("Invalid Data: Data should start with 0x");
 	}
-	string dataNumber = dataValue.substr(2, dataValue.length());
+
+	string dataNumber = dataValue.substr(PREFIX_SIZE, dataValue.length());
 	for (const char ch : dataNumber) {
-		if (('0' <= ch) && (ch <= '9')) {
+		if (true == isInRange(ch, '0', '9')) {
 			continue;
 		}
-		if (('A' <= ch) && (ch <= 'F'))
-		{
+		if (true == isInRange(ch, 'A', 'F')) {
 			continue;
 		}
 		throw invalid_argument("Invalid Data:  Data should 0-9 or A-F");

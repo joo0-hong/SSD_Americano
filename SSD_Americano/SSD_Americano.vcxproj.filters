@@ -75,6 +75,12 @@
     <ClCompile Include="Nand.cpp">
       <Filter>소스 파일\Nand</Filter>
     </ClCompile>
+    <ClCompile Include="CommondCommon.cpp">
+      <Filter>소스 파일\Command</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandCommon.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EraseCmd.h">
@@ -94,6 +100,9 @@
     </ClInclude>
     <ClInclude Include="HostInterface.h">
       <Filter>헤더 파일\HostInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandCommon.h">
+      <Filter>헤더 파일\Command</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

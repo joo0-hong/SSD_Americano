@@ -1,8 +1,8 @@
 #pragma once
-#include "Command.h"
+#include "CommandCommon.h"
 #include "NandInterface.h"
 
-class EraseCmd : public Command {
+class EraseCmd : public CommandCommon {
 public:
 	EraseCmd(NANDInterface* nand) : nandIntf(nand), address(0), size(0) {
 	}
@@ -17,6 +17,5 @@ private:
 
 	void checkParamValid(int paramCount, char* param[]);
 	void checkParamCountValid(int paramCount);
-	void checkLBAValid(char* param);
 	void checkSizeValid(char* param);
 };

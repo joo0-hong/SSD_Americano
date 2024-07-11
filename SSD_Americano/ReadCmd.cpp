@@ -19,8 +19,7 @@ void ReadCmd::checkParamValid(int paramCount, char* param[]) {
 	checkLBAValid(param[0]);
 }
 
-void ReadCmd::checkParamCountValid(int paramCount)
-{
+void ReadCmd::checkParamCountValid(int paramCount) {
 	if (paramCount == 1) {
 		return;
 	}
@@ -28,17 +27,3 @@ void ReadCmd::checkParamCountValid(int paramCount)
 	throw invalid_argument("Invalid Parameter Count");
 }
 
-void ReadCmd::checkLBAValid(char* param)
-{
-	for (const char ch : string(param)) {
-		if ((ch >= '0') && (ch <= '9')) {
-			continue;
-		}
-		throw invalid_argument("Invalid LBA");
-	}
-
-	int lba = atoi(param);
-	if (lba < 0 || lba > 99) {
-		throw invalid_argument("LBA is out of range");
-	}
-}

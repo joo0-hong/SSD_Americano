@@ -1,8 +1,8 @@
 #pragma once
-#include "Command.h"
+#include "CommandCommon.h"
 #include "NandInterface.h"
 
-class ReadCmd : public Command {
+class ReadCmd : public CommandCommon {
 public:
 	ReadCmd(NANDInterface* nand) : nandIntf(nand), address(0){
 	}
@@ -16,5 +16,4 @@ private:
 
 	void checkParamValid(int paramCount, char* param[]);
 	void checkParamCountValid(int paramCount);
-	void checkLBAValid(char* param);
 };
