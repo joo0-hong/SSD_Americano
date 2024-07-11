@@ -1,5 +1,23 @@
 #include "HostInterface.h"
 
+bool HostInterface::checkSenarioTest(string input) {
+	string arg1, arg2;
+
+	if (checkCmd(input, arg1, arg2) == static_cast<int>(Command::SCENARIO_TEST)) {
+		return true;
+	}
+
+	return false;
+}
+
+bool HostInterface::processScenario(ScenarioParser& scenario) {
+	scenario.test();
+
+	return true;
+}
+
+
+
 bool HostInterface::processCommand(string input) {
 	string arg1, arg2;
 	int cmd = checkCmd(input, arg1, arg2);
@@ -174,6 +192,11 @@ int HostInterface::checkCmd(string input, string& arg1, string& arg2) {
 	if (cmd == "flush") {
 		return static_cast<int>(Command::FLUSH);
 	}
+
+	if (cmd == "scenario_test") {
+		return static_cast<int>(Command::SCENARIO_TEST);
+	}
+
 	return static_cast<int>(Command::INVALID_COMMAND);
 }
 
