@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 #include <rapidjson/document.h>
 
@@ -8,7 +9,7 @@ class ScenarioParser
 {
 public:
 	static ScenarioParser& getInstance();
-	void test();
+	std::pair<std::vector<std::string>, std::vector<std::string>> test();
 private:
 	const std::string TEST_SCENARIO_PATH = "..\\resources\\test_scenario.json";
 	
@@ -20,8 +21,10 @@ private:
 
 	bool checkValid(std::ifstream& file);
 	
-	std::string getWriteInputString(rapidjson::Value& actionJson);
+	std::string getWriteInputString(rapidjson::Value& actionJson, int lba);
+	std::string getReadInputString(rapidjson::Value& actionJson, int lba);
 	std::string getFullwriteInputString(rapidjson::Value& actionJson);
+	std::string getFullReadInputString();
 
 	std::string getStr(std::ifstream& file);
 	

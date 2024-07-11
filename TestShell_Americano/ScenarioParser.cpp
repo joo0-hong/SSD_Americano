@@ -12,15 +12,22 @@ ScenarioParser& ScenarioParser::getInstance() {
 	return sp;
 }
 
-void ScenarioParser::test() {
+pair<vector<string>, vector<string>> ScenarioParser::test() {
+	vector<string> inputs;
+	vector<string> expects;
+
 	rapidjson::Document document;
 
 	if (setDocument(document) == false) {
-		return;
+		return make_pair(inputs, expects);
 	}
 
-	auto& scenarioJson = document["scenario"];
-	auto scenarios = scenarioJson.GetArray();
+	if (document.HasMember("scenario") == false
+		|| document["scenario"].IsArray() == false) {
+		return make_pair(inputs, expects);
+	}
+
+	auto scenarios = document["scenario"].GetArray();
 	for (auto& scenarioJson : scenarios) {
 		string scenarioName = scenarioJson["name"].GetString();
 		cout << scenarioName << endl;
@@ -30,52 +37,95 @@ void ScenarioParser::test() {
 			string actionName = actionJson["name"].GetString();
 			cout << actionName << endl;
 
-			string input = "";
-			if (actionName == "write") {
-				input = getWriteInputString(actionJson);
-			}
+			string input = "", expect = "";
 			if (actionName == "fullwrite") {
 				input = getFullwriteInputString(actionJson);
+				inputs.push_back(input);
+
+				continue;
 			}
 			if (actionName == "fullread") {
+				input = getFullReadInputString();
+				cout << "input: " << input << endl;
+				inputs.push_back(input);
 
+				// fullread일 때 100개 expect data 넣기
+				if (actionJson.HasMember("expect")) {
+					auto& expectJson = actionJson["expect"];
+					if (expectJson.IsArray()) {}
+					else {
+						for (int i = 0; i < 100; ++i) {
+							expects.push_back(expectJson.GetString());
+						}
+					}
+				}
+				continue;
 			}
 
-			// is_rotate가 true라면 현재 action을 ranges만큼 반복한다.
+
+			int start = 0, end = 1;
 			if (actionJson.HasMember("rotate_ranges")) {
 				auto& rotateJson = actionJson["rotate_ranges"];
-				int start = rotateJson["start"].GetInt();
-				int end = rotateJson["end"].GetInt();
-
-				// processCommand를 [start : end) 만큼 실행
-				for (; start < end; ++start) {
-					
-				}
+				start = rotateJson["start"].GetInt();
+				end = rotateJson["end"].GetInt();
 			}
 
-			
+			int lba_start = 0, lba_end = 0;
+			if (actionJson.HasMember("lba")) {
+				lba_start = actionJson["lba"].GetInt();
+				lba_end = lba_start + 1;
+			}
+			else if (actionJson.HasMember("lba_ranges")) {
+				auto& lbaRangesJson = actionJson["lba_ranges"];
+				lba_start = lbaRangesJson["start"].GetInt();
+				lba_end = lbaRangesJson["end"].GetInt();
+			}
 
-			// processCommand(input) 호출하면 동작.
+			cout << start << " " << end << " " << lba_start << " " << lba_end << endl;
+
+			for (; start < end; ++start) {
+				for (int l_start = lba_start; l_start < lba_end; ++l_start) {
+					if (actionName == "write") {
+						input = getWriteInputString(actionJson, l_start);
+					}
+					else if (actionName == "read") {
+						input = getReadInputString(actionJson, l_start);
+						if (actionJson.HasMember("expect")) {
+							auto& expectJson = actionJson["expect"];
+							if (expectJson.IsArray()) {}
+							else {
+								expects.push_back(expectJson.GetString());
+							}
+						}
+					}
+					inputs.push_back(input);
+				}
+			}
 		}
-
 	}
+
+	return make_pair(inputs, expects);
 }
 
-string ScenarioParser::getWriteInputString(rapidjson::Value& actionJson) {
-	string result = "write ";
-	cout << "write" << endl;
+string ScenarioParser::getWriteInputString(rapidjson::Value& actionJson, int lba) {
+	string result = "write " + to_string(lba) + " ";
 
-	if (actionJson.HasMember("data") == false)
+	if (actionJson.HasMember("data") == false) {
 		return result;
-
-	if (actionJson.HasMember("lba")) {
-		string lba = to_string(actionJson["lba"].GetInt());
 	}
 
 	string actionData = actionJson["data"].GetString();
 	cout << actionData << endl;
 
 	result += actionData;
+
+	cout << result << endl;
+
+	return result;
+}
+string ScenarioParser::getReadInputString(rapidjson::Value& actionJson, int lba) {
+	string result = "read " + to_string(lba);
+	cout << "result: " << result << endl;
 
 	return result;
 }
@@ -94,6 +144,9 @@ string ScenarioParser::getFullwriteInputString(rapidjson::Value& actionJson)
 	result += actionData;
 
 	return result;
+}
+string ScenarioParser::getFullReadInputString() {
+	return "fullread";
 }
 
 bool ScenarioParser::setDocument(rapidjson::Document& d) {
