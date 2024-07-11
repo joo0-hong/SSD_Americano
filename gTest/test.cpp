@@ -48,7 +48,8 @@ public:
 	}
 
 	NiceMock<MockedNand> nand;
-	HostInterface hostIntf{ &nand };
+	NANDBuffer buffer{ "Testbuffer.txt" };
+	HostInterface hostIntf{ &nand, &buffer };
 	char* argv[IDX_MAX] = {};
 private:
 	const int VALID_WRITE_IDX_NUM = 4;
@@ -108,17 +109,29 @@ TEST_F(HostIntfTestFixture, CheckingInvalidData) {
 TEST_F(HostIntfTestFixture, StartWriteCmd) {
 	SetNormalWrite();
 
-	EXPECT_CALL(nand, write(_, _)).Times(1);
+	EXPECT_CALL(nand, write(_, _)).Times(0);
 
 	hostIntf.processCommand(4, argv);
 }
 
 TEST_F(HostIntfTestFixture, StartReadCmd) {
+	SetNormalWrite();
+	hostIntf.processCommand(4, argv);
+
+	EXPECT_CALL(nand, read(_)).Times(0);
+
 	SetNormalRead();
-
-	EXPECT_CALL(nand, read(_)).Times(1);
-
 	hostIntf.processCommand(3, argv);
+}
+
+TEST_F(HostIntfTestFixture, StartFlushCmd) {
+	SetNormalWrite();
+	hostIntf.processCommand(4, argv);
+
+	EXPECT_CALL(nand, write(_, _)).Times(AtLeast(1));
+
+	SetNormalFlush();
+	hostIntf.processCommand(2, argv);
 }
 
 TEST_F(HostIntfTestFixture, dataStringCheck) {
@@ -174,14 +187,6 @@ TEST_F(HostIntfTestFixture, FailEvenWhenErrorCommand) {
 
 	EXPECT_NO_THROW(hostIntf.processCommand(3, argv));
 }
-
-//TEST_F(HostIntfTestFixture, FlushCmdStart) {
-//	SetNormalFlush();
-//
-//	//EXPECT_CALL(nand, flush()).Times(1);
-//
-//	hostIntf.processCommand(2, argv);
-//}
 
 TEST(NANDTest, NANDWriteRead) {
 	NAND nand{ "TestNand.txt", "TestResult.txt" };

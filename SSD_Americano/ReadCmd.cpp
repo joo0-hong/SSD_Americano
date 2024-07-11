@@ -1,6 +1,6 @@
-#include "ReadCmd.h"
 #include <stdexcept>
 #include <string>
+#include "ReadCmd.h"
 
 using namespace std;
 
