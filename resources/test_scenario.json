@@ -17,34 +17,33 @@
       "name": "testapp2",
       "action": [
         {
-          "is_rotate": true,
-          "rotate_args": {
+          "rotate_ranges": {
             "start": 0,
             "end": 30
           },
 
           "name": "write",
-          "args": {
+          "data": "0xAAAABBBB",
+          "lba_ranges": {
             "start": 0,
-            "end": 6,
-            "data": "0xAAAABBBB"
+            "end": 6
           }
         },
         {
           "name": "write",
-          "args": {
+          "data": "0x12345678",
+          "lba_ranges": {
             "start": 0,
-            "end": 6,
-            "data": "0x12345678"
+            "end": 6
           }
         },
         {
           "name": "read",
-          "args": {
+          "lba_ranges": {
             "start": 0,
             "end": 6
           },
-          "expect": [ "0x12345678", "0x12345678", "0x12345678", "0x12345678", "0x12345678", "0x12345678" ]
+          "expect": "0x12345678"
         }
       ]
     },
