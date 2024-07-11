@@ -11,7 +11,7 @@ public:
 	static ScenarioParser& getInstance();
 	std::pair<std::vector<std::string>, std::vector<std::vector<std::string>>> test();
 private:
-	const std::string TEST_SCENARIO_PATH = "..\\resources\\test_scenario.json";
+	const std::string TEST_SCENARIO_PATH = "..\\..\\resources\\test_scenario.json";
 	
 	ScenarioParser() = default;
 	ScenarioParser(const ScenarioParser&) = delete;

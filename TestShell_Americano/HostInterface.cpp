@@ -49,7 +49,9 @@ bool HostInterface::processScenario(ScenarioParser & scenario) {
 	pair<vector<string>, vector<vector<string>>> test = scenario.test();
 
 	for (int i = 0; i < test.first.size(); i++) {
-		processCommand(test.first[i], test.second[i]);
+		std::cout << test.first[i] << " --- " << "Run" << " ... ";
+		string result = processCommand(test.first[i], test.second[i]) == true ? "Pass" : "Fail";
+		std::cout << result << std::endl;
 	}
 
 	app->setscenariomode(false);
