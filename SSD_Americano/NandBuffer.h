@@ -17,7 +17,7 @@ public:
 	NANDBuffer(string bufferFile);
 	~NANDBuffer();
 
-	void read(const int lba);
+	string read(const int lba);
 	void write(const int lba, const string data);
 	void erase(const int lba, const int size);
 	vector<COMMAND_ENTRY> getCommands();

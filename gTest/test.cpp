@@ -22,6 +22,7 @@ public:
 	MOCK_METHOD(void, write, (int lba, string data), (override));
 	MOCK_METHOD(void, erase, (int lba, int size), (override));
 	MOCK_METHOD(void, error, (), (override));
+	MOCK_METHOD(void, writeResult, (string result), (override));
 };
 
 class HostIntfTestFixture : public testing::Test {
