@@ -11,7 +11,15 @@ using namespace std;
 TestShell::TestShell(SSDDriver* ssdDriver
 	, FileReader* fileReader)
 	: ssdDriver_{ ssdDriver }
-	, fileReader_{ fileReader } {}
+	, fileReader_{ fileReader } {
+	setup();
+}
+
+
+void TestShell::setup() {
+	scenarioMap_["testapp1"] = &TestShell::testapp1;
+	scenarioMap_["testapp2"] = &TestShell::testapp2;
+}
 
 void TestShell::write(const std::string lba, const std::string data) {
 	ssdDriver_->write(lba, data);
@@ -171,4 +179,11 @@ void TestShell::erase(std::string lba, std::string size) {
 void TestShell::erase_range(std::string start_lba, std::string end_lba) {
 	int total_size = std::stoi(end_lba) - std::stoi(start_lba);
 	erase(start_lba, std::to_string(total_size));
+}
+
+bool TestShell::run(std::string scenario) {
+	if (scenarioMap_.find(scenario) == scenarioMap_.end()) {
+		return false;
+	}
+	return (this->*scenarioMap_[scenario])();
 }

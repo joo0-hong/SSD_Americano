@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <map>
 
 #include "SSDDriver.h"
 #include "FileReader.h"
@@ -22,9 +23,12 @@ public:
 	bool testapp1();
 	bool testapp2();
 
+	bool run(std::string scenario);
+
 private:
 	SSDDriver* ssdDriver_;
 	FileReader* fileReader_;
+	std::map<std::string, bool (TestShell::*)()> scenarioMap_;
 
 	void invokeSSDRead(const std::string& lba);
 	std::string getSSDReadData();
@@ -38,4 +42,6 @@ private:
 	void displayHelp(const std::string& name
 		, const std::string& synopsis
 		, const std::string& description) const;
+
+	void setup();
 };
