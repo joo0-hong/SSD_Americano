@@ -5,12 +5,15 @@
 #include <sstream>
 #include "Command.h"
 #include "TestShell.h"
+#include "ScenarioParser.h"
 
 using namespace std;
 
 class HostInterface {
 public:
 	HostInterface(TestShell* shell) : app(shell) { }
+	bool checkSenarioTest(string input);
+	bool processScenario(ScenarioParser& scenario);
 	bool processCommand(string input);
 	int checkCmd(string input, string& arg1, string& arg2);
 
