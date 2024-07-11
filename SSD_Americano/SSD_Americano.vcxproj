@@ -148,20 +148,35 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Command.h" />
+    <ClCompile Include="CommandCommon.cpp" />
+    <ClCompile Include="CommandFactory.h" />
+    <ClCompile Include="EraseCmd.cpp" />
+    <ClCompile Include="ErrorCmd.cpp" />
     <ClCompile Include="ErrorCmd.h" />
     <ClCompile Include="FileManager.cpp" />
+    <ClCompile Include="FlushCmd.cpp" />
     <ClCompile Include="HostInterface.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Nand.cpp" />
+    <ClCompile Include="NandBuffer.cpp" />
+    <ClCompile Include="NandDriver.cpp" />
+    <ClCompile Include="ReadCmd.cpp" />
+    <ClCompile Include="WriteCmd.cpp" />
     <ClCompile Include="WriteCmd.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CommandCommon.h" />
     <ClInclude Include="EraseCmd.h" />
     <ClInclude Include="FileManager.h" />
+    <ClInclude Include="FlushCmd.h" />
     <ClInclude Include="HostInterface.h" />
     <ClInclude Include="Nand.h" />
+    <ClInclude Include="NandDriver.h" />
     <ClInclude Include="NandInterface.h" />
     <ClInclude Include="ReadCmd.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="NandBuffer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

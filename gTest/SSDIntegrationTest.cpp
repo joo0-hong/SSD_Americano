@@ -2,7 +2,14 @@
 #include "gmock/gmock.h"
 #include "../SSD_Americano/HostInterface.cpp"
 #include "../SSD_Americano/Nand.cpp"
+#include "../SSD_Americano/NandBuffer.cpp"
 #include "../SSD_Americano/FileManager.cpp"
+#include "../SSD_Americano/CommandCommon.cpp"
+#include "../SSD_Americano/EraseCmd.cpp"
+#include "../SSD_Americano/WriteCmd.cpp"
+#include "../SSD_Americano/ReadCmd.cpp"
+#include "../SSD_Americano/FlushCmd.cpp"
+#include "../SSD_Americano/ErrorCmd.cpp"
 
 #include <vector>
 #include <string>
@@ -61,7 +68,7 @@ protected:
         EXPECT_EQ(expected.size(), lines.size());
 
         for (int i = 0; i < lines.size(); i++) {
-            EXPECT_EQ(lines[i], expected[i]);
+            EXPECT_THAT(lines[i], Eq(expected[i]));
         }
 
         file.close();
@@ -119,6 +126,16 @@ TEST_F(SSDIntegrationTest, WriteReadTest) {
     verifyResultFile({ data });
 }
 
+TEST_F(SSDIntegrationTest, NoArgumentTest) {
+    char* invalidArgument[] = { "ssd" };
+
+    // Act
+    main(sizeof(invalidArgument) / sizeof(char*), invalidArgument);
+
+    // Assert
+    verifyResultFile({ "NULL" });
+}
+
 TEST_F(SSDIntegrationTest, InvalidCommandTest) {
     // Arrange
     char* invalidArgument[] = { "ssd", "T", "7" };
@@ -133,6 +150,28 @@ TEST_F(SSDIntegrationTest, InvalidCommandTest) {
 TEST_F(SSDIntegrationTest, InvalidReadArguments) {
     // Arrange
     char* invalidArgument[] = { "ssd", "R", "7", "7" };
+
+    // Act
+    main(sizeof(invalidArgument) / sizeof(char*), invalidArgument);
+
+    // Assert
+    verifyResultFile({ "NULL" });
+}
+
+TEST_F(SSDIntegrationTest, InvalidReadLBA) {
+    // Arrange
+    char* invalidArgument[] = { "ssd", "R", "7A" };
+
+    // Act
+    main(sizeof(invalidArgument) / sizeof(char*), invalidArgument);
+
+    // Assert
+    verifyResultFile({ "NULL" });
+}
+
+TEST_F(SSDIntegrationTest, InvalidReadLBARange) {
+    // Arrange
+    char* invalidArgument[] = { "ssd", "R", "100" };
 
     // Act
     main(sizeof(invalidArgument) / sizeof(char*), invalidArgument);
@@ -183,4 +222,48 @@ TEST_F(SSDIntegrationTest, InvalidWriteDataNoPrefix_0x) {
 
     // Assert
     verifyResultFile({ "NULL" });
+}
+
+TEST_F(SSDIntegrationTest, InvalidEraseLBA) {
+    // Arrange
+    char* invalidArgument[] = { "ssd", "E", "7A", "10"};
+
+    // Act
+    main(sizeof(invalidArgument) / sizeof(char*), invalidArgument);
+
+    // Assert
+    verifyResultFile({ "NULL" });
+}
+
+TEST_F(SSDIntegrationTest, InvalidEraseLBARange) {
+    // Arrange
+    char* invalidArgument[] = { "ssd", "E", "100", "10" };
+
+    // Act
+    main(sizeof(invalidArgument) / sizeof(char*), invalidArgument);
+
+    // Assert
+    verifyResultFile({ "NULL" });
+}
+
+TEST_F(SSDIntegrationTest, InvalidEraseSize) {
+    // Arrange
+    char* invalidArgument[] = { "ssd", "E", "0", "11" };
+
+    // Act
+    main(sizeof(invalidArgument) / sizeof(char*), invalidArgument);
+
+    // Assert
+    verifyResultFile({ "NULL" });
+}
+
+TEST_F(SSDIntegrationTest, InvalidEraseSize0) {
+    // Arrange
+    char* invalidArgument[] = { "ssd", "E", "0", "0" };
+
+    // Act (Do nothing)
+    main(sizeof(invalidArgument) / sizeof(char*), invalidArgument);
+
+    // Assert
+    verifyResultFile({ "" });
 }

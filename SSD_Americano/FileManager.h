@@ -10,8 +10,11 @@ class FileManager {
 public:
     FileManager(const string& filename) : filename{ filename } { }
 
-    string read(const int linenumber);
-    void write(const int linenumber, const string& data);
+    virtual string read(const int linenumber);
+    virtual void write(const int linenumber, const string& data);
+
+    vector<string> readEntire();
+    void writeEntire(const vector<string>& data);
 
 private:
     const int MAX_LINENUMBER = 99;

@@ -120,6 +120,8 @@
   <ItemGroup>
     <ClCompile Include="..\packages\gmock.1.11.0\lib\native\src\gtest\src\gtest_main.cc" />
     <ClCompile Include="FileManagerTest.cpp" />
+    <ClCompile Include="NandBufferTest.cpp" />
+    <ClCompile Include="NandDriverTest.cpp" />
     <ClCompile Include="SSDIntegrationTest.cpp" />
     <ClCompile Include="test.cpp" />
     <ClCompile Include="TestResult.txt">
@@ -135,6 +137,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="TestBuffer.txt">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Text>
     <Text Include="TestNand.txt">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </Text>

@@ -2,9 +2,9 @@
 #include "CommandCommon.h"
 #include "NandInterface.h"
 
-class EraseCmd : public CommandCommon {
+class FlushCmd : public CommandCommon {
 public:
-	EraseCmd(NANDInterface* nand) : nandIntf(nand), address(0), size(0) {
+	FlushCmd(NANDInterface* nand) : nandIntf(nand) {
 	}
 
 	void parse(int paramCount, char* param[]) override;
@@ -12,10 +12,7 @@ public:
 
 private:
 	NANDInterface* nandIntf;
-	int address;
-	int size;
 
 	void checkParamValid(int paramCount, char* param[]);
 	void checkParamCountValid(int paramCount);
-	void checkSizeValid(char* param);
 };
