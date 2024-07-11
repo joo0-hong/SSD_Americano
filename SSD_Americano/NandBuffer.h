@@ -27,12 +27,16 @@ public:
 private:
 	const int MAX_BUFFER_SIZE = 10;
 	FileManager* fileManager;
+	vector<COMMAND_ENTRY> commandBuffer;
 
-	vector<string> getCommandsFromFile();
-	void optimize(vector<COMMAND_ENTRY> commands);
-	vector<string> splitStringBySpaces(const string& str);
+	void loadCommands();
+	void storeCommands();
+	void optimizeCommands();
+
 	vector<COMMAND_ENTRY> convertStringToCommands(vector<string> stringCommands);
 	vector<string> convertCommandsToString(vector<COMMAND_ENTRY> commands);
-	void addCommands(vector<string> commandsString);
-	void clearNull(vector<string>& commands);
+	COMMAND_ENTRY getCommandEntry(string str);
+	string getString(COMMAND_ENTRY entry);
+	vector<string> splitStringBySpaces(const string& str);
+	bool isCommandEntryValid(COMMAND_ENTRY entry);
 };

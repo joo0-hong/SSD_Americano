@@ -16,18 +16,13 @@ void NANDBuffer::read(const int lba) {
 
 void NANDBuffer::write(const int lba, const string data) {
 	COMMAND_ENTRY newCommand = { 'W', lba, 1, data };
+	loadCommands();
 
-	vector<string> commandsString = getCommandsFromFile();
+	commandBuffer.push_back(newCommand);
 
-	vector<COMMAND_ENTRY> commands = convertStringToCommands(commandsString);
+	optimizeCommands();
 
-	commands.push_back(newCommand);
-
-	optimize(commands);
-
-	commandsString = convertCommandsToString(commands);
-
-	addCommands(commandsString);
+	storeCommands();
 }
 
 void NANDBuffer::erase(const int lba, const int size) {
@@ -46,16 +41,82 @@ void NANDBuffer::clear() {
 
 }
 
-vector<string> NANDBuffer::getCommandsFromFile() {
-	vector<string> commands = fileManager->readEntire();
+void NANDBuffer::optimizeCommands() {
 
-	clearNull(commands);
+}
+
+void NANDBuffer::loadCommands() {
+	vector<string> commandsString = fileManager->readEntire();
+	commandBuffer = convertStringToCommands(commandsString);
+}
+
+void NANDBuffer::storeCommands() {
+	vector<string> commandsString = convertCommandsToString(commandBuffer);
+	fileManager->writeEntire(commandsString);
+}
+
+vector<COMMAND_ENTRY> NANDBuffer::convertStringToCommands(vector<string> stringCommands) {
+	vector<COMMAND_ENTRY> commands = { };
+
+	for (auto stringCommand : stringCommands) {
+		COMMAND_ENTRY command = getCommandEntry(stringCommand);
+
+		if (false == isCommandEntryValid(command)) {
+			continue;
+		}
+
+		commands.push_back(command);
+	}
 
 	return commands;
 }
 
-void NANDBuffer::optimize(vector<COMMAND_ENTRY> commands) {
+vector<string> NANDBuffer::convertCommandsToString(vector<COMMAND_ENTRY> commands) {
+	vector<string> commandsInString;
 
+	for (const auto& command : commands) {
+		if (false == isCommandEntryValid(command)) {
+			continue;
+		}
+
+		string stringCommand = getString(command);
+		commandsInString.push_back(stringCommand);
+	}
+
+	return commandsInString;
+}
+
+COMMAND_ENTRY NANDBuffer::getCommandEntry(string str) {
+	vector<string> commandline = splitStringBySpaces(str);
+
+	if (commandline.size() != 4) {
+		return { };
+	}
+	if (commandline[0].size() != sizeof(COMMAND_ENTRY::cmdtype)) {
+		return { };
+	}
+
+	COMMAND_ENTRY command = { };
+	command.cmdtype = commandline[0][0];
+	command.offset = stoi(commandline[1]);
+	command.size = stoi(commandline[2]);
+	command.data = commandline[3];
+
+	return command;
+}
+
+string NANDBuffer::getString(COMMAND_ENTRY entry) {
+	string entryString = "";
+
+	entryString += entry.cmdtype;
+	entryString += ' ';
+	entryString += to_string(entry.offset);
+	entryString += ' ';
+	entryString += to_string(entry.size);
+	entryString += ' ';
+	entryString += entry.data;
+
+	return entryString;
 }
 
 vector<string> NANDBuffer::splitStringBySpaces(const string& str) {
@@ -70,48 +131,6 @@ vector<string> NANDBuffer::splitStringBySpaces(const string& str) {
 	return result;
 }
 
-vector<COMMAND_ENTRY> NANDBuffer::convertStringToCommands(vector<string> stringCommands) {
-	vector<COMMAND_ENTRY> commands = {};
-	for (auto stringCommand : stringCommands) {
-		vector<string> commandline = splitStringBySpaces(stringCommand);
-		if (commandline.size() < 4) {
-			throw runtime_error("invalid buffer size");
-		}
-		COMMAND_ENTRY command = {};
-		if (commandline[0].size() != 1) throw runtime_error("1");
-
-		command.cmdtype = commandline[0][0];
-		command.offset = stoi(commandline[1]);
-		command.size = stoi(commandline[2]);
-		command.data = commandline[3];
-		commands.push_back(command);
-	}
-	return commands;
-}
-
-vector<string> NANDBuffer::convertCommandsToString(vector<COMMAND_ENTRY> commands) {
-	vector<string> commandsInString;
-	for (const auto& command : commands) {
-		string commandString = "";
-		commandString += command.cmdtype;
-		commandString += ' ';
-		commandString += to_string(command.offset);
-		commandString += ' ';
-		commandString += to_string(command.size);
-		commandString += ' ';
-		commandString += command.data;
-
-		commandsInString.push_back(commandString);
-		;
-	}
-	return commandsInString;
-}
-
-void NANDBuffer::addCommands(vector<string> commandsString) {
-	fileManager->writeEntire(commandsString);
-}
-
-void NANDBuffer::clearNull(vector<string>& commands) {
-	auto new_end = remove(commands.begin(), commands.end(), "");
-	commands.erase(new_end, commands.end());
+bool NANDBuffer::isCommandEntryValid(COMMAND_ENTRY entry) {
+	return (('W' == entry.cmdtype) || ('E' == entry.cmdtype));
 }

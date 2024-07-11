@@ -96,3 +96,15 @@ TEST_F(NandBufferTestFixture, WriteFunctionTwice) {
     // Assert
     verifyResultFile(commands);
 }
+
+TEST_F(NandBufferTestFixture, WriteFunctionInitialFile) {
+    // Arrange
+    writeFile(TEST_BUFFER_FILENAME, { });
+    vector<string> commands = { "W 0 1 0x12341234"};
+
+    // Act
+    nandBuffer->write(0, "0x12341234");
+
+    // Assert
+    verifyResultFile(commands);
+}
