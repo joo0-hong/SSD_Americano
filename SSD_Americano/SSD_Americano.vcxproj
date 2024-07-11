@@ -149,7 +149,10 @@
   <ItemGroup>
     <ClCompile Include="Command.h" />
     <ClCompile Include="CommandCommon.cpp" />
+    <ClCompile Include="CommandConverter.cpp" />
     <ClCompile Include="CommandFactory.h" />
+    <ClCompile Include="CommandOptimizer.cpp" />
+    <ClCompile Include="CommandTypes.h" />
     <ClCompile Include="EraseCmd.cpp" />
     <ClCompile Include="ErrorCmd.cpp" />
     <ClCompile Include="ErrorCmd.h" />
@@ -166,6 +169,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommandCommon.h" />
+    <ClInclude Include="CommandConverter.h" />
+    <ClInclude Include="CommandOptimizer.h" />
     <ClInclude Include="EraseCmd.h" />
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="FlushCmd.h" />
