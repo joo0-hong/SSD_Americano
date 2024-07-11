@@ -7,28 +7,35 @@
 
 using namespace std;
 
+
+
 ScenarioParser& ScenarioParser::getInstance() {
 	static ScenarioParser sp;
 	return sp;
 }
 
-pair<vector<string>, vector<vector<string>>> ScenarioParser::test() {
-	vector<string> inputs;
-	vector<vector<string>> expects;
+vector<ScenarioResult> ScenarioParser::test() {
+	vector<ScenarioResult> result;
 
 	rapidjson::Document document;
 
 	if (setDocument(document) == false) {
-		return make_pair(inputs, expects);
+		return vector<ScenarioResult>();
 	}
 
 	if (checkDocument(document) == false) {
-		return make_pair(inputs, expects);
+		return vector<ScenarioResult>();
 	}
 
 	auto scenarios = document["scenario"].GetArray();
 	for (auto& scenarioJson : scenarios) {
+		ScenarioResult scenarioResult;
+		vector<string> inputs;
+		vector<vector<string>> expects;
+		
 		string scenarioName = scenarioJson["name"].GetString();
+		scenarioResult.scenarioName = scenarioName;
+
 		cout << scenarioName << endl;
 
 		auto actions = scenarioJson["action"].GetArray();
@@ -36,19 +43,19 @@ pair<vector<string>, vector<vector<string>>> ScenarioParser::test() {
 			string actionName = actionJson["name"].GetString();
 			cout << actionName << endl;
 
-			string input = "";
-			vector<string> expect;
+			;
 			if (actionName == "fullwrite") {
-				input = getFullwriteInputString(actionJson);
+				string input = getFullwriteInputString(actionJson);
 				inputs.push_back(input);
-				expects.push_back(expect);
+				expects.push_back(vector<string>());
 
 				continue;
 			}
-			if (actionName == "fullread") {
-				input = getFullReadInputString();
-				cout << "input: " << input << endl;
 
+			if (actionName == "fullread") {
+				string input = getFullReadInputString();
+
+				vector<string> expect;
 				// fullread일 때 100개 expect data 넣기
 				if (actionJson.HasMember("expect")) {
 					string expectData = actionJson["expect"].GetString();
@@ -64,48 +71,62 @@ pair<vector<string>, vector<vector<string>>> ScenarioParser::test() {
 			}
 
 			int start = 0, end = 1;
-			if (actionJson.HasMember("rotate_ranges")) {
-				auto& rotateJson = actionJson["rotate_ranges"];
-				start = rotateJson["start"].GetInt();
-				end = rotateJson["end"].GetInt();
-			}
+			getRangeOf(actionJson, start, end);
 
 			int lba_start = 0, lba_end = 0;
-			if (actionJson.HasMember("lba")) {
-				lba_start = actionJson["lba"].GetInt();
-				lba_end = lba_start + 1;
-			}
-			else if (actionJson.HasMember("lba_ranges")) {
-				auto& lbaRangesJson = actionJson["lba_ranges"];
-				lba_start = lbaRangesJson["start"].GetInt();
-				lba_end = lbaRangesJson["end"].GetInt();
-			}
+			getLBARangeOf(actionJson, lba_start, lba_end);
 
 			cout << start << " " << end << " " << lba_start << " " << lba_end << endl;
 
 			for (; start < end; ++start) {
 				for (int l_start = lba_start; l_start < lba_end; ++l_start) {
 					if (actionName == "write") {
-						input = getWriteInputString(actionJson, l_start);
+						string input = getWriteInputString(actionJson, l_start);
+						
+						inputs.push_back(input);
+						expects.push_back(vector<string>());
 					}
 					else if (actionName == "read") {
-						input = getReadInputString(actionJson, l_start);
+						vector<string> expect;
+						string input = getReadInputString(actionJson, l_start);
 						if (actionJson.HasMember("expect")) {
-							auto& expectJson = actionJson["expect"];
-							if (expectJson.IsArray()) {}
-							else {
-								expect.push_back(expectJson.GetString());
-							}
+							expect.push_back(actionJson["expect"].GetString());
 						}
+						inputs.push_back(input);
+						expects.push_back(expect);
 					}
-					inputs.push_back(input);
-					expects.push_back(expect);
 				}
 			}
 		}
+
+		scenarioResult.inputs = inputs;
+		scenarioResult.expects = expects;
+		result.push_back(scenarioResult);
 	}
 
-	return make_pair(inputs, expects);
+	return result;
+}
+
+void ScenarioParser::getLBARangeOf(rapidjson::Value& actionJson, int& lba_start, int& lba_end)
+{
+	if (actionJson.HasMember("lba")) {
+		lba_start = actionJson["lba"].GetInt();
+		lba_end = lba_start + 1;
+	}
+	else if (actionJson.HasMember("lba_ranges")) {
+		auto& lbaRangesJson = actionJson["lba_ranges"];
+		lba_start = lbaRangesJson["start"].GetInt();
+		lba_end = lbaRangesJson["end"].GetInt();
+	}
+}
+
+void ScenarioParser::getRangeOf(rapidjson::Value& actionJson, int& start, int& end)
+{
+	if (actionJson.HasMember("rotate_ranges")) {
+		auto& rotateJson = actionJson["rotate_ranges"];
+		start = rotateJson["start"].GetInt();
+		end = rotateJson["end"].GetInt();
+	}
 }
 
 bool ScenarioParser::checkDocument(rapidjson::Document& document)
