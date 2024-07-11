@@ -16,6 +16,7 @@ string NANDBuffer::read(const int lba) {
 
 void NANDBuffer::write(const int lba, const string data) {
 	COMMAND_ENTRY newCommand = { 'W', lba, 1, data };
+
 	loadCommands();
 
 	commandBuffer.push_back(newCommand);
@@ -26,7 +27,15 @@ void NANDBuffer::write(const int lba, const string data) {
 }
 
 void NANDBuffer::erase(const int lba, const int size) {
+	COMMAND_ENTRY newCommand = { 'E', lba, size, "0x00000000" };
 
+	loadCommands();
+
+	commandBuffer.push_back(newCommand);
+
+	optimizeCommands();
+
+	storeCommands();
 }
 
 vector<COMMAND_ENTRY> NANDBuffer::getCommands() {

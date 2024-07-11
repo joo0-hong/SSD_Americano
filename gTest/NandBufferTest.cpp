@@ -108,3 +108,45 @@ TEST_F(NandBufferTestFixture, WriteFunctionInitialFile) {
     // Assert
     verifyResultFile(commands);
 }
+
+TEST_F(NandBufferTestFixture, EraseFunction) {
+    // Arrange
+    vector<string> commands = { "E 0 10 0x00000000" };
+
+    // Act
+    nandBuffer->erase(0, 10);
+
+    // Assert
+    verifyResultFile(commands);
+}
+
+TEST_F(NandBufferTestFixture, EraseFunctionTwice) {
+    // Arrange
+    vector<string> commands = { "E 0 10 0x00000000", "E 30 10 0x00000000" };
+
+    // Act
+    nandBuffer->erase(0, 10);
+    nandBuffer->erase(30, 10);
+
+    // Assert
+    verifyResultFile(commands);
+}
+
+TEST_F(NandBufferTestFixture, WriteEraseBasic) {
+    // Arrange
+    vector<string> commands = {
+        "W 14 1 0xFFFFFFFF", 
+        "E 0 10 0x00000000",
+        "W 99 1 0xFFFFFFFF",
+        "E 30 10 0x00000000",
+    };
+
+    // Act
+    nandBuffer->write(14, "0xFFFFFFFF");
+    nandBuffer->erase(0, 10);
+    nandBuffer->write(99, "0xFFFFFFFF");
+    nandBuffer->erase(30, 10);
+
+    // Assert
+    verifyResultFile(commands);
+}
