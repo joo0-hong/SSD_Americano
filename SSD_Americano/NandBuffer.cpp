@@ -11,6 +11,15 @@ NANDBuffer::~NANDBuffer() {
 }
 
 string NANDBuffer::read(const int lba) {
+	loadCommandBuffer();
+
+	for (int i = commandBuffer.size() - 1; i >= 0; i--) {
+		COMMAND_ENTRY& cmd = commandBuffer[i];
+		if ((cmd.offset <= lba) && (lba < cmd.offset + cmd.size)) {
+			return cmd.data;
+		}
+	}
+
 	return "";
 }
 

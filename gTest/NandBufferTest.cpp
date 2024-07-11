@@ -205,3 +205,25 @@ TEST_F(NandBufferTestFixture, Clear) {
     // Assert
     verifyResultFile({ });
 }
+
+TEST_F(NandBufferTestFixture, ReadBasic) {
+    // Arrange
+    vector<string> commands = {
+        "W 14 1 0xFFFFFFFF",
+        "E 0 10 0x00000000",
+        "W 99 1 0xFFFFFFFF",
+        "E 30 10 0x00000000",
+    };
+
+    nandBuffer->write(14, "0xFFFFFFFF");
+    nandBuffer->erase(0, 10);
+    nandBuffer->write(99, "0xFFFFFFFF");
+    nandBuffer->erase(30, 10);
+
+    // Act & Assert
+    EXPECT_EQ(string("0xFFFFFFFF"), nandBuffer->read(14));
+    EXPECT_EQ(string("0x00000000"), nandBuffer->read(9));
+    EXPECT_EQ(string(""), nandBuffer->read(10));
+    EXPECT_EQ(string("0xFFFFFFFF"), nandBuffer->read(99));
+    EXPECT_EQ(string("0x00000000"), nandBuffer->read(30));
+}
