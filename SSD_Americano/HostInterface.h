@@ -20,5 +20,6 @@ private:
 	NANDInterface* nandIntf;
 
 	void processErrorCommand();
-	ARGUMENTS getNextArgument(ARGUMENTS argument);
+	ARGUMENTS getNextArgument(ARGUMENTS argument, bool bCanIgnore);
+	string getCommandFromArgument(ARGUMENTS argument);
 };

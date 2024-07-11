@@ -9,11 +9,11 @@ void HostInterface::processCommand(int argc, char* argv[])
 	param.value = argv;
 
 	try {
-		param = getNextArgument(param);
-		string cmd = string(*param.value);
+		param = getNextArgument(param, false);
+		string cmd = getCommandFromArgument(param);
 		command = CommandFactory::newCommand(cmd, nandIntf);
 
-		param = getNextArgument(param);
+		param = getNextArgument(param, false);
 		command->parse(param.count, param.value);
 		command->run();
 	}
@@ -43,14 +43,17 @@ void HostInterface::processErrorCommand() {
 	}
 }
 
-ARGUMENTS HostInterface::getNextArgument(ARGUMENTS argument) {
+ARGUMENTS HostInterface::getNextArgument(ARGUMENTS argument, bool bCanIgnoreZeroArgs) {
 	ARGUMENTS nextArgument = argument;
 	nextArgument.count--;
 	nextArgument.value++;
 
-	if (nextArgument.count <= 0) {
+	return nextArgument;
+}
+
+string HostInterface::getCommandFromArgument(ARGUMENTS argument) {
+	if (argument.count <= 0) {
 		throw invalid_argument("Argument does not remain.");
 	}
-
-	return nextArgument;
+	return string(*argument.value);
 }

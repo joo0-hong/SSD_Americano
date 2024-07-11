@@ -15,6 +15,7 @@ void FlushCmd::run() {
 void FlushCmd::checkParamValid(int paramCount, char* param[]) {
 	checkParamCountValid(paramCount);
 }
+
 void FlushCmd::checkParamCountValid(int paramCount) {
 	if (paramCount == 0) {
 		return;

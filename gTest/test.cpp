@@ -180,7 +180,7 @@ TEST_F(HostIntfTestFixture, FlushCmdStart) {
 
 	EXPECT_CALL(nand, flush()).Times(1);
 
-	hostIntf.processCommand(0, argv);
+	hostIntf.processCommand(2, argv);
 }
 
 TEST(NANDTest, NANDWriteRead) {
