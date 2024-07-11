@@ -1,5 +1,4 @@
 #include "Nand.h"
-#pragma once
 
 NAND::NAND(string nandFile, string resultFile)
 {
@@ -16,7 +15,7 @@ NAND::~NAND()
 void NAND::read(int lba)
 {
 	string result = nandFileManager->read(lba);
-	resultFileManager->write(0, result);
+	writeResult(result);
 }
 
 void NAND::write(int lba, string data)
@@ -24,12 +23,9 @@ void NAND::write(int lba, string data)
 	nandFileManager->write(lba, data);
 }
 
-void NAND::erase(int lba, string size) {
-	int actualSize = stoi(size);
+void NAND::erase(const int lba, const int size) {
+	int actualSize = size;
 
-	if (actualSize > MAX_ERASE_SIZE) {
-		actualSize = MAX_ERASE_SIZE;
-	}
 	if (lba + actualSize - 1 > MAX_ADDR) {
 		actualSize = actualSize - (lba + actualSize - 1 - MAX_ADDR);
 	}
@@ -39,7 +35,13 @@ void NAND::erase(int lba, string size) {
 	}
 }
 
+
 void NAND::error()
 {
-	resultFileManager-> write(0, "NULL");
+	writeResult("NULL");
+}
+
+void NAND::writeResult(string result)
+{
+	resultFileManager->write(0, result);
 }

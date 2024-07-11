@@ -6,12 +6,74 @@
 #include "TestShell.h"
 #include "FileReader.h"
 
+
 using namespace std;
 
 TestShell::TestShell(SSDDriver* ssdDriver
 	, FileReader* fileReader)
 	: ssdDriver_{ ssdDriver }
-	, fileReader_{ fileReader } {}
+	, fileReader_{ fileReader }
+	, scenarioMode_{ false } {
+	setup();
+}
+
+void TestShell::setup() {
+	scenarioMap_["testapp1"] = &TestShell::testapp1;
+	scenarioMap_["testapp2"] = &TestShell::testapp2;
+
+	commandMap_ = {
+			{"write", [&](const std::string& arg1, const std::string& arg2) { write(arg1, arg2); }},
+			{"read", [&](const std::string& arg1, const std::string&) { read(arg1); }},
+			{"help", [&](const std::string&, const std::string&) { help(); }},
+			{"fullwrite", [&](const std::string& arg1, const std::string&) { fullwrite(arg1); }},
+			{"fullread", [&](const std::string&, const std::string&) { fullread(); }},
+			{"erase", [&](const std::string& arg1, const std::string& arg2) { erase(arg1, arg2); }},
+			{"erase_range", [&](const std::string& arg1, const std::string& arg2) { erase_range(arg1, arg2); }},
+			{"flush", [&](const std::string&, const std::string&) { flush(); }}
+	};
+}
+
+void TestShell::setscenariomode(bool mode) {
+	scenarioMode_ = mode;
+}
+bool TestShell::isscenariomode() {
+	return scenarioMode_;
+}
+
+bool TestShell::runCommand(std::string cmd, std::string arg1, std::string arg2, std::vector<std::string> expect_v) {
+	clearcmdresult();
+
+	auto it = commandMap_.find(cmd);
+	if (it == commandMap_.end()) {
+		return false;
+	}
+
+	int size = expect_v.size();
+	it->second(arg1, arg2);
+	
+	if (size <= 0)
+		return true;
+
+	std::vector<std::string> actual_v = getcmdresult();
+	for (int i = 0; i < size; i++) {
+		if (expect_v[i] != actual_v[i])
+			return false;
+	}
+
+	return true;
+}
+
+std::vector<std::string> TestShell::getcmdresult() {
+	return cmdresult_;
+}
+
+void TestShell::clearcmdresult() {
+	cmdresult_.clear();
+}
+
+void TestShell::setcmdresult(std::string result) {
+	cmdresult_.push_back(result);
+}
 
 void TestShell::write(const std::string lba, const std::string data) {
 	ssdDriver_->write(lba, data);
@@ -19,8 +81,12 @@ void TestShell::write(const std::string lba, const std::string data) {
 
 void TestShell::read(std::string lba) {
 	invokeSSDRead(lba);
-
-	std::cout << getSSDReadData() << std::endl;
+	if (isscenariomode()) {
+		setcmdresult(getSSDReadData());
+	}
+	else {
+		std::cout << getSSDReadData() << std::endl;
+	}
 }
 void TestShell::invokeSSDRead(const std::string& lba)
 {
@@ -35,9 +101,7 @@ void TestShell::flush()
 string TestShell::getSSDReadData() {
 	return fileReader_->readFile();
 }
-bool TestShell::exit() {
-	return false;
-}
+
 void TestShell::help() {
 	helpWrite();
 	helpRead();
@@ -120,6 +184,12 @@ bool TestShell::testapp1() {
 	fullwrite("0x11111111");
 	fullread();
 
+	std::vector<std::string> actual_v = getcmdresult();
+	for (int i = 0; i < 100; i++) {
+		if ("0x11111111" != actual_v[i])
+			return false;
+	}
+
 	return true;
 }
 
@@ -171,4 +241,11 @@ void TestShell::erase(std::string lba, std::string size) {
 void TestShell::erase_range(std::string start_lba, std::string end_lba) {
 	int total_size = std::stoi(end_lba) - std::stoi(start_lba);
 	erase(start_lba, std::to_string(total_size));
+}
+
+bool TestShell::run(std::string scenario) {
+	if (scenarioMap_.find(scenario) == scenarioMap_.end()) {
+		return false;
+	}
+	return (this->*scenarioMap_[scenario])();
 }

@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.10.34928.147
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SSD_Americano", "SSD_Americano\SSD_Americano.vcxproj", "{E13DC34F-6F0B-4F7D-A1C4-1D1062BBF314}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1CA483A9-30FA-48F9-B599-672F86A443C8} = {1CA483A9-30FA-48F9-B599-672F86A443C8}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "솔루션 항목", "솔루션 항목", "{CEFBC322-4720-43ED-AC9D-72E052182AF6}"
 	ProjectSection(SolutionItems) = preProject
@@ -12,10 +15,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "솔루션 항목", "솔루�
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gTest", "gTest\gTest.vcxproj", "{E7E61AC1-BFFB-40BA-982D-5D93BDB405A4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1CA483A9-30FA-48F9-B599-672F86A443C8} = {1CA483A9-30FA-48F9-B599-672F86A443C8}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestShell_Americano", "TestShell_Americano\TestShell_Americano.vcxproj", "{97FCE958-0E40-462D-B8B1-D3F560DBED96}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1CA483A9-30FA-48F9-B599-672F86A443C8} = {1CA483A9-30FA-48F9-B599-672F86A443C8}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestShell_Americano_gTest", "TestShell_Americano_gTest\TestShell_Americano_gTest.vcxproj", "{AF589EEF-A9A0-4A2E-9D92-9AE70EB4171F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1CA483A9-30FA-48F9-B599-672F86A443C8} = {1CA483A9-30FA-48F9-B599-672F86A443C8}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Logger", "Logger\Logger.vcxproj", "{1CA483A9-30FA-48F9-B599-672F86A443C8}"
 EndProject
@@ -59,14 +71,6 @@ Global
 		{AF589EEF-A9A0-4A2E-9D92-9AE70EB4171F}.Release|x64.Build.0 = Release|x64
 		{AF589EEF-A9A0-4A2E-9D92-9AE70EB4171F}.Release|x86.ActiveCfg = Release|Win32
 		{AF589EEF-A9A0-4A2E-9D92-9AE70EB4171F}.Release|x86.Build.0 = Release|Win32
-		{0536D501-95B5-4911-8115-0F7AE24FC0E0}.Debug|x64.ActiveCfg = Debug|x64
-		{0536D501-95B5-4911-8115-0F7AE24FC0E0}.Debug|x64.Build.0 = Debug|x64
-		{0536D501-95B5-4911-8115-0F7AE24FC0E0}.Debug|x86.ActiveCfg = Debug|Win32
-		{0536D501-95B5-4911-8115-0F7AE24FC0E0}.Debug|x86.Build.0 = Debug|Win32
-		{0536D501-95B5-4911-8115-0F7AE24FC0E0}.Release|x64.ActiveCfg = Release|x64
-		{0536D501-95B5-4911-8115-0F7AE24FC0E0}.Release|x64.Build.0 = Release|x64
-		{0536D501-95B5-4911-8115-0F7AE24FC0E0}.Release|x86.ActiveCfg = Release|Win32
-		{0536D501-95B5-4911-8115-0F7AE24FC0E0}.Release|x86.Build.0 = Release|Win32
 		{1CA483A9-30FA-48F9-B599-672F86A443C8}.Debug|x64.ActiveCfg = Debug|x64
 		{1CA483A9-30FA-48F9-B599-672F86A443C8}.Debug|x64.Build.0 = Debug|x64
 		{1CA483A9-30FA-48F9-B599-672F86A443C8}.Debug|x86.ActiveCfg = Debug|Win32

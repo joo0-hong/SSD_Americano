@@ -1,0 +1,66 @@
+{
+  "scenario": [
+    {
+      "name": "testapp1",
+      "action": [
+        {
+          "name": "fullwrite",
+          "data": "0x11111111"
+        },
+        {
+          "name": "fullread",
+          "expect": "0x11111111"
+        }
+      ]
+    },
+    {
+      "name": "testapp2",
+      "action": [
+        {
+          "rotate_ranges": {
+            "start": 0,
+            "end": 30
+          },
+
+          "name": "write",
+          "data": "0xAAAABBBB",
+          "lba_ranges": {
+            "start": 0,
+            "end": 6
+          }
+        },
+        {
+          "name": "write",
+          "data": "0x12345678",
+          "lba_ranges": {
+            "start": 0,
+            "end": 6
+          }
+        },
+        {
+          "name": "read",
+          "lba_ranges": {
+            "start": 0,
+            "end": 6
+          },
+          "expect": "0x12345678"
+        }
+      ]
+    },
+    {
+      "name": "testapp3",
+      "action": [
+        {
+          "name": "write",
+          "lba": 13,
+          "data": "0x12341234"
+        },
+        {
+          "name": "read",
+          "lba": 13,
+          "expect": "0x12341234"
+        }
+      ]
+    }
+  ]
+}

@@ -13,48 +13,128 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="소스 파일\Command">
+      <UniqueIdentifier>{c7c6de3b-2ce3-409e-b9fc-43636c17009d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Command">
+      <UniqueIdentifier>{5995849d-0b18-4e74-ac9e-a35e4583d7c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Nand">
+      <UniqueIdentifier>{e231d6dc-349b-49fd-8f56-39f75ba43694}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\HostInterface">
+      <UniqueIdentifier>{fdb33d05-68e2-44ae-b981-74a9b46e0362}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\FileManager">
+      <UniqueIdentifier>{0bbbb09b-07be-49d2-bedb-4933470b32ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Nand">
+      <UniqueIdentifier>{c8e84137-80a8-46c8-afec-a498ca1f591b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\HostInterface">
+      <UniqueIdentifier>{6a5f231c-d785-4b4a-b02c-476317907176}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\FileManager">
+      <UniqueIdentifier>{74f9c9f1-f2ba-4d63-ba76-0e95f151d6ea}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="FileManager.cpp">
-      <Filter>소스 파일</Filter>
+    <ClCompile Include="EraseCmd.cpp">
+      <Filter>소스 파일\Command</Filter>
     </ClCompile>
-    <ClCompile Include="HostInterface.cpp">
-      <Filter>소스 파일</Filter>
+    <ClCompile Include="ErrorCmd.cpp">
+      <Filter>소스 파일\Command</Filter>
     </ClCompile>
-    <ClCompile Include="Nand.cpp">
-      <Filter>소스 파일</Filter>
+    <ClCompile Include="ReadCmd.cpp">
+      <Filter>소스 파일\Command</Filter>
+    </ClCompile>
+    <ClCompile Include="WriteCmd.cpp">
+      <Filter>소스 파일\Command</Filter>
     </ClCompile>
     <ClCompile Include="Command.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>헤더 파일\Command</Filter>
     </ClCompile>
-    <ClCompile Include="WriteCmd.h">
-      <Filter>헤더 파일</Filter>
+    <ClCompile Include="CommandFactory.h">
+      <Filter>헤더 파일\Command</Filter>
     </ClCompile>
     <ClCompile Include="ErrorCmd.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>헤더 파일\Command</Filter>
+    </ClCompile>
+    <ClCompile Include="WriteCmd.h">
+      <Filter>헤더 파일\Command</Filter>
+    </ClCompile>
+    <ClCompile Include="FileManager.cpp">
+      <Filter>소스 파일\FileManager</Filter>
+    </ClCompile>
+    <ClCompile Include="HostInterface.cpp">
+      <Filter>소스 파일\HostInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="Nand.cpp">
+      <Filter>소스 파일\Nand</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandCommon.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="NandBuffer.cpp">
+      <Filter>소스 파일\Nand</Filter>
+    </ClCompile>
+    <ClCompile Include="FlushCmd.cpp">
+      <Filter>소스 파일\Command</Filter>
+    </ClCompile>
+    <ClCompile Include="NandDriver.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandOptimizer.cpp">
+      <Filter>소스 파일\Nand</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandTypes.h">
+      <Filter>헤더 파일\Nand</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandConverter.cpp">
+      <Filter>소스 파일\Nand</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="NandInterface.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="FileManager.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="EraseCmd.h">
+      <Filter>헤더 파일\Command</Filter>
     </ClInclude>
     <ClInclude Include="ReadCmd.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="HostInterface.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>헤더 파일\Command</Filter>
     </ClInclude>
     <ClInclude Include="Nand.h">
+      <Filter>헤더 파일\Nand</Filter>
+    </ClInclude>
+    <ClInclude Include="NandInterface.h">
+      <Filter>헤더 파일\Nand</Filter>
+    </ClInclude>
+    <ClInclude Include="HostInterface.h">
+      <Filter>헤더 파일\HostInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandCommon.h">
+      <Filter>헤더 파일\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="FileManager.h">
+      <Filter>헤더 파일\FileManager</Filter>
+    </ClInclude>
+    <ClInclude Include="FlushCmd.h">
+      <Filter>헤더 파일\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="NandDriver.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="EraseCmd.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="CommandOptimizer.h">
+      <Filter>헤더 파일\Nand</Filter>
     </ClInclude>
+    <ClInclude Include="CommandConverter.h">
+      <Filter>헤더 파일\Nand</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="NandBuffer.h">
+      <Filter>헤더 파일\Nand</Filter>
+    </None>
   </ItemGroup>
 </Project>

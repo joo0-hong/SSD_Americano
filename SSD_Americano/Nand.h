@@ -14,13 +14,13 @@ public:
 
 	void read(int lba) override;
 	void write(int lba, string data) override;
-	void erase(int lba, string size) override;
+	void erase(int lba, int size) override;
 	void error() override;
+	void writeResult(string result) override;
 
 private:
 	FileManager* nandFileManager;
 	FileManager* resultFileManager;
-	const int MAX_ERASE_SIZE = 10;
 	const int MAX_ADDR = 99;
 	const string INITIAL_DATA = "0x00000000";
 };
