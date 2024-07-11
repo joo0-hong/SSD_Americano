@@ -27,3 +27,11 @@ bool CommandCommon::isInRange(const int number, const int start, const int end) 
 	}
 	return false;
 }
+
+void CommandCommon::checkParamCountValid(int paramCount) {
+	if (paramCount == suppParamCount) {
+		return;
+	}
+
+	throw invalid_argument("Invalid Parameter Count");
+}
