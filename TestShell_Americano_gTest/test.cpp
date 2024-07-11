@@ -28,7 +28,9 @@ public:
 	MOCK_METHOD(void, write, (const string& lba, const string& data), (const override));
 	MOCK_METHOD(void, read, (const string& lba), (const override));
 	MOCK_METHOD(void, erase, (const string& lba, const string& size), (const override));
-};
+	MOCK_METHOD(void, flush, (), (const override));
+}
+;
 
 class TestShellFixture : public testing::Test {
 public:
@@ -143,6 +145,13 @@ TEST_F(TestShellFixture, FullWrite) {
 
 TEST_F(TestShellFixture, Help) {
 	app.help();
+}
+
+TEST_F(TestShellFixture, flush) {
+	EXPECT_CALL(ssdDriverMk, flush)
+		.Times(1);
+	
+	app.flush();
 }
 
 TEST_F(TestShellFixture, TestApp1) {
