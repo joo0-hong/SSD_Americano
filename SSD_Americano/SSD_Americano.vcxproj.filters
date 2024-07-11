@@ -81,6 +81,9 @@
     <ClCompile Include="CommandCommon.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="FlushCmd.cpp">
+      <Filter>소스 파일\Command</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EraseCmd.h">
@@ -102,6 +105,9 @@
       <Filter>헤더 파일\HostInterface</Filter>
     </ClInclude>
     <ClInclude Include="CommandCommon.h">
+      <Filter>헤더 파일\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="FlushCmd.h">
       <Filter>헤더 파일\Command</Filter>
     </ClInclude>
   </ItemGroup>

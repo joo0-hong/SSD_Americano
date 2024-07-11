@@ -135,6 +135,7 @@
     <ClCompile Include="ErrorCmd.cpp" />
     <ClCompile Include="ErrorCmd.h" />
     <ClCompile Include="FileManager.cpp" />
+    <ClCompile Include="FlushCmd.cpp" />
     <ClCompile Include="HostInterface.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Nand.cpp" />
@@ -146,6 +147,7 @@
     <ClInclude Include="CommandCommon.h" />
     <ClInclude Include="EraseCmd.h" />
     <ClInclude Include="FileManager.h" />
+    <ClInclude Include="FlushCmd.h" />
     <ClInclude Include="HostInterface.h" />
     <ClInclude Include="Nand.h" />
     <ClInclude Include="NandInterface.h" />
