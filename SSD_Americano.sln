@@ -17,8 +17,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestShell_Americano", "Test
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestShell_Americano_gTest", "TestShell_Americano_gTest\TestShell_Americano_gTest.vcxproj", "{AF589EEF-A9A0-4A2E-9D92-9AE70EB4171F}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SSDMock", "SSDMock\SSDMock.vcxproj", "{0536D501-95B5-4911-8115-0F7AE24FC0E0}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Logger", "Logger\Logger.vcxproj", "{1CA483A9-30FA-48F9-B599-672F86A443C8}"
 EndProject
 Global

@@ -67,6 +67,14 @@ int CheckCommand::checkCmd(string input, string& arg1, string& arg2) {
 		return static_cast<int>(Command::FULLREAD);
 	}
 
+	if (cmd == "testapp1") {
+		return static_cast<int>(Command::TESTAPP1);
+	}
+
+	if (cmd == "testapp2") {
+		return static_cast<int>(Command::TESTAPP2);
+	}
+
 	if (cmd == "erase") {
 
 		if (result.size() < INPUT_COMMAND_ARG1_ARG2) {
@@ -101,6 +109,9 @@ int CheckCommand::checkCmd(string input, string& arg1, string& arg2) {
 		return static_cast<int>(Command::ERASE_RANGE);
 	}
 
+	if (cmd == "flush") {
+		return static_cast<int>(Command::FLUSH);
+	}
 	return static_cast<int>(Command::INVALID_COMMAND);
 }
 
@@ -169,6 +180,8 @@ bool CheckCommand::isValidSize(string arg) {
 		cout << "LBA should be decimal number" << endl;
 		return false;
 	}
+
+	return true;
 }
 
 bool CheckCommand::isValidRange(string arg1, string arg2) {
