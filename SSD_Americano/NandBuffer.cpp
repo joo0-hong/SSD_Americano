@@ -1,4 +1,5 @@
 #include "NandBuffer.h"
+#include "CommandConverter.h"
 
 NANDBuffer::NANDBuffer(string bufferFile) {
 	fileManager = new FileManager{ bufferFile };
@@ -11,107 +12,78 @@ NANDBuffer::~NANDBuffer() {
 }
 
 string NANDBuffer::read(const int lba) {
+	loadCommandBuffer();
+
+	for (int i = commandBuffer.size() - 1; i >= 0; i--) {
+		COMMAND_ENTRY& cmd = commandBuffer[i];
+		if ((cmd.offset <= lba) && (lba < cmd.offset + cmd.size)) {
+			return cmd.data;
+		}
+	}
+
 	return "";
 }
 
 void NANDBuffer::write(const int lba, const string data) {
+	// if data is 0 -> convert to erase
 	COMMAND_ENTRY newCommand = { 'W', lba, 1, data };
 
-	vector<string> commandsString = getCommandsFromFile();
-
-	vector<COMMAND_ENTRY> commands = convertStringToCommands(commandsString);
-
-	commands.push_back(newCommand);
-
-	optimize(commands);
-
-	commandsString = convertCommandsToString(commands);
-
-	addCommands(commandsString);
+	addCommand(newCommand);
 }
 
 void NANDBuffer::erase(const int lba, const int size) {
+	COMMAND_ENTRY newCommand = { 'E', lba, size, "0x00000000" };
 
+	addCommand(newCommand);
 }
 
 vector<COMMAND_ENTRY> NANDBuffer::getCommands() {
-	return { };
+	loadCommandBuffer();
+
+	return commandBuffer;
 }
 
 int NANDBuffer::getCommandBufferSize() {
-	return 0;
+	loadCommandBuffer();
+
+	return commandBuffer.size();
 }
 
 void NANDBuffer::clear() {
+	commandBuffer.clear();
 
+	storeCommandBuffer();
 }
 
-vector<string> NANDBuffer::getCommandsFromFile() {
-	vector<string> commands = fileManager->readEntire();
+void NANDBuffer::addCommand(COMMAND_ENTRY command) {
+	loadCommandBuffer();
 
-	clearNull(commands);
+	addCommandByOptimizing(command);
 
-	return commands;
+	storeCommandBuffer();
 }
 
-void NANDBuffer::optimize(vector<COMMAND_ENTRY> commands) {
+void NANDBuffer::addCommandByOptimizing(COMMAND_ENTRY command) {
+	CommandOptimizer optimizer;
 
+	optimizer.ignoreWrite1(commandBuffer, command);
+	optimizer.ignoreWrite2(commandBuffer, command);
+	optimizer.narrowRangeofErase(commandBuffer, command);
+	optimizer.mergeErase(commandBuffer, command);
+
+	commandBuffer.push_back(command);
 }
 
-vector<string> NANDBuffer::splitStringBySpaces(const string& str) {
-	vector<string> result;
-	istringstream stream(str);
-	string word;
+void NANDBuffer::loadCommandBuffer() {
+	CommandConverter converter;
 
-	while (stream >> word) {
-		result.push_back(word);
-	}
-
-	return result;
+	vector<string> commandsString = fileManager->readEntire();
+	commandBuffer = converter.convertStringToCommands(commandsString);
 }
 
-vector<COMMAND_ENTRY> NANDBuffer::convertStringToCommands(vector<string> stringCommands) {
-	vector<COMMAND_ENTRY> commands = {};
-	for (auto stringCommand : stringCommands) {
-		vector<string> commandline = splitStringBySpaces(stringCommand);
-		if (commandline.size() < 4) {
-			throw runtime_error("invalid buffer size");
-		}
-		COMMAND_ENTRY command = {};
-		if (commandline[0].size() != 1) throw runtime_error("1");
+void NANDBuffer::storeCommandBuffer() {
+	CommandConverter converter;
 
-		command.cmdtype = commandline[0][0];
-		command.offset = stoi(commandline[1]);
-		command.size = stoi(commandline[2]);
-		command.data = commandline[3];
-		commands.push_back(command);
-	}
-	return commands;
-}
-
-vector<string> NANDBuffer::convertCommandsToString(vector<COMMAND_ENTRY> commands) {
-	vector<string> commandsInString;
-	for (const auto& command : commands) {
-		string commandString = "";
-		commandString += command.cmdtype;
-		commandString += ' ';
-		commandString += to_string(command.offset);
-		commandString += ' ';
-		commandString += to_string(command.size);
-		commandString += ' ';
-		commandString += command.data;
-
-		commandsInString.push_back(commandString);
-		;
-	}
-	return commandsInString;
-}
-
-void NANDBuffer::addCommands(vector<string> commandsString) {
+	vector<string> commandsString = converter.convertCommandsToString(commandBuffer);
 	fileManager->writeEntire(commandsString);
-}
-
-void NANDBuffer::clearNull(vector<string>& commands) {
-	auto new_end = remove(commands.begin(), commands.end(), "");
-	commands.erase(new_end, commands.end());
 }

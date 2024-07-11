@@ -8,21 +8,15 @@ void WriteCmd::parse(int paramCount, char* param[]) {
 }
 
 void WriteCmd::run() {
-	nandIntf->write(address, data);
+	logger.print(__FUNCTION__,
+		"Write addr = " + to_string(address) + " data= " + data);
+	nandDriver->write(address, data);
 }
 
 void WriteCmd::checkParamValid(int paramCount, char* param[]) {
 	checkParamCountValid(paramCount);
 	checkLBAValid(param[0]);
 	checkDataValid(param[1]);
-}
-
-void WriteCmd::checkParamCountValid(int paramCount) {
-	if (paramCount == 2) {
-		return;
-	}
-
-	throw invalid_argument("Invalid Parameter Count");
 }
 
 void WriteCmd::checkDataValid(char* param) {

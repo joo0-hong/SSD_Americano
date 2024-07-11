@@ -1,6 +1,6 @@
-#include "ReadCmd.h"
 #include <stdexcept>
 #include <string>
+#include "ReadCmd.h"
 
 using namespace std;
 
@@ -11,7 +11,8 @@ void ReadCmd::parse(int paramCount, char* param[]) {
 }
 
 void ReadCmd::run() {
-	nandIntf->read(address);
+	logger.print(__FUNCTION__, "Read addr = " + to_string(address));
+	nandDriver->read(address);
 }
 
 void ReadCmd::checkParamValid(int paramCount, char* param[]) {
@@ -19,11 +20,4 @@ void ReadCmd::checkParamValid(int paramCount, char* param[]) {
 	checkLBAValid(param[0]);
 }
 
-void ReadCmd::checkParamCountValid(int paramCount) {
-	if (paramCount == 1) {
-		return;
-	}
-
-	throw invalid_argument("Invalid Parameter Count");
-}
 

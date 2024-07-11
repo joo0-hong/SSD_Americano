@@ -7,24 +7,24 @@
 
 class CommandFactory {
 public:
-    static Command* newCommand(const string& command, NANDInterface* nand) {
+    static Command* newCommand(const string& command, NANDDriver* nandDriver) {
         if ("R" == command) {
-            return new ReadCmd(nand);
+            return new ReadCmd(nandDriver);
         }
         if ("W" == command) {
-            return new WriteCmd(nand);
+            return new WriteCmd(nandDriver);
         }
         if ("E" == command) {
-            return new EraseCmd(nand);
+            return new EraseCmd(nandDriver);
         }
         if ("F" == command) {
-            return new FlushCmd(nand);
+            return new FlushCmd(nandDriver);
         }
 
         throw invalid_argument("This command is not available.");
     }
 
-    static Command* newErrorCommand(NANDInterface* nand) {
+    static Command* newErrorCommand(NANDDriver* nand) {
         return new ErrorCmd(nand);
     }
 };

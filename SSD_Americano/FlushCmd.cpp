@@ -9,18 +9,10 @@ void FlushCmd::parse(int paramCount, char* param[]) {
 }
 
 void FlushCmd::run() {
-	//nandIntf->flush();
+	logger.print(__FUNCTION__, "Flush Command Start");
+	nandDriver->flush();
 }
 
 void FlushCmd::checkParamValid(int paramCount, char* param[]) {
 	checkParamCountValid(paramCount);
 }
-
-void FlushCmd::checkParamCountValid(int paramCount) {
-	if (paramCount == 0) {
-		return;
-	}
-
-	throw invalid_argument("Invalid Parameter Count");
-}
-

@@ -1,16 +1,9 @@
 #pragma once
-#include "FileManager.h"
+#include "CommandOptimizer.h"
 #include <vector>
-#include <sstream>
+#include "FileManager.h"
 
 using namespace std;
-
-struct COMMAND_ENTRY {
-	char cmdtype;
-	int offset;
-	int size;
-	string data;
-};
 
 class NANDBuffer {
 public:
@@ -25,14 +18,12 @@ public:
 	void clear();
 
 private:
-	const int MAX_BUFFER_SIZE = 10;
 	FileManager* fileManager;
+	vector<COMMAND_ENTRY> commandBuffer;
 
-	vector<string> getCommandsFromFile();
-	void optimize(vector<COMMAND_ENTRY> commands);
-	vector<string> splitStringBySpaces(const string& str);
-	vector<COMMAND_ENTRY> convertStringToCommands(vector<string> stringCommands);
-	vector<string> convertCommandsToString(vector<COMMAND_ENTRY> commands);
-	void addCommands(vector<string> commandsString);
-	void clearNull(vector<string>& commands);
+	void loadCommandBuffer();
+	void storeCommandBuffer();
+
+	void addCommand(COMMAND_ENTRY command);
+	void addCommandByOptimizing(COMMAND_ENTRY command);
 };

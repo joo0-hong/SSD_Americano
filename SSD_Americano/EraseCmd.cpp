@@ -1,6 +1,6 @@
-#include "EraseCmd.h"
 #include <string>
 #include <stdexcept>
+#include "EraseCmd.h"
 
 using namespace std;
 
@@ -12,7 +12,9 @@ void EraseCmd::parse(int paramCount, char* param[]) {
 }
 
 void EraseCmd::run() {
-	nandIntf->erase(address, size);
+	logger.print(__FUNCTION__, 
+		"Erase addr = " + to_string(address) +" size= " + to_string(size));
+	nandDriver->erase(address, size);
 }
 
 void EraseCmd::checkParamValid(int paramCount, char* param[]) {
@@ -21,23 +23,14 @@ void EraseCmd::checkParamValid(int paramCount, char* param[]) {
 	checkSizeValid(param[1]);
 }
 
-void EraseCmd::checkParamCountValid(int paramCount)
-{
-	if (paramCount == 2) {
-		return;
-	}
-
-	throw invalid_argument("Invalid Parameter Count");
-}
-
 void EraseCmd::checkSizeValid(char* param)
 {
 	if (false == isNumber(string(param))) {
-		throw invalid_argument("Invalid erase size");
+		throw invalid_argument("Erase size is not a number");
 	}
 
 	if (false == isInRange(stoi(string(param)), 0, 10)) {
-		throw invalid_argument("Invalid erase size");
+		throw invalid_argument("Erase size is not in range");
 	}
 }
 

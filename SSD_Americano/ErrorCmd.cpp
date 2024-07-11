@@ -5,5 +5,6 @@ void ErrorCmd::parse(int paramCount, char* param[]) {
 }
 
 void ErrorCmd::run() {
-	nandIntf->error();
+	logger.print(__FUNCTION__, "Error Command Start");
+	nandDriver->error();
 }
