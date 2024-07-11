@@ -15,15 +15,15 @@ public:
 		}
 	}
 
-	void read(int lba) {
+	void read(const int lba) {
 		
 	}
 
-	void write(int lba, string data) {
+	void write(const int lba, const string data) {
 
 	}
 
-	void erase(int lba, int size) {
+	void erase(const int lba, const int size) {
 
 	}
 
@@ -31,8 +31,26 @@ public:
 		return { };
 	}
 
+	vector<string> getCommandsFromFile() {
+		return fileManager->fullRead();
+	}
+
+	void addCommand(string commandLine) {
+		vector<string> commands = getCommandsFromFile();
+		commands.push_back(commandLine);
+
+		clearNull(commands);
+
+		fileManager->fullWrite(commands);
+	}
+
 private:
 	const int MAX_BUFFER_SIZE = 10;
 
 	FileManager* fileManager;
+
+	void clearNull(vector<string>& commands) {
+		auto new_end = remove(commands.begin(), commands.end(), "");
+		commands.erase(new_end, commands.end());
+	}
 };

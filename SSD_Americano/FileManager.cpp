@@ -25,6 +25,18 @@ void FileManager::write(const int linenumber, const string& data) {
     setFileData(lines);
 }
 
+vector<string> FileManager::fullRead() {
+    vector<string> lines = { };
+
+    lines = getFileData();
+
+    return lines;
+}
+
+void FileManager::fullWrite(const vector<string>& data) {
+    setFileData(data);
+}
+
 vector<string> FileManager::getFileData() {
     fstream file(filename, ios::in);
     vector<string> lines = { };
