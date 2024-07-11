@@ -64,7 +64,39 @@ void NANDBuffer::addCommand(COMMAND_ENTRY command) {
 }
 
 void NANDBuffer::optimizeCommands() {
+	for (int i = commandBuffer.size() - 1; i >= 0; i--) {
+		COMMAND_ENTRY& cmd = commandBuffer[i];
 
+		if (cmd.cmdtype == 'W') {
+			for (int j = i - 1; j >= 0; j--) {
+				if (i == j) {
+					continue;
+				}
+				if (commandBuffer[j].cmdtype != 'W') {
+					continue;
+				}
+				if (commandBuffer[j].offset != cmd.offset) {
+					continue;
+				}
+				commandBuffer[j].cmdtype = 0;
+			}
+		}
+
+		if (cmd.cmdtype == 'E') {
+			for (int j = i - 1; j >= 0; j--) {
+				if (i == j) {
+					continue;
+				}
+				if (commandBuffer[j].cmdtype != 'W') {
+					continue;
+				}
+				if (false == ((cmd.offset <= commandBuffer[j].offset) && (commandBuffer[j].offset < cmd.offset + cmd.size))) {
+					continue;
+				}
+				commandBuffer[j].cmdtype = 0;
+			}
+		}
+	}
 }
 
 void NANDBuffer::loadCommandBuffer() {

@@ -227,3 +227,46 @@ TEST_F(NandBufferTestFixture, ReadBasic) {
     EXPECT_EQ(string("0xFFFFFFFF"), nandBuffer->read(99));
     EXPECT_EQ(string("0x00000000"), nandBuffer->read(30));
 }
+
+TEST_F(NandBufferTestFixture, AlgorithmSameLBAWrite) {
+    // Arrange
+    vector<string> commands = {
+        "W 23 1 0x77777777",
+    };
+
+    // Act
+    nandBuffer->write(23, "0xFFFFFFFF");
+    nandBuffer->write(23, "0x77777777");
+
+    // Assert
+    verifyResultFile(commands);
+}
+
+TEST_F(NandBufferTestFixture, AlgorithmEraseIncludingPreviousLBA) {
+    // Arrange
+    vector<string> commands = {
+        "E 23 1 0x00000000",
+    };
+
+    // Act
+    nandBuffer->write(23, "0xFFFFFFFF");
+    nandBuffer->erase(23, 1);
+
+    // Assert
+    verifyResultFile(commands);
+}
+
+TEST_F(NandBufferTestFixture, AlgorithmEraseNotIncludingPreviousLBA) {
+    // Arrange
+    vector<string> commands = {
+        "W 23 1 0x77777777",
+        "E 20 3 0x00000000",
+    };
+
+    // Act
+    nandBuffer->write(23, "0x77777777");
+    nandBuffer->erase(20, 3);
+
+    // Assert
+    verifyResultFile(commands);
+}
