@@ -378,3 +378,26 @@ TEST_F(NandBufferTestFixture, AlgorithmWriteEdgeOfEraseAndDeleteErase) {
     // Assert
     verifyResultFile(commands);
 }
+
+TEST_F(NandBufferTestFixture, AlgorithmComplex) {
+    // Arrange
+    vector<string> commands = {
+        "E 46 10 0x00000000",
+        "W 47 1 0xABCD1234",
+        "W 48 1 0xABCD1234",
+        "W 49 1 0xABCD1234",
+        "W 50 1 0xABCD1234",
+        "W 46 1 0xABCD1234",
+    };
+
+    // Act
+    nandBuffer->erase(46, 10);
+    nandBuffer->write(47, "0xABCD1234");
+    nandBuffer->write(48, "0xABCD1234");
+    nandBuffer->write(49, "0xABCD1234");
+    nandBuffer->write(50, "0xABCD1234");
+    nandBuffer->write(46, "0xABCD1234");
+
+    // Assert
+    verifyResultFile(commands);
+}

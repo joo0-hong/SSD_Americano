@@ -26,6 +26,11 @@ public:
 
 private:
 	const int MAX_BUFFER_SIZE = 10;
+
+	const char ERASE = 'E';
+	const char WRITE = 'W';
+	const char INVALID = 0;
+
 	FileManager* fileManager;
 	vector<COMMAND_ENTRY> commandBuffer;
 
@@ -33,7 +38,15 @@ private:
 
 	void loadCommandBuffer();
 	void storeCommandBuffer();
-	void optimizeCommands();
+	void addCommandByOptimizing(COMMAND_ENTRY command);
+
+	void narrowRangeofErase(COMMAND_ENTRY& newCommand);
+
+	void mergeErase(COMMAND_ENTRY& newCommand);
+
+	void ignoreWrite2(COMMAND_ENTRY& newCommand);
+
+	void ignoreWrite1(COMMAND_ENTRY& newCommand);
 
 	vector<COMMAND_ENTRY> convertStringToCommands(vector<string> stringCommands);
 	vector<string> convertCommandsToString(vector<COMMAND_ENTRY> commands);
