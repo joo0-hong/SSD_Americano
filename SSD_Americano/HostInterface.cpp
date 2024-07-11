@@ -43,7 +43,7 @@ void HostInterface::processErrorCommand() {
 	}
 }
 
-ARGUMENTS HostInterface::getNextArgument(ARGUMENTS argument, bool bCanIgnoreZeroArgs) {
+ARGUMENTS HostInterface::getNextArgument(ARGUMENTS argument) {
 	ARGUMENTS nextArgument = argument;
 	nextArgument.count--;
 	nextArgument.value++;
