@@ -8,6 +8,7 @@
 #include "../TestShell_Americano/FileReader.cpp"
 #include "../TestShell_Americano/SSDDriver.cpp"
 #include "../TestShell_Americano/HostInterface.cpp"
+#include "../TestShell_Americano/ScenarioParser.cpp"
 
 using namespace std;
 using namespace testing;
@@ -171,7 +172,9 @@ TEST_F(TestShellFixture, TestApp1) {
 	std::cout.rdbuf(oss.rdbuf());
 
 	//action
+	app.setscenariomode(true);
 	app.testapp1();
+	app.setscenariomode(false);
 
 	std::cout.rdbuf(oldCoutStreamBuf);	// 기존 buf 복원
 
