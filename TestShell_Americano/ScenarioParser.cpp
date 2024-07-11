@@ -36,14 +36,10 @@ vector<ScenarioResult> ScenarioParser::test() {
 		string scenarioName = scenarioJson["name"].GetString();
 		scenarioResult.scenarioName = scenarioName;
 
-		cout << scenarioName << endl;
-
 		auto actions = scenarioJson["action"].GetArray();
 		for (auto& actionJson : actions) {
 			string actionName = actionJson["name"].GetString();
-			cout << actionName << endl;
-
-			;
+			
 			if (actionName == "fullwrite") {
 				string input = getFullwriteInputString(actionJson);
 				inputs.push_back(input);
@@ -75,8 +71,6 @@ vector<ScenarioResult> ScenarioParser::test() {
 
 			int lba_start = 0, lba_end = 0;
 			getLBARangeOf(actionJson, lba_start, lba_end);
-
-			cout << start << " " << end << " " << lba_start << " " << lba_end << endl;
 
 			for (; start < end; ++start) {
 				for (int l_start = lba_start; l_start < lba_end; ++l_start) {
@@ -143,17 +137,12 @@ string ScenarioParser::getWriteInputString(rapidjson::Value& actionJson, int lba
 	}
 
 	string actionData = actionJson["data"].GetString();
-	cout << actionData << endl;
-
 	result += actionData;
-
-	cout << result << endl;
 
 	return result;
 }
 string ScenarioParser::getReadInputString(rapidjson::Value& actionJson, int lba) {
 	string result = "read " + to_string(lba);
-	cout << "result: " << result << endl;
 
 	return result;
 }
@@ -161,13 +150,11 @@ string ScenarioParser::getReadInputString(rapidjson::Value& actionJson, int lba)
 string ScenarioParser::getFullwriteInputString(rapidjson::Value& actionJson)
 {
 	string result = "fullwrite ";
-	cout << "fullwrite" << endl;
 
 	if (actionJson.HasMember("data") == false)
 		return result;
 
 	string actionData = actionJson["data"].GetString();
-	cout << actionData << endl;
 
 	result += actionData;
 
