@@ -13,8 +13,8 @@ enum class Command {
     ERASE = 8,
     ERASE_RANGE = 9,
     FLUSH = 10,
-    SCENARIO = 11,
-    SCENARIO_TEST = 12,
+    RUNNER = 11,
+    SCENARIO = 12,
 
     INVALID_COMMAND = -1,
     INVALID_ARGUMENT = -2
