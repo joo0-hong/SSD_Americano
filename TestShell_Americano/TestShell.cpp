@@ -26,6 +26,12 @@ void TestShell::invokeSSDRead(const std::string& lba)
 {
 	ssdDriver_->read(lba);
 }
+
+void TestShell::flush()
+{
+	ssdDriver_->flush();
+}
+
 string TestShell::getSSDReadData() {
 	return fileReader_->readFile();
 }
