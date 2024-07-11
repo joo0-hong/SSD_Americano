@@ -75,9 +75,6 @@
     <ClCompile Include="Nand.cpp">
       <Filter>소스 파일\Nand</Filter>
     </ClCompile>
-    <ClCompile Include="CommondCommon.cpp">
-      <Filter>소스 파일\Command</Filter>
-    </ClCompile>
     <ClCompile Include="CommandCommon.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>

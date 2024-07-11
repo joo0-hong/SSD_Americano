@@ -15,7 +15,8 @@ public:
 	void read(int lba) override;
 	void write(int lba, string data) override;
 	void erase(int lba, int size) override;
-	void error() override;
+	void flush(void) override;
+	void error(void) override;
 
 private:
 	FileManager* nandFileManager;

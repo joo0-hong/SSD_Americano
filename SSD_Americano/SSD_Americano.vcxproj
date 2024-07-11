@@ -130,7 +130,6 @@
     <ClCompile Include="Command.h" />
     <ClCompile Include="CommandCommon.cpp" />
     <ClCompile Include="CommandFactory.h" />
-    <ClCompile Include="CommondCommon.cpp" />
     <ClCompile Include="EraseCmd.cpp" />
     <ClCompile Include="ErrorCmd.cpp" />
     <ClCompile Include="ErrorCmd.h" />
