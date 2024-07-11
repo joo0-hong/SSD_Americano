@@ -95,14 +95,19 @@
     <ClInclude Include="NandInterface.h">
       <Filter>헤더 파일\Nand</Filter>
     </ClInclude>
-    <ClInclude Include="FileManager.h">
-      <Filter>헤더 파일\FileManager</Filter>
-    </ClInclude>
     <ClInclude Include="HostInterface.h">
       <Filter>헤더 파일\HostInterface</Filter>
     </ClInclude>
     <ClInclude Include="CommandCommon.h">
       <Filter>헤더 파일\Command</Filter>
     </ClInclude>
+    <ClInclude Include="FileManager.h">
+      <Filter>헤더 파일\FileManager</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="NandBuffer.h">
+      <Filter>헤더 파일\Nand</Filter>
+    </None>
   </ItemGroup>
 </Project>
