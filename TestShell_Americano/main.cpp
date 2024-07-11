@@ -21,6 +21,7 @@ int main() {
 	bool runnig = true;
 	while (runnig) {
 		getline(cin, input, delimeter);
+
 		runnig = hostIntf->processCommand(input);
-	}
+
 }
