@@ -12,7 +12,8 @@ using namespace std;
 TestShell::TestShell(SSDDriver* ssdDriver
 	, FileReader* fileReader)
 	: ssdDriver_{ ssdDriver }
-	, fileReader_{ fileReader } {
+	, fileReader_{ fileReader }
+	, scenarioMode_{ false } {
 	setup();
 }
 
@@ -33,14 +34,46 @@ void TestShell::setup() {
 	};
 }
 
-bool TestShell::runCommand(std::string cmd, std::string arg1, std::string arg2) {
+void TestShell::setscenariomode() {
+	scenarioMode_ = true;
+}
+bool TestShell::isscenariomode() {
+	return scenarioMode_;
+}
+
+bool TestShell::runCommand(std::string cmd, std::string arg1, std::string arg2, std::vector<std::string> expect_v) {
+	clearcmdresult();
+
 	auto it = commandMap_.find(cmd);
 	if (it == commandMap_.end()) {
 		return false;
 	}
 
+	int size = expect_v.size();
 	it->second(arg1, arg2);
-	return cmd != "exit";
+	
+	if (size <= 0)
+		return true;
+
+	std::vector<std::string> actual_v = getcmdresult();
+	for (int i = 0; i < size; i++) {
+		if (expect_v[i] != actual_v[i])
+			return false;
+	}
+
+	return true;
+}
+
+std::vector<std::string> TestShell::getcmdresult() {
+	return cmdresult_;
+}
+
+void TestShell::clearcmdresult() {
+	cmdresult_.clear();
+}
+
+void TestShell::setcmdresult(std::string result) {
+	cmdresult_.push_back(result);
 }
 
 void TestShell::write(const std::string lba, const std::string data) {
@@ -49,8 +82,12 @@ void TestShell::write(const std::string lba, const std::string data) {
 
 void TestShell::read(std::string lba) {
 	invokeSSDRead(lba);
-
-	std::cout << getSSDReadData() << std::endl;
+	if (isscenariomode()) {
+		setcmdresult(getSSDReadData());
+	}
+	else {
+		std::cout << getSSDReadData() << std::endl;
+	}
 }
 void TestShell::invokeSSDRead(const std::string& lba)
 {

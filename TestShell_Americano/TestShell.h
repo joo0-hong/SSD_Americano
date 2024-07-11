@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <map>
+#include <vector>
 #include <functional>
 
 #include "SSDDriver.h"
@@ -25,13 +26,21 @@ public:
 	bool testapp2();
 
 	bool run(std::string scenario);
-	bool runCommand(std::string cmd, std::string arg1 = "", std::string arg2 = "");
+	bool runCommand(std::string cmd, std::string arg1 = "", std::string arg2 = "", std::vector<std::string> expect_v = {});
+
+	std::vector<std::string> getcmdresult();
+	void setcmdresult(std::string result);
+	void clearcmdresult();
+	void setscenariomode();
+	bool isscenariomode();
 
 private:
 	SSDDriver* ssdDriver_;
 	FileReader* fileReader_;
 	std::map<std::string, bool (TestShell::*)()> scenarioMap_;
 	std::map<std::string, std::function<void(const std::string&, const std::string&)>> commandMap_;
+	std::vector<std::string> cmdresult_;
+	bool scenarioMode_;
 
 	void invokeSSDRead(const std::string& lba);
 	std::string getSSDReadData();
