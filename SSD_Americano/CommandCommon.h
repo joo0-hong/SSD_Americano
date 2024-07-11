@@ -4,6 +4,7 @@
 #include "Command.h"
 #include "NandInterface.h"
 #include "NandDriver.h"
+#include "Logger.h"
 
 using namespace std;
 
@@ -15,6 +16,8 @@ public:
 protected:
 	const int MAX_LBA = 99;
 	const int MIN_LBA = 0;
+
+	Logger& logger = Logger::getInstance();
 
 	void checkLBAValid(char* param);
 	bool isNumber(const string param);

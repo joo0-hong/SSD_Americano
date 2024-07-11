@@ -53,6 +53,7 @@ ARGUMENTS HostInterface::getNextArgument(ARGUMENTS argument) {
 
 string HostInterface::getCommandFromArgument(ARGUMENTS argument) {
 	if (argument.count <= 0) {
+		logger.print(__FUNCTION__, "Argument does not remain.");
 		throw invalid_argument("Argument does not remain.");
 	}
 	return string(*argument.value);

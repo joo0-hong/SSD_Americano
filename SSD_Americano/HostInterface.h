@@ -4,6 +4,7 @@
 #include "NandInterface.h"
 #include "NandBuffer.h"
 #include "NandDriver.h"
+#include "Logger.h"
 
 using namespace std;
 
@@ -20,6 +21,7 @@ public:
 
 private:
 	NANDDriver* driver;
+	Logger& logger = Logger::getInstance();
 	void processErrorCommand();
 	ARGUMENTS getNextArgument(ARGUMENTS argument);
 	string getCommandFromArgument(ARGUMENTS argument);

@@ -53,7 +53,6 @@ public:
 
 	char* argv[IDX_MAX] = {};
 	HostInterface hostIntf{ &nand, &buffer };
-private : 
 	NiceMock<MockedNand> nand;
 	NANDBuffer buffer{ "Testbuffer.txt" };
 };

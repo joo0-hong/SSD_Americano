@@ -27,16 +27,19 @@ void EraseCmd::checkParamCountValid(int paramCount)
 		return;
 	}
 
+	logger.print(__FUNCTION__, "Parameter count is not valid");
 	throw invalid_argument("Invalid Parameter Count");
 }
 
 void EraseCmd::checkSizeValid(char* param)
 {
 	if (false == isNumber(string(param))) {
+		logger.print(__FUNCTION__, "Erase size is not a number");
 		throw invalid_argument("Invalid erase size");
 	}
 
 	if (false == isInRange(stoi(string(param)), 0, 10)) {
+		logger.print(__FUNCTION__, "Erase size is not in range");
 		throw invalid_argument("Invalid erase size");
 	}
 }
