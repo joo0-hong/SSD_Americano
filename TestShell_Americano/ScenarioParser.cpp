@@ -30,13 +30,70 @@ void ScenarioParser::test() {
 			string actionName = actionJson["name"].GetString();
 			cout << actionName << endl;
 
-			// actionName: write
+			string input = "";
 			if (actionName == "write") {
-				
+				input = getWriteInputString(actionJson);
 			}
+			if (actionName == "fullwrite") {
+				input = getFullwriteInputString(actionJson);
+			}
+			if (actionName == "fullread") {
+
+			}
+
+			// is_rotate가 true라면 현재 action을 ranges만큼 반복한다.
+			if (actionJson.HasMember("rotate_ranges")) {
+				auto& rotateJson = actionJson["rotate_ranges"];
+				int start = rotateJson["start"].GetInt();
+				int end = rotateJson["end"].GetInt();
+
+				// processCommand를 [start : end) 만큼 실행
+				for (; start < end; ++start) {
+					
+				}
+			}
+
+			
+
+			// processCommand(input) 호출하면 동작.
 		}
 
 	}
+}
+
+string ScenarioParser::getWriteInputString(rapidjson::Value& actionJson) {
+	string result = "write ";
+	cout << "write" << endl;
+
+	if (actionJson.HasMember("data") == false)
+		return result;
+
+	if (actionJson.HasMember("lba")) {
+		string lba = to_string(actionJson["lba"].GetInt());
+	}
+
+	string actionData = actionJson["data"].GetString();
+	cout << actionData << endl;
+
+	result += actionData;
+
+	return result;
+}
+
+string ScenarioParser::getFullwriteInputString(rapidjson::Value& actionJson)
+{
+	string result = "fullwrite ";
+	cout << "fullwrite" << endl;
+
+	if (actionJson.HasMember("data") == false)
+		return result;
+
+	string actionData = actionJson["data"].GetString();
+	cout << actionData << endl;
+
+	result += actionData;
+
+	return result;
 }
 
 bool ScenarioParser::setDocument(rapidjson::Document& d) {
@@ -67,7 +124,7 @@ bool ScenarioParser::checkValid(std::ifstream& file)
 
 string ScenarioParser::getStr(std::ifstream& file) {
 	string result = "", str;
-	
+
 	while (file >> str) {
 		result += str;
 	}

@@ -20,6 +20,9 @@ private:
 
 	bool checkValid(std::ifstream& file);
 	
+	std::string getWriteInputString(rapidjson::Value& actionJson);
+	std::string getFullwriteInputString(rapidjson::Value& actionJson);
+
 	std::string getStr(std::ifstream& file);
 	
 	void printParsingErrorMsg();
