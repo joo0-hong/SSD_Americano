@@ -35,6 +35,7 @@ private:
 
 	vector<COMMAND_ENTRY> convertStringToCommands(vector<string> stringCommands);
 	vector<string> convertCommandsToString(vector<COMMAND_ENTRY> commands);
+
 	COMMAND_ENTRY getCommandEntry(string str);
 	string getString(COMMAND_ENTRY entry);
 	vector<string> splitStringBySpaces(const string& str);
