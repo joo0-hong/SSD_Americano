@@ -138,6 +138,7 @@
     <ClCompile Include="HostInterface.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Nand.cpp" />
+    <ClCompile Include="NandBuffer.cpp" />
     <ClCompile Include="ReadCmd.cpp" />
     <ClCompile Include="WriteCmd.cpp" />
     <ClCompile Include="WriteCmd.h" />
@@ -151,6 +152,9 @@
     <ClInclude Include="Nand.h" />
     <ClInclude Include="NandInterface.h" />
     <ClInclude Include="ReadCmd.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="NandBuffer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

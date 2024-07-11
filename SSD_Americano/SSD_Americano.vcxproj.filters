@@ -78,6 +78,9 @@
     <ClCompile Include="CommandCommon.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="NandBuffer.cpp">
+      <Filter>소스 파일\Nand</Filter>
+    </ClCompile>
     <ClCompile Include="FlushCmd.cpp">
       <Filter>소스 파일\Command</Filter>
     </ClCompile>
@@ -95,17 +98,22 @@
     <ClInclude Include="NandInterface.h">
       <Filter>헤더 파일\Nand</Filter>
     </ClInclude>
-    <ClInclude Include="FileManager.h">
-      <Filter>헤더 파일\FileManager</Filter>
-    </ClInclude>
     <ClInclude Include="HostInterface.h">
       <Filter>헤더 파일\HostInterface</Filter>
     </ClInclude>
     <ClInclude Include="CommandCommon.h">
       <Filter>헤더 파일\Command</Filter>
     </ClInclude>
+    <ClInclude Include="FileManager.h">
+      <Filter>헤더 파일\FileManager</Filter>
+    </ClInclude>
     <ClInclude Include="FlushCmd.h">
       <Filter>헤더 파일\Command</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="NandBuffer.h">
+      <Filter>헤더 파일\Nand</Filter>
+    </None>
   </ItemGroup>
 </Project>

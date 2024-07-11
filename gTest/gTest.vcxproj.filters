@@ -22,6 +22,9 @@
     <ClCompile Include="test.cpp">
       <Filter>소스 파일\test</Filter>
     </ClCompile>
+    <ClCompile Include="NandBufferTest.cpp">
+      <Filter>소스 파일\test</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="리소스 파일">
@@ -39,6 +42,9 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="TestNand.txt">
+      <Filter>리소스 파일</Filter>
+    </Text>
+    <Text Include="TestBuffer.txt">
       <Filter>리소스 파일</Filter>
     </Text>
   </ItemGroup>
