@@ -27,7 +27,10 @@
     <ClCompile Include="SSDDriver.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="CheckCommand.cpp">
+    <ClCompile Include="HostInterface.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ScenarioParser.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -41,11 +44,17 @@
     <ClInclude Include="SSDDriver.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="CheckCommand.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Command.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="HostInterface.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ScenarioParser.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

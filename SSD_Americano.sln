@@ -20,8 +20,14 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gTest", "gTest\gTest.vcxpro
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestShell_Americano", "TestShell_Americano\TestShell_Americano.vcxproj", "{97FCE958-0E40-462D-B8B1-D3F560DBED96}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1CA483A9-30FA-48F9-B599-672F86A443C8} = {1CA483A9-30FA-48F9-B599-672F86A443C8}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestShell_Americano_gTest", "TestShell_Americano_gTest\TestShell_Americano_gTest.vcxproj", "{AF589EEF-A9A0-4A2E-9D92-9AE70EB4171F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1CA483A9-30FA-48F9-B599-672F86A443C8} = {1CA483A9-30FA-48F9-B599-672F86A443C8}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Logger", "Logger\Logger.vcxproj", "{1CA483A9-30FA-48F9-B599-672F86A443C8}"
 EndProject

@@ -1,6 +1,129 @@
-#include "CheckCommand.h"
+#include "HostInterface.h"
+#include <iostream>
+#include <fstream>
+#include <vector>
 
-int CheckCommand::checkCmd(string input, string& arg1, string& arg2) {
+using namespace std;
+
+int HostInterface::checkTestType(string input) {
+	string arg1, arg2;
+
+	if (checkCmd(input, arg1, arg2) == static_cast<int>(Command::RUNNER)) {
+		return static_cast<int>(Test::TEST_RUNNER);
+	}
+
+	if (checkCmd(input, arg1, arg2) == static_cast<int>(Command::SCENARIO)) {
+		return static_cast<int>(Test::TEST_SCENARIO);;
+	}
+
+	return static_cast<int>(Test::TEST_COMMAND);
+}
+
+
+bool HostInterface::processRunner(ifstream& file_read) {
+
+	vector<string> file_str;
+	string line;
+
+	app->setscenariomode(true);
+
+	while (getline(file_read, line)) {
+		file_str.push_back(line);
+	}
+
+	for (vector<string>::iterator iter = file_str.begin(); iter != file_str.end(); iter++) {
+		std::cout << *iter << " --- " << "Run" << " ... ";
+		string result = app ->run(*iter) == true ? "Pass" : "Fail";
+		std::cout << result << std::endl;
+	}
+	app->setscenariomode(false);
+
+	return true;
+}
+
+
+bool HostInterface::processScenario(ScenarioParser & scenario) {
+
+	app->setscenariomode(true);
+
+	vector<ScenarioResult> result = scenario.test();
+
+	for (auto eachScenarioResult : result) {
+		string scenarioName = eachScenarioResult.scenarioName;
+		auto& inputs = eachScenarioResult.inputs;
+		auto& expects = eachScenarioResult.expects;
+		
+		std::cout << scenarioName << " --- " << "Run" << " ... ";
+		
+		int length = inputs.size();
+		bool ret = true;
+		for (int i = 0; i < length; ++i) {
+			ret &= processCommand(inputs[i], expects[i]);
+		}
+
+		string result = ret == true ? "Pass" : "Fail";
+		std::cout << result << std::endl;
+
+		if (false == ret) break;
+	}
+
+	app->setscenariomode(false);
+
+	return true;
+}
+
+bool HostInterface::processCommand(string input, std::vector<std::string> expect_v) {
+	
+	string arg1, arg2;
+	int cmd = checkCmd(input, arg1, arg2);
+	bool result = false;
+	
+	switch (cmd) {
+	case static_cast<int>(Command::WRITE):
+		result = app->runCommand("write", arg1, arg2, expect_v);
+		break;
+	case static_cast<int>(Command::READ):
+		result = app->runCommand("read", arg1, arg2, expect_v);
+		break;
+	case static_cast<int>(Command::EXIT):
+		result = false;
+		break;
+	case static_cast<int>(Command::HELP):
+		result = app->runCommand("help", arg1, arg2, expect_v);
+		break;
+	case static_cast<int>(Command::FULLWRITE):
+		result = app->runCommand("fullwrite", arg1, arg2, expect_v);
+		break;
+	case static_cast<int>(Command::FULLREAD):
+		result = app->runCommand("fullread", arg1, arg2, expect_v);
+		break;
+	case static_cast<int>(Command::TESTAPP1):
+		result = app->runCommand("testapp1", arg1, arg2, expect_v);
+		break;
+	case static_cast<int>(Command::TESTAPP2):
+		result = app->runCommand("testapp2", arg1, arg2, expect_v);
+		break;
+	case static_cast<int>(Command::ERASE):
+		result = app->runCommand("erase", arg1, arg2, expect_v);
+		break;
+	case static_cast<int>(Command::ERASE_RANGE):
+		result = app->runCommand("erase_range", arg1, arg2, expect_v);
+		break;
+	case static_cast<int>(Command::FLUSH):
+		result = app->runCommand("flush", arg1, arg2, expect_v);
+		break;
+	case static_cast<int>(Command::INVALID_COMMAND):
+		cout << "INVALID COMMAND" << endl;
+		break;
+	case static_cast<int>(Command::INVALID_ARGUMENT):
+		cout << "INVALID ARGUMENT" << endl;
+		break;
+	}
+
+	return result;
+}
+
+int HostInterface::checkCmd(string input, string& arg1, string& arg2) {
 
 	vector<string> result = split(input);
 
@@ -112,10 +235,19 @@ int CheckCommand::checkCmd(string input, string& arg1, string& arg2) {
 	if (cmd == "flush") {
 		return static_cast<int>(Command::FLUSH);
 	}
+
+	if (cmd == "run_list.lst") {
+		return static_cast<int>(Command::RUNNER);
+	}
+
+	if (cmd == "scenario_test") {
+		return static_cast<int>(Command::SCENARIO);
+	}
+
 	return static_cast<int>(Command::INVALID_COMMAND);
 }
 
-vector<string> CheckCommand::split(string input) {
+vector<string> HostInterface::split(string input) {
 	istringstream iss(input);
 	string buffer;
 	vector<string> result;
@@ -131,7 +263,7 @@ vector<string> CheckCommand::split(string input) {
 	return result;
 }
 
-bool CheckCommand::isValidLBA(string arg) {
+bool HostInterface::isValidLBA(string arg) {
 
 	if ((atoi(arg.c_str()) == 0) && (arg.compare("0") != 0)) {
 		cout << "LBA should be decimal number" << endl;
@@ -147,12 +279,12 @@ bool CheckCommand::isValidLBA(string arg) {
 	return true;
 }
 
-bool CheckCommand::is_xdigits(const std::string& str)
+bool HostInterface::is_xdigits(const std::string& str)
 {
 	return str.find_first_not_of("0123456789ABCDEF") == string::npos;
 }
 
-bool CheckCommand::isValidData(string arg) {
+bool HostInterface::isValidData(string arg) {
 	
 	string prefix = "0x";
 	if (arg.rfind(prefix, 0) != 0) {
@@ -174,7 +306,7 @@ bool CheckCommand::isValidData(string arg) {
 	return true;
 }
 
-bool CheckCommand::isValidSize(string arg) {
+bool HostInterface::isValidSize(string arg) {
 
 	if ((atoi(arg.c_str()) == 0) && (arg.compare("0") != 0)) {
 		cout << "LBA should be decimal number" << endl;
@@ -184,7 +316,7 @@ bool CheckCommand::isValidSize(string arg) {
 	return true;
 }
 
-bool CheckCommand::isValidRange(string arg1, string arg2) {
+bool HostInterface::isValidRange(string arg1, string arg2) {
 
 	if ((atoi(arg1.c_str()) == 0) && (arg1.compare("0") != 0)) {
 		cout << "LBA should be decimal number" << endl;
