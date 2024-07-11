@@ -14,8 +14,9 @@ class NandDriverTestFixture : public testing::Test {
 protected:
     void SetUp() {
         fileManager = new FileManager(TESTFILENAME);
-        nand = new NAND{ TESTFILENAME, TESTRESULT };
-        nandDriver = new NANDDriver(nand);
+        nand = new NAND{ TESTFILENAME, TESTRESULTFILE };
+        nandBuffer = new NANDBuffer{ TESTBUFFERFILE };
+        nandDriver = new NANDDriver(nand, nandBuffer);
 
         vector<string> data;
         for (int i = 0; i < MAX_FILE_LINE_COUNT; i++) {
@@ -52,20 +53,12 @@ protected:
     NANDDriver* nandDriver;
     FileManager* fileManager;
     NAND* nand;
-    NandBuffer* nandBuffer;
+    NANDBuffer* nandBuffer;
 
     const string TESTFILENAME = "TestNand.txt";
-    const string TESTRESULT = "TestResult.txt";
+    const string TESTRESULTFILE = "TestResult.txt";
+    const string TESTBUFFERFILE = "TestResult.txt";
     const string INITIAL_ZERO_STRING = "0x00000000";
     const int MAX_FILE_LINE_COUNT = 100;
 };
 
-//TEST_F(NandDriverTestFixture, NandDriver) {
-//    //EXPECT_THAT(NANDDriver, NotNull());
-//    nandDriver->write(0, "0x11111111");
-//}
-//
-//TEST_F(NandDriverTestFixture, NandDriverWrite) {
-//    nandDriver->write(0, "0x11111111");
-//
-//}
