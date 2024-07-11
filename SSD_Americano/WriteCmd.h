@@ -8,6 +8,7 @@ using namespace std;
 class WriteCmd : public CommandCommon {
 public:
 	WriteCmd(NANDDriver* nand) : nandDriver(nand), address(0), data("") {
+		suppParamCount = 2;
 	}
 
 	void parse(int paramCount, char* param[]) override;
@@ -22,6 +23,5 @@ private:
 	string data;
 
 	void checkParamValid(int paramCount, char* param[]);
-	void checkParamCountValid(int paramCount);
 	void checkDataValid(char* param);
 };

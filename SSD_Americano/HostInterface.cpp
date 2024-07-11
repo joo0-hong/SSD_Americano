@@ -8,6 +8,8 @@ void HostInterface::processCommand(int argc, char* argv[])
 	param.count = argc;
 	param.value = argv;
 
+	logger.print(__FUNCTION__, "New Command Started");
+
 	try {
 		param = getNextArgument(param);
 		string cmd = getCommandFromArgument(param);
@@ -17,13 +19,16 @@ void HostInterface::processCommand(int argc, char* argv[])
 		command->parse(param.count, param.value);
 		command->run();
 	}
-	catch (...) {
+	catch (exception e) {
+		logger.print(__FUNCTION__,  "<EXCEPTION> " + string(e.what()));
 		processErrorCommand();
 	}
 
 	if (nullptr != command) {
 		delete command;
 	}
+
+	logger.print(__FUNCTION__, "Command Completed");
 }
 
 void HostInterface::processErrorCommand() {
@@ -34,8 +39,8 @@ void HostInterface::processErrorCommand() {
 		command->parse(0, nullptr);
 		command->run();
 	}
-	catch (...) {
-		; // Logging
+	catch (exception e) {
+		logger.print(__FUNCTION__, "<EXCEPTION> " + string(e.what()));
 	}
 
 	if (nullptr != command) {
@@ -53,7 +58,6 @@ ARGUMENTS HostInterface::getNextArgument(ARGUMENTS argument) {
 
 string HostInterface::getCommandFromArgument(ARGUMENTS argument) {
 	if (argument.count <= 0) {
-		logger.print(__FUNCTION__, "Argument does not remain.");
 		throw invalid_argument("Argument does not remain.");
 	}
 	return string(*argument.value);

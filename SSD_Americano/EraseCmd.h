@@ -4,6 +4,7 @@
 class EraseCmd : public CommandCommon {
 public:
 	EraseCmd(NANDDriver* nand) : nandDriver(nand), address(0), size(0) {
+		suppParamCount = 2;
 	}
 
 	void parse(int paramCount, char* param[]) override;
@@ -15,6 +16,5 @@ private:
 	int size;
 
 	void checkParamValid(int paramCount, char* param[]);
-	void checkParamCountValid(int paramCount);
 	void checkSizeValid(char* param);
 };

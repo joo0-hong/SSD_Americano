@@ -2,6 +2,7 @@
 #include "Command.h"
 #include "NandInterface.h"
 #include "NandDriver.h"
+#include "Logger.h"
 
 class ErrorCmd : public Command {
 public:
@@ -13,4 +14,5 @@ public:
 
 private:
 	NANDDriver* nandDriver;
+	Logger& logger = Logger::getInstance();
 };

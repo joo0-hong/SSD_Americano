@@ -20,8 +20,6 @@ Logger& Logger::getInstance() {
 void Logger::print(const string& funcName, const string& content) {
 	string currentFileFullPath = LOG_PATH + LATEST_LOG_FILE_NAME;
 
-	cout << "current file name : " << currentFileFullPath << endl;
-
 	// open file with app option (append)
 	fstream file(currentFileFullPath, ios::in | ios::out | ios::app);
 
@@ -56,13 +54,11 @@ bool Logger::checkFileOpen(std::fstream& file)
 		cout << "FILE should be opened " << endl;
 		return false;
 	}
-	cout << "FILE is opened" << endl;
 	return true;
 }
 bool Logger::isExceedMaxFileSize(std::fstream& file)
 {
 	file.seekg(0, ios_base::end);
-	cout << "file size = " << file.tellg() << " Bytes" << endl;
 	return file.tellg() >= Logger::MAX_FILE_SIZE;
 }
 
@@ -147,5 +143,5 @@ void Logger::writeToLatestLog(const string& funcName, const string& content, fst
 	string timeStr = format("{}.{:0>2}.{:0>2} {:0>2}:{:0>2}"
 		, (time.tm_year - 100), time.tm_mon + 1, time.tm_mday, time.tm_hour, time.tm_min);
 
-	file << format("[{0: <14}] {1: <20} : {2: <20}\n", timeStr, funcName, content);
+	file << format("[{0: <14}] {1: <40} : {2: <30}\n", timeStr, funcName, content);
 }

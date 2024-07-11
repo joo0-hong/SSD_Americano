@@ -4,6 +4,7 @@
 class ReadCmd : public CommandCommon {
 public:
 	ReadCmd(NANDDriver* nand) : nandDriver(nand), address(0){
+		suppParamCount = 1;
 	}
 
 	void parse(int paramCount, char* param[]) override;
@@ -14,5 +15,4 @@ private:
 	int address;
 
 	void checkParamValid(int paramCount, char* param[]);
-	void checkParamCountValid(int paramCount);
 };
