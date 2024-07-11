@@ -32,7 +32,9 @@ bool HostInterface::processRunner(ifstream& file_read) {
 	}
 
 	for (vector<string>::iterator iter = file_str.begin(); iter != file_str.end(); iter++) {
-		app ->run(*iter);
+		std::cout << *iter << " --- " << "Run" << " ... ";
+		string result = app ->run(*iter) == true ? "Pass" : "Fail";
+		std::cout << result << std::endl;
 	}
 	app->setscenariomode(false);
 
