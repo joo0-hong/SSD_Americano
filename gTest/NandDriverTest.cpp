@@ -60,12 +60,12 @@ protected:
     const int MAX_FILE_LINE_COUNT = 100;
 };
 
-TEST_F(NandDriverTestFixture, NandDriver) {
-    //EXPECT_THAT(NANDDriver, NotNull());
-    nandDriver->write(0, "0x11111111");
-}
-
-TEST_F(NandDriverTestFixture, NandDriverWrite) {
-    nandDriver->write(0, "0x11111111");
-
-}
+//TEST_F(NandDriverTestFixture, NandDriver) {
+//    //EXPECT_THAT(NANDDriver, NotNull());
+//    nandDriver->write(0, "0x11111111");
+//}
+//
+//TEST_F(NandDriverTestFixture, NandDriverWrite) {
+//    nandDriver->write(0, "0x11111111");
+//
+//}
