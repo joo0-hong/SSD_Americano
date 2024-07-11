@@ -25,14 +25,13 @@ string NANDBuffer::read(const int lba) {
 }
 
 void NANDBuffer::write(const int lba, const string data) {
-	// if data is 0 -> convert to erase
 	COMMAND_ENTRY newCommand = { 'W', lba, 1, data };
 
 	addCommand(newCommand);
 }
 
 void NANDBuffer::erase(const int lba, const int size) {
-	COMMAND_ENTRY newCommand = { 'E', lba, size, "0x00000000" };
+	COMMAND_ENTRY newCommand = { 'E', lba, size, ERASE_DATA };
 
 	addCommand(newCommand);
 }
@@ -56,6 +55,12 @@ void NANDBuffer::clear() {
 }
 
 void NANDBuffer::addCommand(COMMAND_ENTRY command) {
+	if (false == isValidSize(command)) {
+		return;
+	}
+
+	updateCommandType(command);
+
 	loadCommandBuffer();
 
 	addCommandByOptimizing(command);
@@ -86,4 +91,17 @@ void NANDBuffer::storeCommandBuffer() {
 
 	vector<string> commandsString = converter.convertCommandsToString(commandBuffer);
 	fileManager->writeEntire(commandsString);
+}
+
+bool NANDBuffer::isValidSize(COMMAND_ENTRY& command)
+{
+	return (command.size > 0);
+}
+
+void NANDBuffer::updateCommandType(COMMAND_ENTRY& command)
+{
+	// Write lba 0x00000000 == Erase lba 1
+	if ((command.cmdtype == COMMAND::WRITE) && (command.size == 1) && (command.data == ERASE_DATA)) {
+		command.cmdtype = COMMAND::ERASE;
+	}
 }

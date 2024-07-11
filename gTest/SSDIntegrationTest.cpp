@@ -32,6 +32,7 @@ protected:
 
         writeFile(TEST_NAND_FILE, data);
         writeFile(TEST_RESULT_FILE, { "\n" });
+        writeFile(TEST_BUFFER_FILE, { "\n" });
     }
 
     void mainRead(const int linenumber) {
@@ -48,6 +49,18 @@ protected:
         itoa(linenumber, arg, 10);
 
         char* arguments[] = { "ssd", "W", arg, (char*)data.c_str()};
+
+        main(sizeof(arguments) / sizeof(char*), arguments);
+    }
+
+    void mainErase(const int linenumber, const int size) {
+        char arg1[11] = { };
+        char arg2[11] = { };
+
+        itoa(linenumber, arg1, 10);
+        itoa(size, arg2, 10);
+
+        char* arguments[] = { "ssd", "E", arg1, arg2 };
 
         main(sizeof(arguments) / sizeof(char*), arguments);
     }
@@ -88,7 +101,6 @@ protected:
     NANDBuffer nandBuffer{ TEST_BUFFER_FILE };
     HostInterface hostIntf{ &nand, &nandBuffer };
 
-private:
     void writeFile(const string& filename, const vector<string>& data) {
         ofstream file(filename);
 
@@ -272,4 +284,55 @@ TEST_F(SSDIntegrationTest, InvalidEraseSize0) {
 
     // Assert
     verifyResultFile({ "" });
+}
+
+TEST_F(SSDIntegrationTest, WriteFlushTest) {
+    // Arrange
+    string data = "0x77777777";
+
+    for (int i = 0; i < 10; i++) {
+        mainWrite(i, data);
+    }
+
+    for (int i = 0; i < 10; i++) {
+        mainRead(i);
+        verifyResultFile({ data });
+    }
+    // Act (Flush)
+    mainWrite(10, data);
+
+    // Assert
+    mainRead(10);
+    for (int i = 0; i <= 10; i++) {
+        mainRead(i);
+        verifyResultFile({ data });
+    }
+}
+
+TEST_F(SSDIntegrationTest, EraseFlushTest) {
+    // Arrange
+    vector<string> allFdata;
+    for (int i = 0; i < 100; i++) {
+        allFdata.push_back("0xFFFFFFFF");
+    }
+    writeFile(TEST_NAND_FILE, allFdata);
+
+    string data = "0x00000000";
+
+    for (int i = 0; i < 20; i+=2) {
+        mainErase(i, 1);
+    }
+
+    for (int i = 0; i < 20; i+=2) {
+        mainRead(i);
+        verifyResultFile({ data });
+    }
+    // Act (Flush)
+    mainErase(20, 1);
+
+    // Assert
+    for (int i = 0; i <= 20; i+=2) {
+        mainRead(i);
+        verifyResultFile({ data });
+    }
 }
