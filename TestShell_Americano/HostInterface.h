@@ -4,17 +4,20 @@
 #include <vector>
 #include <sstream>
 #include "Command.h"
+#include "TestShell.h"
 
 using namespace std;
 
-class CheckCommand {
+class HostInterface {
 public:
-	CheckCommand() {}
+	HostInterface(TestShell* shell) : app(shell) { }
+	bool processCommand(string input);
 	int checkCmd(string input, string& arg1, string& arg2);
 
 private:
-	vector<string> split(string input);	
+	TestShell* app;
 
+	vector<string> split(string input);	
 	bool isValidLBA(string arg);
 	bool is_xdigits(const std::string& str);
 	bool isValidData(string arg);
