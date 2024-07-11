@@ -10,8 +10,8 @@ NANDBuffer::~NANDBuffer() {
 	}
 }
 
-void NANDBuffer::read(const int lba) {
-
+string NANDBuffer::read(const int lba) {
+	return "";
 }
 
 void NANDBuffer::write(const int lba, const string data) {
@@ -27,37 +27,43 @@ void NANDBuffer::erase(const int lba, const int size) {
 }
 
 vector<COMMAND_ENTRY> NANDBuffer::getCommands() {
-	return { };
+	loadCommandBuffer();
+
+	return commandBuffer;
 }
 
 int NANDBuffer::getCommandBufferSize() {
-	return 0;
+	loadCommandBuffer();
+
+	return commandBuffer.size();
 }
 
 void NANDBuffer::clear() {
+	commandBuffer.clear();
 
+	storeCommandBuffer();
 }
 
 void NANDBuffer::addCommand(COMMAND_ENTRY command) {
-	loadCommands();
+	loadCommandBuffer();
 
 	commandBuffer.push_back(command);
 
 	optimizeCommands();
 
-	storeCommands();
+	storeCommandBuffer();
 }
 
 void NANDBuffer::optimizeCommands() {
 
 }
 
-void NANDBuffer::loadCommands() {
+void NANDBuffer::loadCommandBuffer() {
 	vector<string> commandsString = fileManager->readEntire();
 	commandBuffer = convertStringToCommands(commandsString);
 }
 
-void NANDBuffer::storeCommands() {
+void NANDBuffer::storeCommandBuffer() {
 	vector<string> commandsString = convertCommandsToString(commandBuffer);
 	fileManager->writeEntire(commandsString);
 }
