@@ -1,4 +1,5 @@
 ﻿#include <string>
+#include <vector>
 
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
@@ -256,7 +257,7 @@ TEST_F(TestShellFixture, eraserange_start99_end1000) {
 	app.erase_range("99", "1000");
 }
 
-TEST_F(TestShellFixture, runner) {
+TEST_F(TestShellFixture, runner_testapp1) {
 	EXPECT_CALL(fileReaderMk, readFile)
 		.Times(AtLeast(1));
 
@@ -265,9 +266,21 @@ TEST_F(TestShellFixture, runner) {
 	EXPECT_CALL(ssdDriverMk, write)
 		.Times(AtLeast(1));
 
-	app.run("testapp1");
+	EXPECT_EQ(true, app.run("testapp1"));
 }
 
+TEST_F(TestShellFixture, runner_testapp2) {
+	EXPECT_CALL(fileReaderMk, readFile)
+		.Times(AtLeast(1))
+		.WillRepeatedly(Return("0x12345678"));
+
+	EXPECT_CALL(ssdDriverMk, read)
+		.Times(AtLeast(1));
+	EXPECT_CALL(ssdDriverMk, write)
+		.Times(AtLeast(1));
+
+	EXPECT_EQ(true, app.run("testapp2"));
+}
 
 TEST(CheckCommand, CheckCommand_InvalidCommand_r) {
 	string test_input = "r";
