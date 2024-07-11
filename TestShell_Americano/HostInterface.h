@@ -4,15 +4,19 @@
 #include <vector>
 #include <sstream>
 #include "Command.h"
+#include "TestShell.h"
 
 using namespace std;
 
-class CheckCommand {
+class HostInterface {
 public:
-	CheckCommand() {}
-	int checkCmd(string input, string& arg1, string& arg2);
+	HostInterface(TestShell* shell) : app(shell) { }
+	bool processCommand(string input);
 
 private:
+	TestShell* app;
+
+	int checkCmd(string input, string& arg1, string& arg2);
 	vector<string> split(string input);	
 
 	bool isValidLBA(string arg);

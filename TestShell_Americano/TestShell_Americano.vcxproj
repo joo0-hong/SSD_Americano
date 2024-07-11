@@ -148,15 +148,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="FileReader.cpp" />
-    <ClCompile Include="CheckCommand.cpp" />
+    <ClCompile Include="HostInterface.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SSDDriver.cpp" />
     <ClCompile Include="TestShell.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CheckCommand.h" />
     <ClInclude Include="Command.h" />
     <ClInclude Include="FileReader.h" />
+    <ClInclude Include="HostInterface.h" />
     <ClInclude Include="SSDDriver.h" />
     <ClInclude Include="TestShell.h" />
   </ItemGroup>
