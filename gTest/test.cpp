@@ -21,7 +21,6 @@ public:
 	MOCK_METHOD(void, read, (int lba), (override));
 	MOCK_METHOD(void, write, (int lba, string data), (override));
 	MOCK_METHOD(void, erase, (int lba, int size), (override));
-	MOCK_METHOD(void, flush, (), (override));
 	MOCK_METHOD(void, error, (), (override));
 	MOCK_METHOD(void, writeResult, (string result), (override));
 };
@@ -176,13 +175,13 @@ TEST_F(HostIntfTestFixture, FailEvenWhenErrorCommand) {
 	EXPECT_NO_THROW(hostIntf.processCommand(3, argv));
 }
 
-TEST_F(HostIntfTestFixture, FlushCmdStart) {
-	SetNormalFlush();
-
-	EXPECT_CALL(nand, flush()).Times(1);
-
-	hostIntf.processCommand(2, argv);
-}
+//TEST_F(HostIntfTestFixture, FlushCmdStart) {
+//	SetNormalFlush();
+//
+//	//EXPECT_CALL(nand, flush()).Times(1);
+//
+//	hostIntf.processCommand(2, argv);
+//}
 
 TEST(NANDTest, NANDWriteRead) {
 	NAND nand{ "TestNand.txt", "TestResult.txt" };

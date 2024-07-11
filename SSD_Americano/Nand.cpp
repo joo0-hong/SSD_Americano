@@ -35,9 +35,6 @@ void NAND::erase(const int lba, const int size) {
 	}
 }
 
-void NAND::flush() {
-
-}
 
 void NAND::error()
 {
