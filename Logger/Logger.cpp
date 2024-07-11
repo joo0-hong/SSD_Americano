@@ -9,6 +9,7 @@ using namespace std::filesystem;
 
 const string Logger::LOG_PATH = "..\\..\\resources\\log\\";
 const string Logger::LATEST_LOG_FILE_NAME = "latest.log";
+const int Logger::MAX_FILE_SIZE = 10 * 1024;
 
 Logger::Logger() {}
 
@@ -35,23 +36,13 @@ void Logger::print(const string& funcName, const string& content) {
 		string untilLogFileName = findUntilLogFileNameInDirectory();
 		
 		if (untilLogFileName != "") {
-			cout << untilLogFileName << " Needs to be renamed to ZIP" << endl;
-			
-			string oldName = LOG_PATH + untilLogFileName;
-			string newName = LOG_PATH + getFileNameWithoutExt(untilLogFileName) + ".zip";
-
-			renameLogFileToZip(oldName, newName);
+			renameLogToZIPFile(untilLogFileName);
 		}
 
-		// Create new until file
-		string oldName = LOG_PATH + LATEST_LOG_FILE_NAME;
-		string newName = LOG_PATH + createUntilLogFileName();
-
-		renameLogFileToZip(oldName, newName);
-		//cout << "RENAMING result = " << res << endl;
+		createNewUntilLogFile();
 
 		// re-open file
-		file.open(currentFileFullPath, ios::in | ios::out | ios::app);
+		createLatestLogFile(file, currentFileFullPath);
 	}
 
 	writeToLatestLog(funcName, content, file);
@@ -102,13 +93,32 @@ string Logger::getFileNameWithoutExt(const string& fname)
 {
 	return fname.substr(0, fname.find("."));
 }
-void Logger::renameLogFileToZip(const string& oldName, const string& newName)
+
+void Logger::renameLogToZIPFile(const std::string& untilLogFileName)
+{
+	cout << untilLogFileName << " Needs to be renamed to ZIP" << endl;
+
+	string oldName = LOG_PATH + untilLogFileName;
+	string newName = LOG_PATH + getFileNameWithoutExt(untilLogFileName) + ".zip";
+
+	renameWithString(oldName, newName);
+}
+
+void Logger::renameWithString(const string& oldName, const string& newName)
 {
 	int ret = rename(oldName.c_str(), newName.c_str());
 
 	if (ret != 0) {
 		cout << "Logger Error Code: " << ret << endl;
 	}
+}
+
+void Logger::createNewUntilLogFile()
+{
+	string oldName = LOG_PATH + LATEST_LOG_FILE_NAME;
+	string newName = LOG_PATH + createUntilLogFileName();
+
+	renameWithString(oldName, newName);
 }
 
 string Logger::createUntilLogFileName()
@@ -131,6 +141,11 @@ string Logger::createUntilLogFileName()
 		+ to_string(time.tm_sec)
 		+ string("s")
 		+ ".log";
+}
+
+void Logger::createLatestLogFile(std::fstream& file, std::string& currentFileFullPath)
+{
+	file.open(currentFileFullPath, ios::in | ios::out | ios::app);
 }
 
 void Logger::writeToLatestLog(const string& funcName, const string& content, fstream& file)
