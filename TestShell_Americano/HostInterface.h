@@ -14,7 +14,7 @@ public:
 	HostInterface(TestShell* shell) : app(shell) { }
 	bool checkSenarioTest(string input);
 	bool processScenario(ScenarioParser& scenario);
-	bool processCommand(string input);
+	bool processCommand(string input, std::vector<std::string> expect_v = {});
 	int checkCmd(string input, string& arg1, string& arg2);
 
 private:

@@ -11,26 +11,27 @@ bool HostInterface::checkSenarioTest(string input) {
 }
 
 bool HostInterface::processScenario(ScenarioParser& scenario) {
+	app->setscenariomode(true);
 	scenario.test();
+
+	//TODO: call processCommand
+	app->setscenariomode(false);
 
 	return true;
 }
 
-
-
-bool HostInterface::processCommand(string input) {
+bool HostInterface::processCommand(string input, std::vector<std::string> expect_v) {
 	string arg1, arg2;
 	int cmd = checkCmd(input, arg1, arg2);
 	int ret = true;
+	bool result = false;
 
 	switch (cmd) {
 	case static_cast<int>(Command::WRITE):
-		cout << "write (" << arg1 << ", " << arg2 << ")" << endl;
-		app->write(arg1, arg2);
+		result = app->runCommand("write", arg1, arg2, expect_v);
 		break;
 	case static_cast<int>(Command::READ):
-		cout << "read (" << arg1 << ")" << endl;
-		app->read(arg1);
+		result = app->runCommand("read", arg1, arg2, expect_v);
 		break;
 	case static_cast<int>(Command::EXIT):
 		cout << "exit" << endl;
