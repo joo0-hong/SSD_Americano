@@ -32,7 +32,9 @@ bool HostInterface::processRunner(ifstream& file_read) {
 	}
 
 	for (vector<string>::iterator iter = file_str.begin(); iter != file_str.end(); iter++) {
-		app ->run(*iter);
+		std::cout << *iter << " --- " << "Run" << " ... ";
+		string result = app ->run(*iter) == true ? "Pass" : "Fail";
+		std::cout << result << std::endl;
 	}
 	app->setscenariomode(false);
 
@@ -51,12 +53,16 @@ bool HostInterface::processScenario(ScenarioParser & scenario) {
 		auto& inputs = eachScenarioResult.inputs;
 		auto& expects = eachScenarioResult.expects;
 		
-		//cout << scenarioName << endl;
-
+		std::cout << scenarioName << " --- " << "Run" << " ... ";
+		
 		int length = inputs.size();
+		bool ret = true;
 		for (int i = 0; i < length; ++i) {
-			processCommand(inputs[i], expects[i]);
+			ret &= processCommand(inputs[i], expects[i]);
 		}
+
+		string result = ret == true ? "Pass" : "Fail";
+		std::cout << result << std::endl;
 	}
 
 	app->setscenariomode(false);
@@ -68,7 +74,6 @@ bool HostInterface::processCommand(string input, std::vector<std::string> expect
 	
 	string arg1, arg2;
 	int cmd = checkCmd(input, arg1, arg2);
-	int ret = true;
 	bool result = false;
 	
 	switch (cmd) {
@@ -79,40 +84,31 @@ bool HostInterface::processCommand(string input, std::vector<std::string> expect
 		result = app->runCommand("read", arg1, arg2, expect_v);
 		break;
 	case static_cast<int>(Command::EXIT):
-		cout << "exit" << endl;
-		ret = app->exit();
+		result = false;
 		break;
 	case static_cast<int>(Command::HELP):
-		cout << "help" << endl;
-		app->help();
+		result = app->runCommand("help", arg1, arg2, expect_v);
 		break;
 	case static_cast<int>(Command::FULLWRITE):
-		cout << "fullwrite (" << arg1 << ")" << endl;
-		app->fullwrite(arg1);
+		result = app->runCommand("fullwrite", arg1, arg2, expect_v);
 		break;
 	case static_cast<int>(Command::FULLREAD):
-		cout << "fullread" << endl;
-		app->fullread();
+		result = app->runCommand("fullread", arg1, arg2, expect_v);
 		break;
 	case static_cast<int>(Command::TESTAPP1):
-		cout << "testapp1" << endl;
-		app->testapp1();
+		result = app->runCommand("testapp1", arg1, arg2, expect_v);
 		break;
 	case static_cast<int>(Command::TESTAPP2):
-		cout << "testapp2" << endl;
-		app->testapp2();
+		result = app->runCommand("testapp2", arg1, arg2, expect_v);
 		break;
 	case static_cast<int>(Command::ERASE):
-		cout << "erase (" << arg1 << ", " << arg2 << ")" << endl;
-		app->erase(arg1, arg2);
+		result = app->runCommand("erase", arg1, arg2, expect_v);
 		break;
 	case static_cast<int>(Command::ERASE_RANGE):
-		cout << "erase_range (" << arg1 << ", " << arg2 << ")" << endl;
-		app->erase_range(arg1, arg2);
+		result = app->runCommand("erase_range", arg1, arg2, expect_v);
 		break;
 	case static_cast<int>(Command::FLUSH):
-		cout << "flush" << endl;
-		app->flush();
+		result = app->runCommand("flush", arg1, arg2, expect_v);
 		break;
 	case static_cast<int>(Command::INVALID_COMMAND):
 		cout << "INVALID COMMAND" << endl;
@@ -122,7 +118,7 @@ bool HostInterface::processCommand(string input, std::vector<std::string> expect
 		break;
 	}
 
-	return ret;
+	return result;
 }
 
 int HostInterface::checkCmd(string input, string& arg1, string& arg2) {

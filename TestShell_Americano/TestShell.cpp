@@ -24,7 +24,6 @@ void TestShell::setup() {
 	commandMap_ = {
 			{"write", [&](const std::string& arg1, const std::string& arg2) { write(arg1, arg2); }},
 			{"read", [&](const std::string& arg1, const std::string&) { read(arg1); }},
-			{"exit", [&](const std::string&, const std::string&) { exit(); }},
 			{"help", [&](const std::string&, const std::string&) { help(); }},
 			{"fullwrite", [&](const std::string& arg1, const std::string&) { fullwrite(arg1); }},
 			{"fullread", [&](const std::string&, const std::string&) { fullread(); }},
@@ -102,9 +101,7 @@ void TestShell::flush()
 string TestShell::getSSDReadData() {
 	return fileReader_->readFile();
 }
-bool TestShell::exit() {
-	return false;
-}
+
 void TestShell::help() {
 	helpWrite();
 	helpRead();
@@ -186,6 +183,12 @@ void TestShell::displayHelp(const std::string& name, const std::string& synopsis
 bool TestShell::testapp1() {
 	fullwrite("0x11111111");
 	fullread();
+
+	std::vector<std::string> actual_v = getcmdresult();
+	for (int i = 0; i < 100; i++) {
+		if ("0x11111111" != actual_v[i])
+			return false;
+	}
 
 	return true;
 }
