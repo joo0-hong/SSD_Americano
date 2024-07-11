@@ -47,12 +47,15 @@ public:
 		argv[IDX_COMMAND] = "F";
 	}
 
-	NiceMock<MockedNand> nand;
-	HostInterface hostIntf{ &nand };
-	char* argv[IDX_MAX] = {};
-private:
 	const int VALID_WRITE_IDX_NUM = 4;
+	const int VALID_ERASE_IDX_NUM = 4;
 	const int VALID_READ_IDX_NUM = 3;
+
+	char* argv[IDX_MAX] = {};
+	HostInterface hostIntf{ &nand, &buffer };
+private : 
+	NiceMock<MockedNand> nand;
+	NANDBuffer buffer{ "Testbuffer.txt" };
 };
 
 TEST(SSDTest, NANDInterface) {
@@ -78,13 +81,13 @@ TEST_F(HostIntfTestFixture, CheckingInvalidArgumentNum) {
 TEST_F(HostIntfTestFixture, CheckingValidWriteCommands) {
 	SetNormalWrite();
 
-	hostIntf.processCommand(4, argv);
+	hostIntf.processCommand(VALID_WRITE_IDX_NUM, argv);
 }
 
 TEST_F(HostIntfTestFixture, CheckingValidReadCommands) {
 	SetNormalRead();
 
-	hostIntf.processCommand(3, argv);
+	hostIntf.processCommand(VALID_READ_IDX_NUM, argv);
 }
 
 TEST_F(HostIntfTestFixture, CheckingInvalidLBA) {
@@ -93,7 +96,7 @@ TEST_F(HostIntfTestFixture, CheckingInvalidLBA) {
 
 	EXPECT_CALL(nand, error()).Times(1);
 
-	hostIntf.processCommand(4, argv);
+	hostIntf.processCommand(VALID_WRITE_IDX_NUM, argv);
 }
 
 TEST_F(HostIntfTestFixture, CheckingInvalidData) {
@@ -102,23 +105,35 @@ TEST_F(HostIntfTestFixture, CheckingInvalidData) {
 
 	EXPECT_CALL(nand, error()).Times(1);
 
-	hostIntf.processCommand(4, argv);
+	hostIntf.processCommand(VALID_WRITE_IDX_NUM, argv);
 }
 
 TEST_F(HostIntfTestFixture, StartWriteCmd) {
 	SetNormalWrite();
 
-	EXPECT_CALL(nand, write(_, _)).Times(1);
+	EXPECT_CALL(nand, write(_, _)).Times(0);
 
-	hostIntf.processCommand(4, argv);
+	hostIntf.processCommand(VALID_WRITE_IDX_NUM, argv);
 }
 
 TEST_F(HostIntfTestFixture, StartReadCmd) {
+	SetNormalWrite();
+	hostIntf.processCommand(VALID_WRITE_IDX_NUM, argv);
+
+	EXPECT_CALL(nand, read(_)).Times(0);
+
 	SetNormalRead();
+	hostIntf.processCommand(VALID_READ_IDX_NUM, argv);
+}
 
-	EXPECT_CALL(nand, read(_)).Times(1);
+TEST_F(HostIntfTestFixture, StartFlushCmd) {
+	SetNormalWrite();
+	hostIntf.processCommand(VALID_WRITE_IDX_NUM, argv);
 
-	hostIntf.processCommand(3, argv);
+	EXPECT_CALL(nand, write(_, _)).Times(AtLeast(1));
+
+	SetNormalFlush();
+	hostIntf.processCommand(2, argv);
 }
 
 TEST_F(HostIntfTestFixture, dataStringCheck) {
@@ -127,7 +142,7 @@ TEST_F(HostIntfTestFixture, dataStringCheck) {
 
 	EXPECT_CALL(nand, error()).Times(1);
 
-	hostIntf.processCommand(4, argv);
+	hostIntf.processCommand(VALID_WRITE_IDX_NUM, argv);
 }
 
 TEST_F(HostIntfTestFixture, WrongCommandNameCheck) {
@@ -136,14 +151,14 @@ TEST_F(HostIntfTestFixture, WrongCommandNameCheck) {
 
 	EXPECT_CALL(nand, error()).Times(1);
 
-	hostIntf.processCommand(4, argv);
+	hostIntf.processCommand(VALID_WRITE_IDX_NUM, argv);
 }
 
 TEST_F(HostIntfTestFixture, CheckingValidEraseCommand) {
 	SetNormalErase();
 	argv[IDX_DATA] = "10";
 
-	hostIntf.processCommand(4, argv);
+	hostIntf.processCommand(VALID_ERASE_IDX_NUM, argv);
 }
 
 TEST_F(HostIntfTestFixture, CheckingInvalidEraseSize) {
@@ -152,7 +167,7 @@ TEST_F(HostIntfTestFixture, CheckingInvalidEraseSize) {
 
 	EXPECT_CALL(nand, error()).Times(1);
 
-	hostIntf.processCommand(4, argv);;
+	hostIntf.processCommand(VALID_ERASE_IDX_NUM, argv);;
 }
 
 TEST_F(HostIntfTestFixture, CheckingInvalidEraseArguementNum) {
@@ -174,14 +189,6 @@ TEST_F(HostIntfTestFixture, FailEvenWhenErrorCommand) {
 
 	EXPECT_NO_THROW(hostIntf.processCommand(3, argv));
 }
-
-//TEST_F(HostIntfTestFixture, FlushCmdStart) {
-//	SetNormalFlush();
-//
-//	//EXPECT_CALL(nand, flush()).Times(1);
-//
-//	hostIntf.processCommand(2, argv);
-//}
 
 TEST(NANDTest, NANDWriteRead) {
 	NAND nand{ "TestNand.txt", "TestResult.txt" };

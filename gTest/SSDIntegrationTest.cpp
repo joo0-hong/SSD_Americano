@@ -10,6 +10,7 @@
 #include "../SSD_Americano/ReadCmd.cpp"
 #include "../SSD_Americano/FlushCmd.cpp"
 #include "../SSD_Americano/ErrorCmd.cpp"
+#include "../SSD_Americano/NandDriver.cpp"
 
 #include <vector>
 #include <string>
@@ -76,11 +77,13 @@ protected:
 
     const string TEST_NAND_FILE = "TestNand.txt";
     const string TEST_RESULT_FILE = "TestResult.txt";
+    const string TEST_BUFFER_FILE = "TestBuffer.txt";
     const string INITIAL_ZERO_STRING = "0x00000000";
     const int MAX_FILE_LINE_COUNT = 100;
 
     NAND nand{ TEST_NAND_FILE, TEST_RESULT_FILE };
-    HostInterface hostIntf{ &nand };
+    NANDBuffer nandBuffer{ TEST_BUFFER_FILE };
+    HostInterface hostIntf{ &nand, &nandBuffer };
 
 private:
     void writeFile(const string& filename, const vector<string>& data) {

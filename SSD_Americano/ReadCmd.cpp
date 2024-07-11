@@ -1,6 +1,6 @@
-#include "ReadCmd.h"
 #include <stdexcept>
 #include <string>
+#include "ReadCmd.h"
 
 using namespace std;
 
@@ -11,7 +11,7 @@ void ReadCmd::parse(int paramCount, char* param[]) {
 }
 
 void ReadCmd::run() {
-	nandIntf->read(address);
+	nandDriver->read(address);
 }
 
 void ReadCmd::checkParamValid(int paramCount, char* param[]) {

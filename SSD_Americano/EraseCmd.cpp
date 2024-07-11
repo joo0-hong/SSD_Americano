@@ -1,6 +1,6 @@
-#include "EraseCmd.h"
 #include <string>
 #include <stdexcept>
+#include "EraseCmd.h"
 
 using namespace std;
 
@@ -12,7 +12,7 @@ void EraseCmd::parse(int paramCount, char* param[]) {
 }
 
 void EraseCmd::run() {
-	nandIntf->erase(address, size);
+	nandDriver->erase(address, size);
 }
 
 void EraseCmd::checkParamValid(int paramCount, char* param[]) {

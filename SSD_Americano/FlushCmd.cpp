@@ -9,7 +9,7 @@ void FlushCmd::parse(int paramCount, char* param[]) {
 }
 
 void FlushCmd::run() {
-	//nandIntf->flush();
+	nandDriver->flush();
 }
 
 void FlushCmd::checkParamValid(int paramCount, char* param[]) {

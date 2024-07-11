@@ -8,7 +8,7 @@ void WriteCmd::parse(int paramCount, char* param[]) {
 }
 
 void WriteCmd::run() {
-	nandIntf->write(address, data);
+	nandDriver->write(address, data);
 }
 
 void WriteCmd::checkParamValid(int paramCount, char* param[]) {

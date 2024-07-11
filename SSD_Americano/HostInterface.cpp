@@ -11,7 +11,7 @@ void HostInterface::processCommand(int argc, char* argv[])
 	try {
 		param = getNextArgument(param);
 		string cmd = getCommandFromArgument(param);
-		command = CommandFactory::newCommand(cmd, nandIntf);
+		command = CommandFactory::newCommand(cmd, driver);
 
 		param = getNextArgument(param);
 		command->parse(param.count, param.value);
@@ -30,7 +30,7 @@ void HostInterface::processErrorCommand() {
 	Command* command = nullptr;
 
 	try {
-		command = CommandFactory::newErrorCommand(nandIntf);
+		command = CommandFactory::newErrorCommand(driver);
 		command->parse(0, nullptr);
 		command->run();
 	}
