@@ -31,6 +31,8 @@ private:
 	void createNewUntilLogFile();
 	string createUntilLogFileName(void);
 
+	string addZeroForTimeString(int timeVal);
+
 	void createLatestLogFile(std::fstream& file, std::string& currentFileFullPath);
 
 	void writeToLatestLog(const string& funcName, const string& content, fstream& file);
