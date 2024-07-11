@@ -17,10 +17,9 @@ public:
 	void fullread();
 	void erase(std::string lba, std::string zise);
 	void erase_range(std::string start_lba, std::string end_lba);
-
 	bool testapp1();
 	bool testapp2();
-
+	void flush() {};
 
 private:
 	SSDDriver* ssdDriver_;

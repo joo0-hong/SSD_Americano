@@ -109,6 +109,9 @@ int CheckCommand::checkCmd(string input, string& arg1, string& arg2) {
 		return static_cast<int>(Command::ERASE_RANGE);
 	}
 
+	if (cmd == "flush") {
+		return static_cast<int>(Command::FLUSH);
+	}
 	return static_cast<int>(Command::INVALID_COMMAND);
 }
 
