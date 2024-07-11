@@ -1,31 +1,65 @@
 #include "HostInterface.h"
+#include <iostream>
+#include <fstream>
+#include <vector>
 
-bool HostInterface::checkSenarioTest(string input) {
+using namespace std;
+
+int HostInterface::checkTestType(string input) {
 	string arg1, arg2;
 
-	if (checkCmd(input, arg1, arg2) == static_cast<int>(Command::SCENARIO_TEST)) {
-		return true;
+	if (checkCmd(input, arg1, arg2) == static_cast<int>(Command::RUNNER)) {
+		return static_cast<int>(Test::TEST_RUNNER);
 	}
 
-	return false;
+	if (checkCmd(input, arg1, arg2) == static_cast<int>(Command::SCENARIO)) {
+		return static_cast<int>(Test::TEST_SCENARIO);;
+	}
+
+	return static_cast<int>(Test::TEST_COMMAND);
 }
 
-bool HostInterface::processScenario(ScenarioParser& scenario) {
+
+bool HostInterface::processRunner(ifstream& file_read) {
+
+	vector<string> file_str;
+	string line;
+
 	app->setscenariomode(true);
-	scenario.test();
+
+	while (getline(file_read, line)) {
+		file_str.push_back(line);
+	}
+
+	for (vector<string>::iterator iter = file_str.begin(); iter != file_str.end(); iter++) {
+		app ->run(*iter);
+	}
+	app->setscenariomode(false);
+
+	return true;
+}
+
+
+bool HostInterface::processScenario(ScenarioParser & scenario) {
+
+	app->setscenariomode(true);
+
+	scenario.test();	
 
 	//TODO: call processCommand
+
 	app->setscenariomode(false);
 
 	return true;
 }
 
 bool HostInterface::processCommand(string input, std::vector<std::string> expect_v) {
+	
 	string arg1, arg2;
 	int cmd = checkCmd(input, arg1, arg2);
 	int ret = true;
 	bool result = false;
-
+	
 	switch (cmd) {
 	case static_cast<int>(Command::WRITE):
 		result = app->runCommand("write", arg1, arg2, expect_v);
@@ -79,7 +113,6 @@ bool HostInterface::processCommand(string input, std::vector<std::string> expect
 
 	return ret;
 }
-
 
 int HostInterface::checkCmd(string input, string& arg1, string& arg2) {
 
@@ -194,8 +227,12 @@ int HostInterface::checkCmd(string input, string& arg1, string& arg2) {
 		return static_cast<int>(Command::FLUSH);
 	}
 
+	if (cmd == "run_list.lst") {
+		return static_cast<int>(Command::RUNNER);
+	}
+
 	if (cmd == "scenario_test") {
-		return static_cast<int>(Command::SCENARIO_TEST);
+		return static_cast<int>(Command::SCENARIO);
 	}
 
 	return static_cast<int>(Command::INVALID_COMMAND);

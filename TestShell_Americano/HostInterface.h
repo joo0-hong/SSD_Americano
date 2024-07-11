@@ -9,12 +9,22 @@
 
 using namespace std;
 
+enum class Test {
+
+	TEST_COMMAND = 0,
+	TEST_RUNNER = 1,
+	TEST_SCENARIO = 2
+};
+
 class HostInterface {
 public:
 	HostInterface(TestShell* shell) : app(shell) { }
-	bool checkSenarioTest(string input);
+	int checkTestType(string input);
+
 	bool processScenario(ScenarioParser& scenario);
+	bool processRunner(ifstream& file_read);
 	bool processCommand(string input, std::vector<std::string> expect_v = {});
+
 	int checkCmd(string input, string& arg1, string& arg2);
 
 private:
