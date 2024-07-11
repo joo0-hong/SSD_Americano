@@ -26,31 +26,28 @@ int main() {
 
 		switch (cmd) {
 		case static_cast<int>(Command::WRITE):
-			ret = app.runCommand("write", arg1, arg2);
+			cout << "write (" <<arg1 << ", " << arg2 << ")" << endl;
+			app.write(arg1, arg2);
 			break;
 		case static_cast<int>(Command::READ):
-			ret = app.runCommand("read", arg1, arg2);
+			cout << "read (" << arg1 << ")" << endl;
+			app.read(arg1);
 			break;
 		case static_cast<int>(Command::EXIT):
-			ret = app.runCommand("exit", arg1, arg2);
+			cout << "exit" << endl;
+			ret = app.exit();
 			break;
 		case static_cast<int>(Command::HELP):
-			ret = app.runCommand("help", arg1, arg2);
+			cout << "help" << endl;
+			app.help();
 			break;
 		case static_cast<int>(Command::FULLWRITE):
-			ret = app.runCommand("fullwrite", arg1, arg2);
+			cout << "fullwrite (" << arg1 << ")" << endl;
+			app.fullwrite(arg1);
 			break;
 		case static_cast<int>(Command::FULLREAD):
-			ret = app.runCommand("fullread", arg1, arg2);
-			break;
-		case static_cast<int>(Command::ERASE):
-			ret = app.runCommand("erase", arg1, arg2);
-			break;
-		case static_cast<int>(Command::ERASE_RANGE):
-			ret = app.runCommand("erase_range", arg1, arg2);
-			break;
-		case static_cast<int>(Command::FLUSH):
-			ret = app.runCommand("flush", arg1, arg2);
+			cout << "fullread" << endl;
+			app.fullread();
 			break;
 		case static_cast<int>(Command::TESTAPP1):
 			cout << "testapp1" << endl;
@@ -59,6 +56,18 @@ int main() {
 		case static_cast<int>(Command::TESTAPP2):
 			cout << "testapp2" << endl;
 			app.testapp2();
+			break;
+		case static_cast<int>(Command::ERASE):
+			cout << "erase (" << arg1 << ", " << arg2 << ")" << endl;
+			app.erase(arg1, arg2);
+			break;
+		case static_cast<int>(Command::ERASE_RANGE):
+			cout << "erase_range (" << arg1 << ", " << arg2 << ")" << endl;
+			app.erase_range(arg1, arg2);
+			break;
+		case static_cast<int>(Command::FLUSH):
+			cout << "flush" << endl;
+			app.flush();
 			break;
 		case static_cast<int>(Command::SCENARIO):
 			break;
