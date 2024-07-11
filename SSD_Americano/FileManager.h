@@ -13,8 +13,8 @@ public:
     virtual string read(const int linenumber);
     virtual void write(const int linenumber, const string& data);
 
-    vector<string> fullRead();
-    void fullWrite(const vector<string>& data);
+    vector<string> readEntire();
+    void writeEntire(const vector<string>& data);
 
 private:
     const int MAX_LINENUMBER = 99;

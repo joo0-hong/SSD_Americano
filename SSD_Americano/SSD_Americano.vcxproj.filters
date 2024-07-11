@@ -81,6 +81,9 @@
     <ClCompile Include="CommandCommon.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="NandBuffer.cpp">
+      <Filter>소스 파일\Nand</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EraseCmd.h">

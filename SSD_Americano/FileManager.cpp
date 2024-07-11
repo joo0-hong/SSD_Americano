@@ -25,7 +25,7 @@ void FileManager::write(const int linenumber, const string& data) {
     setFileData(lines);
 }
 
-vector<string> FileManager::fullRead() {
+vector<string> FileManager::readEntire() {
     vector<string> lines = { };
 
     lines = getFileData();
@@ -33,7 +33,7 @@ vector<string> FileManager::fullRead() {
     return lines;
 }
 
-void FileManager::fullWrite(const vector<string>& data) {
+void FileManager::writeEntire(const vector<string>& data) {
     setFileData(data);
 }
 
