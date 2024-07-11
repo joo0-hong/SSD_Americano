@@ -2,6 +2,7 @@
 #include "TestShell.h"
 #include "FileReader.h"
 #include "SSDDriver.h"
+#include "ScenarioParser.h"
 
 using namespace std;
 
@@ -19,10 +20,17 @@ int main() {
 	string input;
 	char delimeter = '\n';
 
+	bool scenario = true;
 	bool runnig = true;
 	while (runnig) {
 		getline(cin, input, delimeter);
-
-		runnig = hostIntf->processCommand(input);
-
+		scenario = hostIntf->checkSenarioTest(input);
+		if (scenario) {
+			ScenarioParser& scenario = ScenarioParser::getInstance();
+			runnig = hostIntf->processScenario(scenario);
+		}
+		else {
+			runnig = hostIntf->processCommand(input);
+		}
+	}
 }
