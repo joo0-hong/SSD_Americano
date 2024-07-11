@@ -33,7 +33,7 @@ bool HostInterface::processRunner(ifstream& file_read) {
 
 	for (vector<string>::iterator iter = file_str.begin(); iter != file_str.end(); iter++) {
 		std::cout << *iter << " --- " << "Run" << " ... ";
-		bool ret = app->run(*iter);
+		bool ret = app->runCommand(*iter);
 		string result = (ret == true) ? "Pass" : "Fail";
 		std::cout << result << std::endl;
 
@@ -104,10 +104,10 @@ bool HostInterface::processCommand(string input, std::vector<std::string> expect
 		result = app->runCommand("fullread", arg1, arg2, expect_v);
 		break;
 	case static_cast<int>(Command::TESTAPP1):
-		result = app->run("testapp1");
+		result = app->runCommand("testapp1", arg1, arg2, expect_v);
 		break;
 	case static_cast<int>(Command::TESTAPP2):
-		result = app->run("testapp2");
+		result = app->runCommand("testapp2", arg1, arg2, expect_v);
 		break;
 	case static_cast<int>(Command::ERASE):
 		result = app->runCommand("erase", arg1, arg2, expect_v);
