@@ -6,9 +6,9 @@ class ErrorCmd : public Command {
 public:
 	ErrorCmd(NANDInterface* nand) : nandIntf(nand) {
 	}
-	void run() override {
-		nandIntf->error();
-	}
+
+	void parse(int paramCount, char* param[]) override;
+	void run() override;
 
 private:
 	NANDInterface* nandIntf;

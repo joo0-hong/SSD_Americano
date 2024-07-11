@@ -3,6 +3,7 @@
 #include "../SSD_Americano/NandInterface.h"
 #include "../SSD_Americano/HostInterface.h"
 #include "../SSD_Americano/Nand.h"
+#include "../SSD_Americano/CommandFactory.h"
 
 using namespace testing;
 
@@ -11,14 +12,15 @@ enum hostArguIndex {
 	IDX_COMMAND,
 	IDX_ADDRESS,
 	IDX_DATA,
-	IDX_MAX = IDX_DATA,
+	IDX_SIZE = IDX_DATA,
+	IDX_MAX,
 };
 
 class MockedNand : public NANDInterface {
 public:
 	MOCK_METHOD(void, read, (int lba), (override));
 	MOCK_METHOD(void, write, (int lba, string data), (override));
-	MOCK_METHOD(void, erase, (int lba, string size), (override));
+	MOCK_METHOD(void, erase, (int lba, int size), (override));
 	MOCK_METHOD(void, error, (), (override));
 };
 
@@ -58,49 +60,45 @@ TEST(SSDTest, NANDInterface) {
 
 	nand.read(0);
 	nand.write(0, " ");
-	nand.erase(0, " ");
+	nand.erase(0, 5);
 }
 
 TEST_F(HostIntfTestFixture, CheckingInvalidArgumentNum) {
 	SetNormalWrite();
 
-	bool result = hostIntf.checkInvalidCommand(2, argv);
+	EXPECT_CALL(nand, error()).Times(1);
 
-	EXPECT_EQ(true, result);
+	hostIntf.processCommand(2, argv);
 }
 
 TEST_F(HostIntfTestFixture, CheckingValidWriteCommands) {
 	SetNormalWrite();
 
-	bool result = hostIntf.checkInvalidCommand(4, argv);
-
-	EXPECT_EQ(false, result);
+	hostIntf.processCommand(4, argv);
 }
 
 TEST_F(HostIntfTestFixture, CheckingValidReadCommands) {
 	SetNormalRead();
 
-	bool result = hostIntf.checkInvalidCommand(3, argv);
-
-	EXPECT_EQ(false, result);
+	hostIntf.processCommand(3, argv);
 }
 
 TEST_F(HostIntfTestFixture, CheckingInvalidLBA) {
 	SetNormalWrite();
 	argv[IDX_ADDRESS] = "111";
 
-	bool result = hostIntf.checkInvalidCommand(4, argv);
+	EXPECT_CALL(nand, error()).Times(1);
 
-	EXPECT_EQ(true, result);
+	hostIntf.processCommand(4, argv);
 }
 
 TEST_F(HostIntfTestFixture, CheckingInvalidData) {
 	SetNormalWrite();
 	argv[IDX_DATA] = "0x1298CDEW";
 
-	bool result = hostIntf.checkInvalidCommand(4, argv);
+	EXPECT_CALL(nand, error()).Times(1);
 
-	EXPECT_EQ(true, result);
+	hostIntf.processCommand(4, argv);
 }
 
 TEST_F(HostIntfTestFixture, StartWriteCmd) {
@@ -123,7 +121,9 @@ TEST_F(HostIntfTestFixture, dataStringCheck) {
 	SetNormalWrite();
 	argv[IDX_DATA] = "0x1298dead";
 
-	EXPECT_EQ(true, hostIntf.checkInvalidCommand(4, argv));
+	EXPECT_CALL(nand, error()).Times(1);
+
+	hostIntf.processCommand(4, argv);
 }
 
 TEST_F(HostIntfTestFixture, WrongCommandNameCheck) {
@@ -139,27 +139,36 @@ TEST_F(HostIntfTestFixture, CheckingValidEraseCommand) {
 	SetNormalErase();
 	argv[IDX_DATA] = "10";
 
-	bool result = hostIntf.checkInvalidCommand(4, argv);
-
-	EXPECT_EQ(false, result);
+	hostIntf.processCommand(4, argv);
 }
 
 TEST_F(HostIntfTestFixture, CheckingInvalidEraseSize) {
 	SetNormalErase();
-	argv[IDX_DATA] = "1A";
+	argv[IDX_SIZE] = "1A";
 
-	bool result = hostIntf.checkInvalidCommand(4, argv);
+	EXPECT_CALL(nand, error()).Times(1);
 
-	EXPECT_EQ(true, result);
+	hostIntf.processCommand(4, argv);;
 }
 
 TEST_F(HostIntfTestFixture, CheckingInvalidEraseArguementNum) {
 	SetNormalErase();
-	argv[IDX_DATA] = "5";
+	argv[IDX_SIZE] = "5";
 
-	bool result = hostIntf.checkInvalidCommand(3, argv);
+	EXPECT_CALL(nand, error()).Times(1);
 
-	EXPECT_EQ(true, result);
+	hostIntf.processCommand(3, argv);
+}
+
+TEST_F(HostIntfTestFixture, FailEvenWhenErrorCommand) {
+	SetNormalErase();
+	argv[IDX_SIZE] = "5";
+
+	EXPECT_CALL(nand, error())
+		.Times(1)
+		.WillOnce(Throw(std::runtime_error("Fail")));
+
+	EXPECT_NO_THROW(hostIntf.processCommand(3, argv));
 }
 
 TEST(NANDTest, NANDWriteRead) {
@@ -178,7 +187,7 @@ TEST(NANDTest, NANDError) {
 TEST(NANDTest, NANDEraseTooLargeSize) {
 	NAND nand{ "TestNand.txt", "TestResult.txt" };
 	int lba = 0;
-	string eraseSize = "20";
+	int eraseSize = 20;
 
 	nand.write(3, "0x1298DEAD");
 	nand.write(13, "0x1298DEAD");
@@ -187,7 +196,7 @@ TEST(NANDTest, NANDEraseTooLargeSize) {
 
 TEST(NANDTest, NANDEraseSmallLeftSize) {
 	NAND nand{ "TestNand.txt", "TestResult.txt" };
-	string eraseSize = "5";
+	int eraseSize = 5;
 
 	nand.write(99, "0x1298DEAD");
 	nand.erase(98, eraseSize);
