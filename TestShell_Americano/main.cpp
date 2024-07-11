@@ -1,4 +1,4 @@
-#include "CheckCommand.h"
+#include "HostInterface.h"
 #include "TestShell.h"
 #include "FileReader.h"
 #include "SSDDriver.h"
@@ -11,71 +11,16 @@ int main() {
 
 	SSDDriver ssdDriver{ SSD_PATH };
 	FileReader fileReaderMk{ RESULT_PATH };
-	TestShell app{ &ssdDriver, &fileReaderMk };
-
-	CheckCommand checker;
+	
+	TestShell * shell = new TestShell(&ssdDriver, &fileReaderMk);
+	HostInterface * hostIntf = new HostInterface(shell);
 
 	string input;
-	string arg1, arg2;
 	char delimeter = '\n';
 
-	bool ret = true;
-	while (ret) {
+	bool runnig = true;
+	while (runnig) {
 		getline(cin, input, delimeter);
-		int cmd = checker.checkCmd(input, arg1, arg2);
-
-		switch (cmd) {
-		case static_cast<int>(Command::WRITE):
-			cout << "write (" <<arg1 << ", " << arg2 << ")" << endl;
-			app.write(arg1, arg2);
-			break;
-		case static_cast<int>(Command::READ):
-			cout << "read (" << arg1 << ")" << endl;
-			app.read(arg1);
-			break;
-		case static_cast<int>(Command::EXIT):
-			cout << "exit" << endl;
-			ret = app.exit();
-			break;
-		case static_cast<int>(Command::HELP):
-			cout << "help" << endl;
-			app.help();
-			break;
-		case static_cast<int>(Command::FULLWRITE):
-			cout << "fullwrite (" << arg1 << ")" << endl;
-			app.fullwrite(arg1);
-			break;
-		case static_cast<int>(Command::FULLREAD):
-			cout << "fullread" << endl;
-			app.fullread();
-			break;
-		case static_cast<int>(Command::TESTAPP1):
-			cout << "testapp1" << endl;
-			app.testapp1();
-			break;
-		case static_cast<int>(Command::TESTAPP2):
-			cout << "testapp2" << endl;
-			app.testapp2();
-			break;
-		case static_cast<int>(Command::ERASE):
-			cout << "erase (" << arg1 << ", " << arg2 << ")" << endl;
-			app.erase(arg1, arg2);
-			break;
-		case static_cast<int>(Command::ERASE_RANGE):
-			cout << "erase_range (" << arg1 << ", " << arg2 << ")" << endl;
-			app.erase_range(arg1, arg2);
-			break;
-		case static_cast<int>(Command::FLUSH):
-			cout << "flush" << endl;
-			app.flush();
-			break;
-		case static_cast<int>(Command::INVALID_COMMAND):
-			cout << "INVALID COMMAND" << endl;
-			break;
-		case static_cast<int>(Command::INVALID_ARGUMENT):
-			cout << "INVALID ARGUMENT" << endl;
-			break;
-		}
+		runnig = hostIntf->processCommand(input);
 	}
-
 }
