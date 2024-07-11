@@ -19,7 +19,7 @@ public:
 	void getLBARangeOf(rapidjson::Value& actionJson, int& lba_start, int& lba_end);
 	void getRangeOf(rapidjson::Value& actionJson, int& start, int& end);
 private:
-	const std::string TEST_SCENARIO_PATH = "..\\resources\\test_scenario.json";
+	const std::string TEST_SCENARIO_PATH = "..\\..\\resources\\test_scenario.json";
 
 	ScenarioParser() = default;
 	ScenarioParser(const ScenarioParser&) = delete;
