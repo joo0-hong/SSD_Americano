@@ -74,13 +74,24 @@ TEST_F(NandBufferTestFixture, createAPI) {
     EXPECT_THAT(comp, ContainerEq(nandBuffer->getCommands()));
 }
 
-TEST_F(NandBufferTestFixture, filemanagerReadWrite) {
+TEST_F(NandBufferTestFixture, WriteFunction) {
     // Arrange
-    vector<string> commands = { "test1", "test2"};
+    vector<string> commands = { "W 0 1 0x12341234"};
 
     // Act
-    nandBuffer->addCommand(commands[0]);
-    nandBuffer->addCommand(commands[1]);
+    nandBuffer->write(0, "0x12341234");
+
+    // Assert
+    verifyResultFile(commands);
+}
+
+TEST_F(NandBufferTestFixture, WriteFunctionTwice) {
+    // Arrange
+    vector<string> commands = { "W 0 1 0x12341234", "W 5 1 0xFFFFFFFF" };
+
+    // Act
+    nandBuffer->write(0, "0x12341234");
+    nandBuffer->write(5, "0xFFFFFFFF");
 
     // Assert
     verifyResultFile(commands);
