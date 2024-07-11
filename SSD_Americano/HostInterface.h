@@ -21,4 +21,5 @@ private:
 
 	void processErrorCommand();
 	ARGUMENTS getNextArgument(ARGUMENTS argument);
+	string getCommandFromArgument(ARGUMENTS argument);
 };

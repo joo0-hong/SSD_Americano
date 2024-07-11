@@ -35,6 +35,10 @@ void NAND::erase(const int lba, const int size) {
 	}
 }
 
+void NAND::flush() {
+
+}
+
 void NAND::error()
 {
 	resultFileManager-> write(0, "NULL");

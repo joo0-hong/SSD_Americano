@@ -2,6 +2,7 @@
 #include "WriteCmd.h"
 #include "EraseCmd.h"
 #include "ReadCmd.h"
+#include "FlushCmd.h"
 #include "ErrorCmd.h"
 
 class CommandFactory {
@@ -15,6 +16,9 @@ public:
         }
         if ("E" == command) {
             return new EraseCmd(nand);
+        }
+        if ("F" == command) {
+            return new FlushCmd(nand);
         }
 
         throw invalid_argument("This command is not available.");
