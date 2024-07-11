@@ -227,3 +227,154 @@ TEST_F(NandBufferTestFixture, ReadBasic) {
     EXPECT_EQ(string("0xFFFFFFFF"), nandBuffer->read(99));
     EXPECT_EQ(string("0x00000000"), nandBuffer->read(30));
 }
+
+TEST_F(NandBufferTestFixture, AlgorithmSameLBAWrite) {
+    // Arrange
+    vector<string> commands = {
+        "W 23 1 0x77777777",
+    };
+
+    // Act
+    nandBuffer->write(23, "0xFFFFFFFF");
+    nandBuffer->write(23, "0x77777777");
+
+    // Assert
+    verifyResultFile(commands);
+}
+
+TEST_F(NandBufferTestFixture, AlgorithmEraseIncludingPreviousLBA) {
+    // Arrange
+    vector<string> commands = {
+        "E 23 1 0x00000000",
+    };
+
+    // Act
+    nandBuffer->write(23, "0xFFFFFFFF");
+    nandBuffer->erase(23, 1);
+
+    // Assert
+    verifyResultFile(commands);
+}
+
+TEST_F(NandBufferTestFixture, AlgorithmEraseNotIncludingPreviousLBA) {
+    // Arrange
+    vector<string> commands = {
+        "W 23 1 0x77777777",
+        "E 20 3 0x00000000",
+    };
+
+    // Act
+    nandBuffer->write(23, "0x77777777");
+    nandBuffer->erase(20, 3);
+
+    // Assert
+    verifyResultFile(commands);
+}
+
+TEST_F(NandBufferTestFixture, AlgorithmEraseIncludingErase) {
+    // Arrange
+    vector<string> commands = {
+        "E 20 10 0x00000000",
+    };
+
+    // Act
+    nandBuffer->erase(20, 5);
+    nandBuffer->erase(20, 10);
+
+    // Assert
+    verifyResultFile(commands);
+}
+
+TEST_F(NandBufferTestFixture, AlgorithmEraseOverlapErase) {
+    // Arrange
+    vector<string> commands = {
+        "E 15 15 0x00000000",
+    };
+
+    // Act
+    nandBuffer->erase(15, 10);
+    nandBuffer->erase(20, 10);
+
+    // Assert
+    verifyResultFile(commands);
+}
+
+TEST_F(NandBufferTestFixture, AlgorithmEraseBridgeErase) {
+    // Arrange
+    vector<string> commands = {
+        "E 10 20 0x00000000",
+    };
+
+    // Act
+    nandBuffer->erase(10, 10);
+    nandBuffer->erase(20, 10);
+
+    // Assert
+    verifyResultFile(commands);
+}
+
+TEST_F(NandBufferTestFixture, AlgorithmWriteBetweenErase) {
+    // Arrange
+    vector<string> commands = {
+        "E 11 19 0x00000000",
+        "W 10 1 0x77777777",
+    };
+
+    // Act
+    nandBuffer->erase(10, 10);
+    nandBuffer->write(10, "0x77777777");
+    nandBuffer->erase(20, 10);
+
+    // Assert
+    verifyResultFile(commands);
+}
+
+TEST_F(NandBufferTestFixture, AlgorithmMergeWriteBetweenErase) {
+    // Arrange
+    vector<string> commands = {
+        "E 10 20 0x00000000",
+    };
+
+    // Act
+    nandBuffer->erase(10, 10);
+    nandBuffer->write(20, "0x77777777");
+    nandBuffer->erase(20, 10);
+
+    // Assert
+    verifyResultFile(commands);
+}
+
+TEST_F(NandBufferTestFixture, AlgorithmWriteEdgeOfErase) {
+    // Arrange
+    vector<string> commands = {
+        "E 10 2 0x00000000",
+        "E 40 5 0x00000000",
+        "W 12 1 0xABCD1234",
+        "W 13 1 0x4BCD5351",
+    };
+
+    // Act
+    nandBuffer->erase(10, 4);
+    nandBuffer->erase(40, 5);
+    nandBuffer->write(12, "0xABCD1234");
+    nandBuffer->write(13, "0x4BCD5351");
+
+    // Assert
+    verifyResultFile(commands);
+}
+
+TEST_F(NandBufferTestFixture, AlgorithmWriteEdgeOfEraseAndDeleteErase) {
+    // Arrange
+    vector<string> commands = {
+        "E 40 5 0x00000000",
+        "W 50 1 0xABCD1234",
+    };
+
+    // Act
+    nandBuffer->erase(50, 1);
+    nandBuffer->erase(40, 5);
+    nandBuffer->write(50, "0xABCD1234");
+
+    // Assert
+    verifyResultFile(commands);
+}

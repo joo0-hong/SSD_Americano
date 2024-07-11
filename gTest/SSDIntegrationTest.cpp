@@ -11,6 +11,9 @@
 #include "../SSD_Americano/FlushCmd.cpp"
 #include "../SSD_Americano/ErrorCmd.cpp"
 #include "../SSD_Americano/NandDriver.cpp"
+#include "../SSD_Americano/CommandOptimizer.cpp"
+#include "../SSD_Americano/CommandConverter.cpp"
+
 
 #include <vector>
 #include <string>
