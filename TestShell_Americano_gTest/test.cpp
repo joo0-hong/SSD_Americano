@@ -7,7 +7,7 @@
 #include "../TestShell_Americano/TestShell.cpp"
 #include "../TestShell_Americano/FileReader.cpp"
 #include "../TestShell_Americano/SSDDriver.cpp"
-#include "../TestShell_Americano/CheckCommand.cpp"
+#include "../TestShell_Americano/HostInterface.cpp"
 
 using namespace std;
 using namespace testing;
@@ -291,121 +291,105 @@ TEST_F(TestShellFixture, runner_testapp2) {
 	EXPECT_EQ(true, app.run("testapp2"));
 }
 
-TEST(CheckCommand, CheckCommand_InvalidCommand_r) {
+class CheckCommandFixture : public testing::Test {
+public:
+	const string SSD_PATH = "..\\x64\\Debug\\SSDMock";
+	const string RESULT_PATH = "..\\resources\\result.txt";
+
+	SSDDriverMock ssdDriverMk{ SSD_PATH };
+	FileReaderMock fileReaderMk{ RESULT_PATH };
+	TestShell app{ &ssdDriverMk, &fileReaderMk };
+	HostInterface checker{ &app };
+};
+
+TEST_F(CheckCommandFixture, CheckCommand_InvalidCommand_r) {
 	string test_input = "r";
 	string arg1, arg2;
 
-	CheckCommand checker;
-
 	EXPECT_EQ(-1, checker.checkCmd(test_input, arg1, arg2));
 }
 
-
-TEST(CheckCommand, CheckCommand_InvalidCommand_NoCommand) {
+TEST_F(CheckCommandFixture, CheckCommand_InvalidCommand_NoCommand) {
 	string test_input = " ";
 	string arg1, arg2;
 
-	CheckCommand checker;
-
 	EXPECT_EQ(-1, checker.checkCmd(test_input, arg1, arg2));
 }
 
-TEST(CheckCommand, CheckCommand_read_ValidLBA_0) {
+TEST_F(CheckCommandFixture, CheckCommand_read_ValidLBA_0) {
 	string test_input = "read 0";
 	string arg1, arg2;
-
-	CheckCommand checker;
 
 	EXPECT_EQ(0x1, checker.checkCmd(test_input, arg1, arg2));
 }
 
-TEST(CheckCommand, CheckCommand_read_InvalidLBA_NotNumber_r) {
+TEST_F(CheckCommandFixture, CheckCommand_read_InvalidLBA_NotNumber_r) {
 	string test_input = "read r";
 	string arg1, arg2;
 
-	CheckCommand checker;
-	
 	EXPECT_EQ(-2, checker.checkCmd(test_input, arg1, arg2));
 }
 
-TEST(CheckCommand, CheckCommand_read_InvalidLBA_NotNumber_0x10) {
+TEST_F(CheckCommandFixture, CheckCommand_read_InvalidLBA_NotNumber_0x10) {
 	string test_input = "read 0x10";
 	string arg1, arg2;
 
-	CheckCommand checker;
-
 	EXPECT_EQ(-2, checker.checkCmd(test_input, arg1, arg2));
 }
 
-TEST(CheckCommand, CheckCommand_read_InvalidLBA_NotNumber_A) {
+TEST_F(CheckCommandFixture, CheckCommand_read_InvalidLBA_NotNumber_A) {
 	string test_input = "read A";
 	string arg1, arg2;
 
-	CheckCommand checker;
-
 	EXPECT_EQ(-2, checker.checkCmd(test_input, arg1, arg2));
 }
 
-TEST(CheckCommand, CheckCommand_read_InvalidLBA_OutOfRange_minus1) {
+TEST_F(CheckCommandFixture, CheckCommand_read_InvalidLBA_OutOfRange_minus1) {
 	string test_input = "read -1";
 	string arg1, arg2;
 
-	CheckCommand checker;
-
 	EXPECT_EQ(-2, checker.checkCmd(test_input, arg1, arg2));
 
 }
 
-TEST(CheckCommand, CheckCommand_read_InvalidLBA_OutOfRange_101) {
+TEST_F(CheckCommandFixture, CheckCommand_read_InvalidLBA_OutOfRange_101) {
 	string test_input = "read 101";
 	string arg1, arg2;
 
-	CheckCommand checker;
-
 	EXPECT_EQ(-2, checker.checkCmd(test_input, arg1, arg2));
 }
 
-TEST(CheckCommand, CheckCommand_write_ValidData_0x12345678) {
+TEST_F(CheckCommandFixture, CheckCommand_write_ValidData_0x12345678) {
 	string test_input = "write 1 0x12345678";
 	string arg1, arg2;
-
-	CheckCommand checker;
 
 	EXPECT_EQ(0x0, checker.checkCmd(test_input, arg1, arg2));
 }
 
-TEST(CheckCommand, CheckCommand_write_InvalidData_NoPrefix_12345678) {
+TEST_F(CheckCommandFixture, CheckCommand_write_InvalidData_NoPrefix_12345678) {
 	string test_input = "write 1 12345678";
 	string arg1, arg2;
 
-	CheckCommand checker;
-
 	EXPECT_EQ(-2, checker.checkCmd(test_input, arg1, arg2));
 }
 
-TEST(CheckCommand, CheckCommand_write_InvalidData_Not10digit_0x1234) {
+TEST_F(CheckCommandFixture, CheckCommand_write_InvalidData_Not10digit_0x1234) {
 	string test_input = "write 1 0x1234";
 	string arg1, arg2;
 
-	CheckCommand checker;
-
 	EXPECT_EQ(-2, checker.checkCmd(test_input, arg1, arg2));
 }
 
-TEST(CheckCommand, CheckCommand_write_InvalidData_NotNumber_0xABCDEFGH) {
+TEST_F(CheckCommandFixture, CheckCommand_write_InvalidData_NotNumber_0xABCDEFGH) {
 	string test_input = "write 1 0xABCDEFGH";
 	string arg1, arg2;
 
-	CheckCommand checker;
-
 	EXPECT_EQ(-2, checker.checkCmd(test_input, arg1, arg2));
 }
 
-TEST(CheckCommand, CheckCommand_write_InvalidData_NotNumber_r) {
+TEST_F(CheckCommandFixture, CheckCommand_write_InvalidData_NotNumber_r) {
 	string test_input = "write 1 r";
 	string arg1, arg2;
-
-	CheckCommand checker;
 
 	EXPECT_EQ(-2, checker.checkCmd(test_input, arg1, arg2));
 }

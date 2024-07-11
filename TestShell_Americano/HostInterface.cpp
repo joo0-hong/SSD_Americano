@@ -1,6 +1,68 @@
-#include "CheckCommand.h"
+#include "HostInterface.h"
 
-int CheckCommand::checkCmd(string input, string& arg1, string& arg2) {
+bool HostInterface::processCommand(string input) {
+	string arg1, arg2;
+	int cmd = checkCmd(input, arg1, arg2);
+	int ret = true;
+
+	switch (cmd) {
+	case static_cast<int>(Command::WRITE):
+		cout << "write (" << arg1 << ", " << arg2 << ")" << endl;
+		app->write(arg1, arg2);
+		break;
+	case static_cast<int>(Command::READ):
+		cout << "read (" << arg1 << ")" << endl;
+		app->read(arg1);
+		break;
+	case static_cast<int>(Command::EXIT):
+		cout << "exit" << endl;
+		ret = app->exit();
+		break;
+	case static_cast<int>(Command::HELP):
+		cout << "help" << endl;
+		app->help();
+		break;
+	case static_cast<int>(Command::FULLWRITE):
+		cout << "fullwrite (" << arg1 << ")" << endl;
+		app->fullwrite(arg1);
+		break;
+	case static_cast<int>(Command::FULLREAD):
+		cout << "fullread" << endl;
+		app->fullread();
+		break;
+	case static_cast<int>(Command::TESTAPP1):
+		cout << "testapp1" << endl;
+		app->testapp1();
+		break;
+	case static_cast<int>(Command::TESTAPP2):
+		cout << "testapp2" << endl;
+		app->testapp2();
+		break;
+	case static_cast<int>(Command::ERASE):
+		cout << "erase (" << arg1 << ", " << arg2 << ")" << endl;
+		app->erase(arg1, arg2);
+		break;
+	case static_cast<int>(Command::ERASE_RANGE):
+		cout << "erase_range (" << arg1 << ", " << arg2 << ")" << endl;
+		app->erase_range(arg1, arg2);
+		break;
+	case static_cast<int>(Command::FLUSH):
+		cout << "flush" << endl;
+		app->flush();
+		break;
+	case static_cast<int>(Command::INVALID_COMMAND):
+		cout << "INVALID COMMAND" << endl;
+		break;
+	case static_cast<int>(Command::INVALID_ARGUMENT):
+		cout << "INVALID ARGUMENT" << endl;
+		break;
+	}
+
+	return ret;
+}
+
+
+int HostInterface::checkCmd(string input, string& arg1, string& arg2) {
 
 	vector<string> result = split(input);
 
@@ -115,7 +177,7 @@ int CheckCommand::checkCmd(string input, string& arg1, string& arg2) {
 	return static_cast<int>(Command::INVALID_COMMAND);
 }
 
-vector<string> CheckCommand::split(string input) {
+vector<string> HostInterface::split(string input) {
 	istringstream iss(input);
 	string buffer;
 	vector<string> result;
@@ -131,7 +193,7 @@ vector<string> CheckCommand::split(string input) {
 	return result;
 }
 
-bool CheckCommand::isValidLBA(string arg) {
+bool HostInterface::isValidLBA(string arg) {
 
 	if ((atoi(arg.c_str()) == 0) && (arg.compare("0") != 0)) {
 		cout << "LBA should be decimal number" << endl;
@@ -147,12 +209,12 @@ bool CheckCommand::isValidLBA(string arg) {
 	return true;
 }
 
-bool CheckCommand::is_xdigits(const std::string& str)
+bool HostInterface::is_xdigits(const std::string& str)
 {
 	return str.find_first_not_of("0123456789ABCDEF") == string::npos;
 }
 
-bool CheckCommand::isValidData(string arg) {
+bool HostInterface::isValidData(string arg) {
 	
 	string prefix = "0x";
 	if (arg.rfind(prefix, 0) != 0) {
@@ -174,7 +236,7 @@ bool CheckCommand::isValidData(string arg) {
 	return true;
 }
 
-bool CheckCommand::isValidSize(string arg) {
+bool HostInterface::isValidSize(string arg) {
 
 	if ((atoi(arg.c_str()) == 0) && (arg.compare("0") != 0)) {
 		cout << "LBA should be decimal number" << endl;
@@ -184,7 +246,7 @@ bool CheckCommand::isValidSize(string arg) {
 	return true;
 }
 
-bool CheckCommand::isValidRange(string arg1, string arg2) {
+bool HostInterface::isValidRange(string arg1, string arg2) {
 
 	if ((atoi(arg1.c_str()) == 0) && (arg1.compare("0") != 0)) {
 		cout << "LBA should be decimal number" << endl;
