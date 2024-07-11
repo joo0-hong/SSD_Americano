@@ -27,7 +27,9 @@ public:
 	MOCK_METHOD(void, write, (const string& lba, const string& data), (const override));
 	MOCK_METHOD(void, read, (const string& lba), (const override));
 	MOCK_METHOD(void, erase, (const string& lba, const string& size), (const override));
-};
+	MOCK_METHOD(void, flush, (), (const override));
+}
+;
 
 class TestShellFixture : public testing::Test {
 public:
@@ -144,6 +146,13 @@ TEST_F(TestShellFixture, Help) {
 	app.help();
 }
 
+TEST_F(TestShellFixture, flush) {
+	EXPECT_CALL(ssdDriverMk, flush)
+		.Times(1);
+	
+	app.flush();
+}
+
 TEST_F(TestShellFixture, TestApp1) {
 	//arrange
 	EXPECT_CALL(ssdDriverMk, write)
@@ -161,7 +170,7 @@ TEST_F(TestShellFixture, TestApp1) {
 	std::cout.rdbuf(oss.rdbuf());
 
 	//action
-	app.testapp1("0x11111111");
+	app.testapp1();
 
 	std::cout.rdbuf(oldCoutStreamBuf);	// 기존 buf 복원
 
@@ -187,7 +196,7 @@ TEST_F(TestShellFixture, TestApp2) {
 		.Times(AtLeast(1));
 
 	//action
-	bool actual = app.testApp2();
+	bool actual = app.testapp2();
 
 	//assert
 	EXPECT_EQ(true, actual);

@@ -20,3 +20,9 @@ void SSDDriver::erase(const string& lba, const string& size) const {
 	string ret = ssdPath_ + " " + cmd + " " + lba + " " + size;
 	system(ret.c_str());
 }
+
+void SSDDriver::flush() const {
+	string cmd("F");
+	string ret = ssdPath_ + " " + cmd;
+	system(ret.c_str());
+}

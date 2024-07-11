@@ -49,6 +49,14 @@ int main() {
 			cout << "fullread" << endl;
 			app.fullread();
 			break;
+		case static_cast<int>(Command::TESTAPP1):
+			cout << "testapp1" << endl;
+			app.testapp1();
+			break;
+		case static_cast<int>(Command::TESTAPP2):
+			cout << "testapp2" << endl;
+			app.testapp2();
+			break;
 		case static_cast<int>(Command::ERASE):
 			cout << "erase (" << arg1 << ", " << arg2 << ")" << endl;
 			app.erase(arg1, arg2);
@@ -56,6 +64,10 @@ int main() {
 		case static_cast<int>(Command::ERASE_RANGE):
 			cout << "erase_range (" << arg1 << ", " << arg2 << ")" << endl;
 			app.erase_range(arg1, arg2);
+			break;
+		case static_cast<int>(Command::FLUSH):
+			cout << "flush" << endl;
+			app.flush();
 			break;
 		case static_cast<int>(Command::INVALID_COMMAND):
 			cout << "INVALID COMMAND" << endl;
