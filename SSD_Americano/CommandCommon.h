@@ -1,7 +1,9 @@
 #pragma once
-#include "Command.h"
 #include <string>
 #include <stdexcept>
+#include "Command.h"
+#include "NandInterface.h"
+#include "NandDriver.h"
 
 using namespace std;
 

@@ -2,6 +2,8 @@
 #include <iostream>
 #include <string>
 #include "NandInterface.h"
+#include "NandBuffer.h"
+#include "NandDriver.h"
 
 using namespace std;
 
@@ -12,13 +14,12 @@ struct ARGUMENTS {
 
 class HostInterface {
 public:
-	HostInterface(NANDInterface* nand) : nandIntf(nand) { }
+	HostInterface(NANDInterface* nand, NANDBuffer* buffer) : driver(new NANDDriver(nand, buffer)) { }
 
 	void processCommand(int argc, char* argv[]);
 
 private:
-	NANDInterface* nandIntf;
-
+	NANDDriver* driver;
 	void processErrorCommand();
 	ARGUMENTS getNextArgument(ARGUMENTS argument);
 	string getCommandFromArgument(ARGUMENTS argument);

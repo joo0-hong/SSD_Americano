@@ -1,10 +1,12 @@
 #include "HostInterface.h"
 #include "Nand.h"
+#include "NandBuffer.h"
 
 int main(int argc, char* argv[])
 {
 	NANDInterface* nand = new NAND("../../resources/nand.txt", "../../resources/result.txt");
-	HostInterface* hostIntf = new HostInterface(nand);
+	NANDBuffer* buffer = new NANDBuffer("../../resources/buffer.txt");
+	HostInterface* hostIntf = new HostInterface(nand, buffer);
 
 	hostIntf->processCommand(argc, argv);
 

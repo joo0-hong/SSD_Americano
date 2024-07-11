@@ -12,7 +12,7 @@ void EraseCmd::parse(int paramCount, char* param[]) {
 }
 
 void EraseCmd::run() {
-	nandIntf->erase(address, size);
+	nandDriver->erase(address, size);
 }
 
 void EraseCmd::checkParamValid(int paramCount, char* param[]) {
