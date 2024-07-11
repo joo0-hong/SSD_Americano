@@ -10,22 +10,28 @@ class Logger {
 public:
 	static Logger& getInstance();
 	void print(const string& funcName, const string& content);
+	
 private:
 	static const string LOG_PATH;
 	static const string LATEST_LOG_FILE_NAME;
+	static const int MAX_FILE_SIZE;
 	
 	Logger();
 	Logger& operator=(const Logger& other) = delete;
 	Logger(const Logger& other) = delete;
 
-	string createUntilLogFileName(void);
 	bool checkFileOpen(std::fstream& file);
-	void writeToLatestLog(const string& funcName, const string& content, fstream& file);
 	bool isExceedMaxFileSize(std::fstream& file);
-
-	static const int MAX_FILE_SIZE = 10 * 1024;
 
 	static string findUntilLogFileNameInDirectory();
 	static string getFileNameWithoutExt(const string& filePath);
-	static void renameLogFileToZip(const string& oldName, const string& newName);
+	void renameLogToZIPFile(const std::string& untilLogFileName);
+	static void renameWithString(const string& oldName, const string& newName);
+	
+	void createNewUntilLogFile();
+	string createUntilLogFileName(void);
+
+	void createLatestLogFile(std::fstream& file, std::string& currentFileFullPath);
+
+	void writeToLatestLog(const string& funcName, const string& content, fstream& file);
 };
