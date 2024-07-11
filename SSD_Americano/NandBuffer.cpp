@@ -24,6 +24,7 @@ string NANDBuffer::read(const int lba) {
 }
 
 void NANDBuffer::write(const int lba, const string data) {
+	// if data is 0 -> convert to erase
 	COMMAND_ENTRY newCommand = { 'W', lba, 1, data };
 
 	addCommand(newCommand);
@@ -80,6 +81,42 @@ void NANDBuffer::optimizeCommands() {
 				}
 				commandBuffer[j].cmdtype = 0;
 			}
+
+
+			int start_offset = cmd.offset;
+			int end_offset = cmd.offset + cmd.size;
+			for (int j = i - 1; j >= 0; j--) {
+				if (i == j) {
+					continue;
+				}
+				if (commandBuffer[j].cmdtype == 'W') {
+					// 연속되면
+					if ((commandBuffer[j].offset == cmd.offset + 1)
+						|| (commandBuffer[j].offset + 1 == cmd.offset)) {
+						start_offset = min(cmd.offset, commandBuffer[j].offset);
+						end_offset = max(cmd.offset + cmd.size, commandBuffer[j].offset + commandBuffer[j].size);
+					}
+				}
+				else if (commandBuffer[j].cmdtype == 'E') {
+					if ((start_offset <= commandBuffer[j].offset) && (commandBuffer[j].offset < end_offset)) {
+						commandBuffer[j].size -= (end_offset - commandBuffer[j].offset);
+						commandBuffer[j].offset = end_offset;
+					}
+
+					if (commandBuffer[j].size <= 0) {
+						commandBuffer[j].cmdtype = 0;
+					}
+
+					if ((start_offset <= commandBuffer[j].offset + commandBuffer[j].size - 1) && 
+						(commandBuffer[j].offset + commandBuffer[j].size - 1 < end_offset)) {
+						commandBuffer[j].size -= (commandBuffer[j].offset + commandBuffer[j].size - start_offset);
+					}
+
+					if (commandBuffer[j].size <= 0) {
+						commandBuffer[j].cmdtype = 0;
+					}
+				}
+			}
 		}
 
 		if (cmd.cmdtype == 'E') {
@@ -104,6 +141,7 @@ void NANDBuffer::optimizeCommands() {
 					continue;
 				}
 
+				// 겹치면
 				if (false == 
 					(((cmd.offset <= commandBuffer[j].offset + commandBuffer[j].size) 
 					&& (commandBuffer[j].offset <= cmd.offset + cmd.size)))) {
@@ -113,21 +151,25 @@ void NANDBuffer::optimizeCommands() {
 				int start_offset = min(cmd.offset, commandBuffer[j].offset);
 				int end_offset = max(cmd.offset + cmd.size, commandBuffer[j].offset + commandBuffer[j].size);
 
-				bool continueFlag = false;
+				bool flag = false;
 				for (int k = j + 1; k < i; k++) {
 					if ((commandBuffer[k].cmdtype == 'W') &&
-						((start_offset <= commandBuffer[k].offset) && (commandBuffer[k].offset < end_offset))) {
-						continueFlag = true;
+						((commandBuffer[j].offset <= commandBuffer[k].offset) && (commandBuffer[k].offset < commandBuffer[j].offset + commandBuffer[j].size))) {
+						flag = true;
 					}
 				}
-				if (continueFlag) {
-					continue;
+				if (true == flag) {
+					commandBuffer[j].offset = start_offset;
+					commandBuffer[j].size = end_offset - start_offset;
+
+					cmd.cmdtype = 0;
 				}
+				else {
+					cmd.offset = start_offset;
+					cmd.size = end_offset - start_offset;
 
-				cmd.offset = start_offset;
-				cmd.size = end_offset - start_offset;
-
-				commandBuffer[j].cmdtype = 0;
+					commandBuffer[j].cmdtype = 0;
+				}
 			}
 
 		}
