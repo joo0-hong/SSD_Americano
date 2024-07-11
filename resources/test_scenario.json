@@ -52,11 +52,12 @@
       "action": [
         {
           "name": "write",
-          "args": [ "13", "0x12341234" ]
+          "lba": 13,
+          "data": "0x12341234"
         },
         {
           "name": "read",
-          "args": "13",
+          "lba": 13,
           "expect": "0x12341234"
         }
       ]
