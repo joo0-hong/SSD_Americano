@@ -51,10 +51,11 @@ public:
 	const int VALID_ERASE_IDX_NUM = 4;
 	const int VALID_READ_IDX_NUM = 3;
 
+	char* argv[IDX_MAX] = {};
+	HostInterface hostIntf{ &nand, &buffer };
+private : 
 	NiceMock<MockedNand> nand;
 	NANDBuffer buffer{ "Testbuffer.txt" };
-	HostInterface hostIntf{ &nand, &buffer };
-	char* argv[IDX_MAX] = {};
 };
 
 TEST(SSDTest, NANDInterface) {
