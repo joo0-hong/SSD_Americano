@@ -1,7 +1,7 @@
 #pragma once
-#include "CommandOptimizer.h"
 #include <vector>
 #include "FileManager.h"
+#include "CommandTypes.h"
 
 using namespace std;
 
@@ -18,6 +18,8 @@ public:
 	void clear();
 
 private:
+	string ERASE_DATA = "0x00000000";
+
 	FileManager* fileManager;
 	vector<COMMAND_ENTRY> commandBuffer;
 
@@ -25,5 +27,7 @@ private:
 	void storeCommandBuffer();
 
 	void addCommand(COMMAND_ENTRY command);
+	void updateCommandType(COMMAND_ENTRY& command);
+	bool isValidSize(COMMAND_ENTRY& command);
 	void addCommandByOptimizing(COMMAND_ENTRY command);
 };

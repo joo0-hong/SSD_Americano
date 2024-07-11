@@ -1,7 +1,7 @@
 #pragma once
-#include "CommandTypes.h"
 #include <vector>
 #include <string>
+#include "CommandTypes.h"
 
 using namespace std;
 
