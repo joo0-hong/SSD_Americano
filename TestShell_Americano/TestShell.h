@@ -31,7 +31,7 @@ public:
 	std::vector<std::string> getcmdresult();
 	void setcmdresult(std::string result);
 	void clearcmdresult();
-	void setscenariomode();
+	void setscenariomode(bool mode);
 	bool isscenariomode();
 
 private:

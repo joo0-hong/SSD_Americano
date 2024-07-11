@@ -34,8 +34,8 @@ void TestShell::setup() {
 	};
 }
 
-void TestShell::setscenariomode() {
-	scenarioMode_ = true;
+void TestShell::setscenariomode(bool mode) {
+	scenarioMode_ = mode;
 }
 bool TestShell::isscenariomode() {
 	return scenarioMode_;
