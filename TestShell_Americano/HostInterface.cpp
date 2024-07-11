@@ -53,12 +53,16 @@ bool HostInterface::processScenario(ScenarioParser & scenario) {
 		auto& inputs = eachScenarioResult.inputs;
 		auto& expects = eachScenarioResult.expects;
 		
-		//cout << scenarioName << endl;
-
+		std::cout << scenarioName << " --- " << "Run" << " ... ";
+		
 		int length = inputs.size();
+		bool ret = true;
 		for (int i = 0; i < length; ++i) {
-			processCommand(inputs[i], expects[i]);
+			ret &= processCommand(inputs[i], expects[i]);
 		}
+
+		string result = ret == true ? "Pass" : "Fail";
+		std::cout << result << std::endl;
 	}
 
 	app->setscenariomode(false);
