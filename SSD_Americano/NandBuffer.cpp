@@ -87,7 +87,6 @@ void NANDBuffer::narrowRangeofErase(COMMAND_ENTRY& newCommand)
 				startOffset = min(newCommand.offset, oldCommand.offset);
 				endOffset = max(newCommand.offset + newCommand.size, oldCommand.offset + oldCommand.size);
 			}
-
 		}
 
 		else if (oldCommand.cmdtype == ERASE) {
@@ -112,8 +111,7 @@ void NANDBuffer::narrowRangeofErase(COMMAND_ENTRY& newCommand)
 	}
 }
 
-void NANDBuffer::mergeErase(COMMAND_ENTRY& newCommand)
-{
+void NANDBuffer::mergeErase(COMMAND_ENTRY& newCommand) {
 	if (newCommand.cmdtype == ERASE) {
 		for (int i = commandBuffer.size() - 1; i >= 0; i--) {
 			COMMAND_ENTRY& oldCommand = commandBuffer[i];
@@ -122,42 +120,30 @@ void NANDBuffer::mergeErase(COMMAND_ENTRY& newCommand)
 				continue;
 			}
 
-			// °ãÄ¡¸é
-			if (false ==
-				(((newCommand.offset <= oldCommand.offset + oldCommand.size)
-					&& (oldCommand.offset <= newCommand.offset + newCommand.size)))) {
+			if (false == isOverlap(newCommand, oldCommand)) {
 				continue;
 			}
 
-			int start_offset_ = min(newCommand.offset, oldCommand.offset);
-			int end_offset_ = max(newCommand.offset + newCommand.size, oldCommand.offset + oldCommand.size);
-
-			bool flag = false;
-			for (int k = i + 1; k < commandBuffer.size(); k++) {
-				if ((commandBuffer[k].cmdtype == 'W') &&
-					((oldCommand.offset <= commandBuffer[k].offset) && (commandBuffer[k].offset < oldCommand.offset + oldCommand.size))) {
-					flag = true;
-				}
-			}
-			if (true == flag) {
-				oldCommand.offset = start_offset_;
-				oldCommand.size = end_offset_ - start_offset_;
-
-				newCommand.cmdtype = 0;
-			}
-			else {
-				newCommand.offset = start_offset_;
-				newCommand.size = end_offset_ - start_offset_;
-
-				oldCommand.cmdtype = 0;
-			}
+			mergeEraseCommands(newCommand, oldCommand);
 		}
-
 	}
 }
 
-void NANDBuffer::ignoreWrite2(COMMAND_ENTRY& newCommand)
-{
+void NANDBuffer::mergeEraseCommands(COMMAND_ENTRY& srcCommand, COMMAND_ENTRY& dstCommand) {
+	int startOffset = min(dstCommand.offset, srcCommand.offset);
+	int endOffset = max(dstCommand.offset + dstCommand.size, srcCommand.offset + srcCommand.size);
+
+	dstCommand.offset = startOffset;
+	dstCommand.size = endOffset - startOffset;
+	clearCommand(srcCommand);
+}
+
+bool NANDBuffer::isOverlap(COMMAND_ENTRY& newCommand, COMMAND_ENTRY& oldCommand) {
+	return (((newCommand.offset <= oldCommand.offset + oldCommand.size)
+			&& (oldCommand.offset <= newCommand.offset + newCommand.size)));
+}
+
+void NANDBuffer::ignoreWrite2(COMMAND_ENTRY& newCommand) {
 	if (newCommand.cmdtype == ERASE) {
 		for (int i = commandBuffer.size() - 1; i >= 0; i--) {
 			COMMAND_ENTRY& oldCommand = commandBuffer[i];
@@ -167,13 +153,12 @@ void NANDBuffer::ignoreWrite2(COMMAND_ENTRY& newCommand)
 			if (false == ((newCommand.offset <= oldCommand.offset) && (oldCommand.offset < newCommand.offset + newCommand.size))) {
 				continue;
 			}
-			oldCommand.cmdtype = 0;
+			clearCommand(oldCommand);
 		}
 	}
 }
 
-void NANDBuffer::ignoreWrite1(COMMAND_ENTRY& newCommand)
-{
+void NANDBuffer::ignoreWrite1(COMMAND_ENTRY& newCommand) {
 	if (newCommand.cmdtype != WRITE) {
 		return;
 	}
@@ -189,8 +174,12 @@ void NANDBuffer::ignoreWrite1(COMMAND_ENTRY& newCommand)
 			continue;
 		}
 
-		oldCommand.cmdtype = 0;
+		clearCommand(oldCommand);
 	}
+}
+
+void NANDBuffer::clearCommand(COMMAND_ENTRY& command) {
+	command.cmdtype = 0;
 }
 
 void NANDBuffer::loadCommandBuffer() {

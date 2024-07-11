@@ -41,12 +41,12 @@ private:
 	void addCommandByOptimizing(COMMAND_ENTRY command);
 
 	void narrowRangeofErase(COMMAND_ENTRY& newCommand);
-
 	void mergeErase(COMMAND_ENTRY& newCommand);
-
+	void mergeEraseCommands(COMMAND_ENTRY& srcCommand, COMMAND_ENTRY& dstCommand);
+	bool isOverlap(COMMAND_ENTRY& newCommand, COMMAND_ENTRY& oldCommand);
 	void ignoreWrite2(COMMAND_ENTRY& newCommand);
-
 	void ignoreWrite1(COMMAND_ENTRY& newCommand);
+	void clearCommand(COMMAND_ENTRY& newCommand);
 
 	vector<COMMAND_ENTRY> convertStringToCommands(vector<string> stringCommands);
 	vector<string> convertCommandsToString(vector<COMMAND_ENTRY> commands);

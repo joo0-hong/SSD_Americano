@@ -316,8 +316,8 @@ TEST_F(NandBufferTestFixture, AlgorithmEraseBridgeErase) {
 TEST_F(NandBufferTestFixture, AlgorithmWriteBetweenErase) {
     // Arrange
     vector<string> commands = {
-        "W 10 1 0x77777777",
         "E 11 19 0x00000000",
+        "W 10 1 0x77777777",
     };
 
     // Act
