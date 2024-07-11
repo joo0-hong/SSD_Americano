@@ -34,7 +34,7 @@ void Logger::print(const string& funcName, const string& content) {
 
 		// if there is some until_file, rename to zip
 		string untilLogFileName = findUntilLogFileNameInDirectory();
-		
+
 		if (untilLogFileName != "") {
 			renameLogToZIPFile(untilLogFileName);
 		}
@@ -71,7 +71,7 @@ string Logger::findUntilLogFileNameInDirectory()
 	string result = "";
 	for (const auto& file : directory_iterator(LOG_PATH)) {
 		string fname = file.path().filename().string();
-		
+
 		if (fname == LATEST_LOG_FILE_NAME) {
 			continue;
 		}
@@ -127,20 +127,10 @@ string Logger::createUntilLogFileName()
 	tm time;
 
 	localtime_s(&time, &timer);
+
 	// example : until_240710_11h_46m_50s.log
-	return "until"
-		+ string("_")
-		+ to_string(time.tm_year - 100)
-		+ to_string(time.tm_mon)
-		+ to_string(time.tm_wday)
-		+ string("_")
-		+ to_string(time.tm_hour)
-		+ string("h_")
-		+ to_string(time.tm_min)
-		+ string("m_")
-		+ to_string(time.tm_sec)
-		+ string("s")
-		+ ".log";
+	return format("until_{}{:0>2}{:0>2}_{:0>2}h_{:0>2}m_{:0>2}s.log"
+		, (time.tm_year - 100), time.tm_mon + 1, time.tm_mday, time.tm_hour, time.tm_min, time.tm_sec);
 }
 
 void Logger::createLatestLogFile(std::fstream& file, std::string& currentFileFullPath)
@@ -154,15 +144,8 @@ void Logger::writeToLatestLog(const string& funcName, const string& content, fst
 	tm time;
 	localtime_s(&time, &timer);
 
-	string logTime = to_string(time.tm_year - 100)
-		+ string(".")
-		+ to_string(time.tm_mon)
-		+ string(".")
-		+ to_string(time.tm_mday)
-		+ string(" ")
-		+ to_string(time.tm_hour)
-		+ string(":")
-		+ to_string(time.tm_min);
+	string timeStr = format("{}.{:0>2}.{:0>2} {:0>2}:{:0>2}"
+		, (time.tm_year - 100), time.tm_mon + 1, time.tm_mday, time.tm_hour, time.tm_min);
 
-	file << format("[{0: <13}] {1: <20} : {2: <20}\n", logTime, funcName, content);
+	file << format("[{0: <14}] {1: <20} : {2: <20}\n", timeStr, funcName, content);
 }
