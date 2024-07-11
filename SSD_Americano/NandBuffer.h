@@ -31,8 +31,8 @@ private:
 
 	void addCommand(COMMAND_ENTRY command);
 
-	void loadCommands();
-	void storeCommands();
+	void loadCommandBuffer();
+	void storeCommandBuffer();
 	void optimizeCommands();
 
 	vector<COMMAND_ENTRY> convertStringToCommands(vector<string> stringCommands);

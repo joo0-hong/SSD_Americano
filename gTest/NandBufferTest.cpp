@@ -150,3 +150,58 @@ TEST_F(NandBufferTestFixture, WriteEraseBasic) {
     // Assert
     verifyResultFile(commands);
 }
+
+TEST_F(NandBufferTestFixture, InitialRead) {
+    EXPECT_THAT(string(""), Eq(nandBuffer->read(0)));
+}
+
+TEST_F(NandBufferTestFixture, GetCommands) {
+    // Arrange
+    vector<COMMAND_ENTRY> expected = {
+        {'W', 14, 1,  "0xFFFFFFFF"},
+        {'E', 0,  10, "0x00000000"},
+        {'W', 99, 1,  "0xFFFFFFFF"},
+        {'E', 30, 10, "0x00000000"},
+    };
+
+    // Act
+    nandBuffer->write(14, "0xFFFFFFFF");
+    nandBuffer->erase(0, 10);
+    nandBuffer->write(99, "0xFFFFFFFF");
+    nandBuffer->erase(30, 10);
+
+    // Assert
+    EXPECT_EQ(4, nandBuffer->getCommandBufferSize());
+    vector<COMMAND_ENTRY> actual = nandBuffer->getCommands();
+
+    EXPECT_EQ(expected.size(), actual.size());
+    for (int i = 0; i < expected.size(); i++) {
+        EXPECT_EQ(actual[i].cmdtype, expected[i].cmdtype);
+        EXPECT_EQ(actual[i].offset, expected[i].offset);
+        EXPECT_EQ(actual[i].size, expected[i].size);
+        EXPECT_THAT(actual[i].data, Eq(expected[i].data));
+    }
+}
+
+TEST_F(NandBufferTestFixture, Clear) {
+    // Arrange
+    vector<string> commands = {
+        "W 14 1 0xFFFFFFFF",
+        "E 0 10 0x00000000",
+        "W 99 1 0xFFFFFFFF",
+        "E 30 10 0x00000000",
+    };
+
+    nandBuffer->write(14, "0xFFFFFFFF");
+    nandBuffer->erase(0, 10);
+    nandBuffer->write(99, "0xFFFFFFFF");
+    nandBuffer->erase(30, 10);
+
+    verifyResultFile(commands);
+
+    // Act
+    nandBuffer->clear();
+
+    // Assert
+    verifyResultFile({ });
+}
