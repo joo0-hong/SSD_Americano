@@ -10,8 +10,8 @@ NANDBuffer::~NANDBuffer() {
 	}
 }
 
-void NANDBuffer::read(const int lba) {
-
+string NANDBuffer::read(const int lba) {
+	return "";
 }
 
 void NANDBuffer::write(const int lba, const string data) {

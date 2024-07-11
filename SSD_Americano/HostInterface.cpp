@@ -9,11 +9,11 @@ void HostInterface::processCommand(int argc, char* argv[])
 	param.value = argv;
 
 	try {
-		param = getNextArgument(param, false);
+		param = getNextArgument(param);
 		string cmd = getCommandFromArgument(param);
 		command = CommandFactory::newCommand(cmd, nandIntf);
 
-		param = getNextArgument(param, false);
+		param = getNextArgument(param);
 		command->parse(param.count, param.value);
 		command->run();
 	}
