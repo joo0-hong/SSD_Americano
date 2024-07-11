@@ -2,18 +2,24 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <map>
 
 #include "TestShell.h"
 #include "FileReader.h"
 
 using namespace std;
-using scenarioHandlerPtr = bool (TestShell::*)();
 
 TestShell::TestShell(SSDDriver* ssdDriver
 	, FileReader* fileReader)
 	: ssdDriver_{ ssdDriver }
-	, fileReader_{ fileReader } {}
+	, fileReader_{ fileReader } {
+	setup();
+}
+
+
+void TestShell::setup() {
+	scenarioMap_["testapp1"] = &TestShell::testapp1;
+	scenarioMap_["testapp2"] = &TestShell::testapp2;
+}
 
 void TestShell::write(const std::string lba, const std::string data) {
 	ssdDriver_->write(lba, data);
@@ -176,21 +182,8 @@ void TestShell::erase_range(std::string start_lba, std::string end_lba) {
 }
 
 bool TestShell::run(std::string scenario) {
-	bool ret = false; 
-	map<string, scenarioHandlerPtr> scenarioMap;
-
-	scenarioMap["testapp1"] = &TestShell::testapp1;
-	scenarioMap["testapp2"] = &TestShell::testapp2;
-
-	if (scenarioMap.find(scenario) == scenarioMap.end()) {
+	if (scenarioMap_.find(scenario) == scenarioMap_.end()) {
 		return false;
 	}
-
-	std::cout << scenario << " --- " << "Run...";
-	scenarioHandlerPtr func = scenarioMap[scenario];
-	ret = (this->*func)();
-	string result = ret == true ? "Pass" : "Fail!";
-	std::cout << scenario << " --- " << "Run..." << result << std::endl;
-
-	return ret;
+	return (this->*scenarioMap_[scenario])();
 }

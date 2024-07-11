@@ -69,6 +69,8 @@ int main() {
 			cout << "flush" << endl;
 			app.flush();
 			break;
+		case static_cast<int>(Command::SCENARIO):
+			break;
 		case static_cast<int>(Command::INVALID_COMMAND):
 			cout << "INVALID COMMAND" << endl;
 			break;
