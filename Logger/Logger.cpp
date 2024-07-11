@@ -7,7 +7,7 @@
 
 using namespace std::filesystem;
 
-const string Logger::LOG_PATH = "..\\resources\\log\\";
+const string Logger::LOG_PATH = "..\\..\\resources\\log\\";
 const string Logger::LATEST_LOG_FILE_NAME = "latest.log";
 
 Logger::Logger() {}
