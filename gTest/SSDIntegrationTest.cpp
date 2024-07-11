@@ -8,6 +8,7 @@
 #include "../SSD_Americano/EraseCmd.cpp"
 #include "../SSD_Americano/WriteCmd.cpp"
 #include "../SSD_Americano/ReadCmd.cpp"
+#include "../SSD_Americano/FlushCmd.cpp"
 #include "../SSD_Americano/ErrorCmd.cpp"
 
 #include <vector>
