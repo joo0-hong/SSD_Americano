@@ -12,13 +12,12 @@ class HostInterface {
 public:
 	HostInterface(TestShell* shell) : app(shell) { }
 	bool processCommand(string input);
+	int checkCmd(string input, string& arg1, string& arg2);
 
 private:
 	TestShell* app;
 
-	int checkCmd(string input, string& arg1, string& arg2);
 	vector<string> split(string input);	
-
 	bool isValidLBA(string arg);
 	bool is_xdigits(const std::string& str);
 	bool isValidData(string arg);
