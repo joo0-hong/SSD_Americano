@@ -22,6 +22,19 @@
 - feature/ssd_xxxx
 - feature/shell_xxx
 
+## 실행 파일
+SSD : SSD_Americano.exe
+Test Shell : TestShell_Americano.exe
+
+## Mandatory Files
+- Folder : [프로젝트 location]/resources
+- Folder : [프로젝트 location]/resources/log
+- buffer.txt
+- nand.txt
+- result.txt
+- run_list.lst
+- test_scenario.json
+
 ## 테스트 작성 시 프로젝트 재빌드 하지 않기 위한 테스트 작성법
 1. 사용자 테스트 시나리오 작성 시 미리 지정된 test_scenario.json 파일에 지정된 format으로 작성
 2. 프로그램은 이를 분석해 테스트 수행해 테스트 작성마다 재빌드 방지
