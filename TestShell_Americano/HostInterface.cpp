@@ -33,8 +33,13 @@ bool HostInterface::processRunner(ifstream& file_read) {
 
 	for (vector<string>::iterator iter = file_str.begin(); iter != file_str.end(); iter++) {
 		std::cout << *iter << " --- " << "Run" << " ... ";
-		string result = app ->run(*iter) == true ? "Pass" : "Fail";
+		bool ret = app->runCommand(*iter);
+		string result = (ret == true) ? "Pass" : "Fail";
 		std::cout << result << std::endl;
+
+		if (false == ret) {
+			break;
+		}
 	}
 	app->setscenariomode(false);
 
@@ -76,8 +81,9 @@ bool HostInterface::processCommand(string input, std::vector<std::string> expect
 	
 	string arg1, arg2;
 	int cmd = checkCmd(input, arg1, arg2);
-	bool result = false;
+	bool result = true;
 	
+	app->clearcmdresult();
 	switch (cmd) {
 	case static_cast<int>(Command::WRITE):
 		result = app->runCommand("write", arg1, arg2, expect_v);

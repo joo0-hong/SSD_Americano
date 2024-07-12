@@ -18,18 +18,17 @@ TestShell::TestShell(SSDDriver* ssdDriver
 }
 
 void TestShell::setup() {
-	scenarioMap_["testapp1"] = &TestShell::testapp1;
-	scenarioMap_["testapp2"] = &TestShell::testapp2;
-
 	commandMap_ = {
-			{"write", [&](const std::string& arg1, const std::string& arg2) { write(arg1, arg2); }},
-			{"read", [&](const std::string& arg1, const std::string&) { read(arg1); }},
-			{"help", [&](const std::string&, const std::string&) { help(); }},
-			{"fullwrite", [&](const std::string& arg1, const std::string&) { fullwrite(arg1); }},
-			{"fullread", [&](const std::string&, const std::string&) { fullread(); }},
-			{"erase", [&](const std::string& arg1, const std::string& arg2) { erase(arg1, arg2); }},
+			{"write",		[&](const std::string& arg1, const std::string& arg2) { write(arg1, arg2); }},
+			{"read",		[&](const std::string& arg1, const std::string& arg2) { read(arg1); }},
+			{"help",		[&](const std::string& arg1, const std::string& arg2) { help(); }},
+			{"fullwrite",	[&](const std::string& arg1, const std::string& arg2) { fullwrite(arg1); }},
+			{"fullread",	[&](const std::string& arg1, const std::string& arg2) { fullread(); }},
+			{"erase",		[&](const std::string& arg1, const std::string& arg2) { erase(arg1, arg2); }},
 			{"erase_range", [&](const std::string& arg1, const std::string& arg2) { erase_range(arg1, arg2); }},
-			{"flush", [&](const std::string&, const std::string&) { flush(); }}
+			{"flush",		[&](const std::string& arg1, const std::string& arg2) { flush(); }},
+			{"testapp1",	[&](const std::string& arg1, const std::string& arg2) { testapp1(); }},
+			{"testapp2",	[&](const std::string& arg1, const std::string& arg2) { testapp2(); }}
 	};
 }
 
@@ -81,35 +80,23 @@ void TestShell::write(const std::string lba, const std::string data) {
 
 void TestShell::read(std::string lba) {
 	invokeSSDRead(lba);
-	if (isscenariomode()) {
-		setcmdresult(getSSDReadData());
-	}
-	else {
+
+	if (!isscenariomode()) {
 		std::cout << getSSDReadData() << std::endl;
+		return;
 	}
+	setcmdresult(getSSDReadData());
 }
+
 void TestShell::invokeSSDRead(const std::string& lba)
 {
 	ssdDriver_->read(lba);
-}
-
-void TestShell::flush()
-{
-	ssdDriver_->flush();
 }
 
 string TestShell::getSSDReadData() {
 	return fileReader_->readFile();
 }
 
-void TestShell::help() {
-	helpWrite();
-	helpRead();
-	helpExit();
-	helpHelp();
-	helpFullWrite();
-	helpFullRead();
-}
 void TestShell::fullwrite(std::string data) {
 	for (int lba = 0; lba < 100; lba++) {
 		write(std::to_string(lba), data);
@@ -119,6 +106,84 @@ void TestShell::fullread() {
 	for (int lba = 0; lba < 100; lba++) {
 		read(std::to_string(lba));
 	}
+}
+
+void TestShell::flush()
+{
+	ssdDriver_->flush();
+}
+
+bool TestShell::testapp1() {
+	string data = "0x11111111";
+	fullwrite(data);
+	fullread();
+
+	std::vector<std::string> actual_v = getcmdresult();
+	for (auto actualData : actual_v) {
+		if ("0x11111111" != actualData)
+			return false;
+	}
+
+	return true;
+}
+
+bool TestShell::testapp2() {
+	vector<string> LBA = { "0", "1", "2", "3", "4", "5" };
+	const int iter_max = 30;
+
+	string data = "0xAAAABBBB";
+	for (int iter = 0; iter < iter_max; iter++) {
+		for (auto lba : LBA) {
+			write(lba, data);
+		}
+	}
+	
+	data = "0x12345678";
+	for (auto lba : LBA) {
+		write(lba, data);
+		read(lba);
+		
+		if (data != getSSDReadData())
+			return false;
+	}
+
+	return true;
+}
+
+void TestShell::erase_range(std::string start_lba, std::string end_lba) {
+	int total_size = std::stoi(end_lba) - std::stoi(start_lba);
+	erase(start_lba, std::to_string(total_size));
+}
+
+void TestShell::erase(std::string lba, std::string size) {
+	int total_size = std::stoi(size);
+	if (total_size > 100) {
+		total_size = 100;
+	}
+	int lba_start = std::stoi(lba);
+	const int ERASE_LBA_MAX = 10;
+	const int LBA_MAX = 100;
+
+	while (lba_start < LBA_MAX) {
+		int lba_size = (total_size <= ERASE_LBA_MAX) ? total_size : ERASE_LBA_MAX;
+		ssdDriver_->erase(std::to_string(lba_start), std::to_string(lba_size));
+
+		if (total_size <= ERASE_LBA_MAX) {
+			break;
+		}
+
+		lba_start += ERASE_LBA_MAX;
+		total_size -= ERASE_LBA_MAX;
+	}
+}
+
+void TestShell::help() {
+	helpWrite();
+	helpRead();
+	helpExit();
+	helpHelp();
+	helpFullWrite();
+	helpFullRead();
 }
 
 void TestShell::helpWrite() const {
@@ -177,75 +242,4 @@ void TestShell::displayHelp(const std::string& name, const std::string& synopsis
 	std::cout << "- " << synopsis << std::endl << std::endl;
 	std::cout << "[DESCRIPTION]" << std::endl;
 	std::cout << "- " << description << std::endl;
-	std::cout << "======================================================" << std::endl << std::endl;
-}
-
-bool TestShell::testapp1() {
-	fullwrite("0x11111111");
-	fullread();
-
-	std::vector<std::string> actual_v = getcmdresult();
-	for (int i = 0; i < 100; i++) {
-		if ("0x11111111" != actual_v[i])
-			return false;
-	}
-
-	return true;
-}
-
-bool TestShell::testapp2() {
-	vector<string> LBA = { "0", "1", "2", "3", "4", "5" };
-	const int iter_max = 30;
-
-	string data = "0xAAAABBBB";
-	for (int iter = 0; iter < iter_max; iter++) {
-		for (auto lba : LBA) {
-			write(lba, data);
-		}
-	}
-	
-	data = "0x12345678";
-	for (auto lba : LBA) {
-		write(lba, data);
-		read(lba);
-		
-		if (data != getSSDReadData())
-			return false;
-	}
-
-	return true;
-}
-
-void TestShell::erase(std::string lba, std::string size) {
-	int total_size = std::stoi(size);
-	if (total_size > 100) {
-		total_size = 100;
-	}
-	int lba_start = std::stoi(lba);
-	const int ERASE_LBA_MAX = 10;
-	const int LBA_MAX = 100;
-
-	while (lba_start < LBA_MAX) {
-		int lba_size = (total_size <= ERASE_LBA_MAX) ? total_size : ERASE_LBA_MAX;
-		ssdDriver_->erase(std::to_string(lba_start), std::to_string(lba_size));
-
-		if (total_size <= ERASE_LBA_MAX) {
-			break;
-		}
-
-		lba_start += ERASE_LBA_MAX;
-		total_size -= ERASE_LBA_MAX;
-	}
-}
-
-void TestShell::erase_range(std::string start_lba, std::string end_lba) {
-	int total_size = std::stoi(end_lba) - std::stoi(start_lba);
-	erase(start_lba, std::to_string(total_size));
-}
-
-bool TestShell::run(std::string scenario) {
-	if (scenarioMap_.find(scenario) == scenarioMap_.end()) {
-		return false;
-	}
-	return (this->*scenarioMap_[scenario])();
 }
