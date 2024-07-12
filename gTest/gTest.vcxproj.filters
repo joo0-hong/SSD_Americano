@@ -25,6 +25,7 @@
     <ClCompile Include="NandBufferTest.cpp">
       <Filter>소스 파일\test</Filter>
     </ClCompile>
+    <ClCompile Include="NandDriverTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="리소스 파일">
