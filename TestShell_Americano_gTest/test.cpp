@@ -269,7 +269,8 @@ TEST_F(TestShellFixture, eraserange_start99_end1000) {
 
 TEST_F(TestShellFixture, runner_testapp1) {
 	EXPECT_CALL(fileReaderMk, readFile)
-		.Times(AtLeast(1));
+		.Times(AtLeast(1))
+		.WillRepeatedly(Return("0x11111111"));
 
 	EXPECT_CALL(ssdDriverMk, read)
 		.Times(AtLeast(1));
