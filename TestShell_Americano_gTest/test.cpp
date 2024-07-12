@@ -8,6 +8,7 @@
 #include "../TestShell_Americano/FileReader.cpp"
 #include "../TestShell_Americano/SSDDriver.cpp"
 #include "../TestShell_Americano/HostInterface.cpp"
+#include "../TestShell_Americano/ScenarioParser.cpp"
 
 using namespace std;
 using namespace testing;

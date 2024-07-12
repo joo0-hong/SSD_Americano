@@ -119,8 +119,8 @@ bool TestShell::testapp1() {
 	fullread();
 
 	std::vector<std::string> actual_v = getcmdresult();
-	for (int i = 0; i < 100; i++) {
-		if (data != actual_v[i])
+	for (auto actualData : actual_v) {
+		if ("0x11111111" != actualData)
 			return false;
 	}
 

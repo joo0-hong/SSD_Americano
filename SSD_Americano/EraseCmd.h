@@ -1,19 +1,20 @@
 #pragma once
-#include "Command.h"
-#include "NandInterface.h"
-#include <string>
+#include "CommandCommon.h"
 
-using namespace std;
-
-class EraseCmd : public Command {
+class EraseCmd : public CommandCommon {
 public:
-	EraseCmd(int addr, string size, NANDInterface* nand) : address(addr), size(size), nandIntf(nand) {
+	EraseCmd(NANDDriver* nand) : nandDriver(nand), address(0), size(0) {
+		suppParamCount = 2;
 	}
-	void run() override {
-		nandIntf->erase(address, size);
-	}
+
+	void parse(int paramCount, char* param[]) override;
+	void run() override;
+
 private:
+	NANDDriver* nandDriver;
 	int address;
-	string size;
-	NANDInterface* nandIntf;
+	int size;
+
+	void checkParamValid(int paramCount, char* param[]);
+	void checkSizeValid(char* param);
 };

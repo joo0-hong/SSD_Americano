@@ -1,19 +1,27 @@
 #pragma once
-#include "Command.h"
-#include "NandInterface.h"
 #include <string>
+#include <stdexcept>
+#include "CommandCommon.h"
 
 using namespace std;
 
-class WriteCmd : public Command {
+class WriteCmd : public CommandCommon {
 public:
-	WriteCmd(int addr, string data, NANDInterface* nand) : address(addr), data(data), nandIntf(nand) {
+	WriteCmd(NANDDriver* nand) : nandDriver(nand), address(0), data("") {
+		suppParamCount = 2;
 	}
-	void run() override {
-		nandIntf->write(address, data);
-	}
+
+	void parse(int paramCount, char* param[]) override;
+	void run() override;
+
 private:
+	const int PREFIX_SIZE = 2;
+	const int DATA_SIZE = 10;
+
+	NANDDriver* nandDriver;
 	int address;
 	string data;
-	NANDInterface* nandIntf;
+
+	void checkParamValid(int paramCount, char* param[]);
+	void checkDataValid(char* param);
 };

@@ -41,7 +41,7 @@ protected:
 
     void verifyReadFileManager(const int linenumber, const string& expected) {
         string data_out = fileManager->read(linenumber);
-        EXPECT_EQ(data_out, expected);
+        EXPECT_THAT(data_out, Eq(expected));
     }
 
     FileManager* fileManager;
