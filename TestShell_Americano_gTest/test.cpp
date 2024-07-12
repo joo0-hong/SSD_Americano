@@ -276,7 +276,7 @@ TEST_F(TestShellFixture, runner_testapp1) {
 	EXPECT_CALL(ssdDriverMk, write)
 		.Times(AtLeast(1));
 
-	EXPECT_EQ(true, app.run("testapp1"));
+	EXPECT_EQ(true, app.runCommand("testapp1"));
 }
 
 TEST_F(TestShellFixture, runner_testapp2) {
@@ -289,7 +289,7 @@ TEST_F(TestShellFixture, runner_testapp2) {
 	EXPECT_CALL(ssdDriverMk, write)
 		.Times(AtLeast(1));
 
-	EXPECT_EQ(true, app.run("testapp2"));
+	EXPECT_EQ(true, app.runCommand("testapp2"));
 }
 
 class CheckCommandFixture : public testing::Test {
