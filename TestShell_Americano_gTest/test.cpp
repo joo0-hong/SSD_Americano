@@ -269,15 +269,32 @@ TEST_F(TestShellFixture, eraserange_start99_end1000) {
 
 TEST_F(TestShellFixture, runner_testapp1) {
 	EXPECT_CALL(fileReaderMk, readFile)
-		.Times(AtLeast(1));
+		.Times(AtLeast(1))
+		.WillRepeatedly(Return("0x11111111"));
 
 	EXPECT_CALL(ssdDriverMk, read)
 		.Times(AtLeast(1));
 	EXPECT_CALL(ssdDriverMk, write)
 		.Times(AtLeast(1));
 
-	EXPECT_EQ(true, app.run("testapp1"));
+	std::ostringstream oss;
+	auto oldCoutStreamBuf = std::cout.rdbuf();
+	std::cout.rdbuf(oss.rdbuf());
+
+	EXPECT_EQ(true, app.runCommand("testapp1"));
+
+	std::cout.rdbuf(oldCoutStreamBuf);	// 기존 buf 복원
+
+	//assert
+	string expect = "";
+	for (int i = LBA_MIN; i < LBA_MAX; ++i) {
+		expect += "0x11111111\n";
+	}
+	string actual = oss.str();
+
+	EXPECT_EQ(expect, actual);
 }
+
 
 TEST_F(TestShellFixture, runner_testapp2) {
 	EXPECT_CALL(fileReaderMk, readFile)
@@ -289,7 +306,7 @@ TEST_F(TestShellFixture, runner_testapp2) {
 	EXPECT_CALL(ssdDriverMk, write)
 		.Times(AtLeast(1));
 
-	EXPECT_EQ(true, app.run("testapp2"));
+	EXPECT_EQ(true, app.runCommand("testapp2"));
 }
 
 class CheckCommandFixture : public testing::Test {
